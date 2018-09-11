@@ -1,0 +1,92 @@
+<ng-template #loading>
+  <alert type="danger">    <strong>Warning!</strong> You are not authorised to access this page.  </alert>
+</ng-template>
+<ng-template #ViewCust>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">View Customer Details</h4>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+        <div class="form-group"><label class="col-sm-2 control-label">Customer Name</label>
+          <div class="col-sm-10"><input type="text" disabled Capitalize class="form-control" name="name" [ngModel]="custViewObj?.firstName" (ngModelChange)="custViewObj.firstName=$event"></div>
+        </div><br><br>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Email</label>
+          <div class="col-sm-10"><input type="text" disabled Capitalize class="form-control" name="email" [ngModel]="custViewObj?.email" (ngModelChange)="custViewObj.email=$event"></div>
+        </div><br><br>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Mobile</label>
+          <div class="col-sm-10"><input type="text" disabled Capitalize class="form-control" name="mobileNumber" [ngModel]="custViewObj?.mobileNumber" (ngModelChange)="custViewObj.mobileNumber=$event"></div>
+        </div><br><br>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Gender</label>
+          <div class="col-sm-10"><input type="text" disabled Capitalize class="form-control" name="gender" [ngModel]="custViewObj?.gender" (ngModelChange)="custViewObj.gender=$event"></div>
+        </div><br><br>
+
+        <!--<div class="form-group"><label class="col-sm-2 control-label">Total Order</label>-->
+          <!--<div class="col-sm-10"><input type="text" disabled Capitalize class="form-control" name="order" [ngModel]="custViewObj?.order" (ngModelChange)="custViewObj.order=$event"></div>-->
+        <!--</div><br><br>-->
+
+        <div class="form-group"><label class="col-sm-2 control-label">PinCode</label>
+          <div class="col-sm-10"><input type="text" disabled Capitalize class="form-control" name="pincode" [ngModel]="custViewObj?.pincode" (ngModelChange)="custViewObj.pincode=$event"></div>
+        </div><br><br>
+
+          <div class="form-group"><label class="col-sm-2 control-label">Address</label>
+          <div class="col-sm-10"><input type="text" disabled Capitalize class="form-control" name="adress" [ngModel]="custViewObj?.address" (ngModelChange)="custViewObj.address=$event"></div>
+          </div><br><br>
+
+        <div class="col-sm-8 col-sm-offset-2">
+          <button type="button" class="btn btn-white pull-right" (click)="modalView.hide()">Close</button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+<div>
+  <h1><b>Customer List</b></h1>
+</div>
+<div class="wrapper wrapper-content animated" *ngIf="view ;else loading;">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">Customer List</h5>
+      <div class="ibox-tools">
+        <!--<button class="btn btn-info m-r-sm" title="Save" type="button">{{count}}</button>-->
+      </div>
+
+    <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+      <div class="dataTables_wrapper form-inline dt-bootstrap">
+        <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"   class="display" class="display table table-striped table-bordered table-hover dataTables-example">
+            <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>CreatedAt</th>
+              <th>Total Orders</th>
+              <th>Orders</th>
+              <th>View Details</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tr *ngFor="let cust of custObj">
+              <td>{{cust?.firstName}} {{cust?.lastName}}</td>
+              <td>{{cust?.email}}</td>
+              <td>{{cust?.mobileNumber}}</td>
+              <td>{{cust?.createdAt | date: 'yMMMdjms'}}</td>
+              <td>{{cust?.count}}</td>
+              <!--<td><a [routerLink]="['/merchant/order',cust._id]"><button type="button" [disabled]="!view" class="btn btn-success btn-circle "><i class="fa fa-shopping-cart"></i></button></a></td>-->
+              <td><a [routerLink]="['/customer/Order',cust._id]"><button type="button" [disabled]="!view" class="btn btn-success btn-circle "><i class="fa fa-shopping-cart"></i></button></a></td>
+              <td><button type="button" [disabled]="!view" class="btn btn-primary"  (click)="viewCustModal(cust?._id,ViewCust)">View</button></td>
+            </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+

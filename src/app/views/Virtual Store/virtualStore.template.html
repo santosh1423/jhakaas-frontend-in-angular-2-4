@@ -1,0 +1,185 @@
+<div>
+  <h1><b>Virtual Store</b></h1>
+</div>
+
+
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="medium"
+  color="#fff"
+  [loadingText]="loadingtext"
+  type="ball-scale-ripple-multiple">
+</ngx-spinner>
+<ng-template #showprod>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Product Details</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+    <div class="ibox-content">
+      <div class="col-lg-12 col-sm-12 col-xs-12"  >
+        <div align="center" style="border: 2px solid">
+          <br>
+          <img src={{prodById?.url}} style="width: 150px; height: 150px;"/>
+          <br><hr style="border: 0.5px solid">
+          <div align="left">
+            <td>
+              <label >&nbsp; &nbsp;Product Name: </label>
+              &nbsp;<p class="col-lg-12 col-sm-12 col-xs-12" align="justify" >{{ prodById?.name }}</p>
+            </td>
+          </div>
+          <hr>
+          <div align="left">
+            <td>
+              &nbsp; &nbsp;<label>Comapny Name: </label> {{prodById?.manufacturer}}
+            </td>
+
+          </div>
+          <hr>
+          <div align="left">
+            &nbsp; &nbsp;<label>Description: </label><p class="col-lg-12 col-sm-12 col-xs-12" align="justify" >{{prodById?.description}}</p>
+          </div>
+        <hr>
+          <div align="left">
+            &nbsp; &nbsp;<label>MRP: </label>  {{prodById?.price}}
+          </div>
+
+
+        </div>
+        <br><br>
+      </div>
+
+    </div>
+  </div>
+
+</ng-template>
+<!--ProductTable-->
+<div *ngIf="view ;else loading;" readonly class="wrapper wrapper-content animated">
+  <div class="ibox float-e-margins">
+
+    <div class="ibox-content">
+      <h5 style="font-size: 25px;">Create Virtual Store</h5>
+
+      <form name="form" #storeCreate="ngForm" (ngSubmit)="createStore(storeCreate.value)"
+            (keydown.enter)="$event.preventDefault()"
+            class="form-horizontal">
+      <div class="col-lg-12 col-sm-12 col-xs-12 ibox-content">
+        <div class="form-group">
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Store Name: </label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12" [multiple]="false" name="category"
+                       [items]="proCat" #storeName="ngModel" required (selected)="selectedCat($event)"
+                       placeholder="Select Store Name" ngModel>
+            </ng-select>
+            <small
+              [hidden]="!storeName.hasError('required') || storeName.valid || (storeName.pristine && !storeCreate.submitted)"
+              class="text-danger">
+              Store Name required.
+            </small>
+            <br><br>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Product Category: </label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12" [multiple]="false" name="procategory"
+                       [items]="proCat1" #procategory="ngModel" required (selected)="selectedProCat($event)"
+                       placeholder="Select Product Category" ngModel [disabled]="!storeName.valid">
+            </ng-select>
+            <small
+              [hidden]="!procategory.hasError('required') || procategory.valid || (procategory.pristine && !storeCreate.submitted)"
+              class="text-danger">
+              Product Category required.
+            </small>
+            <br><br>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2">
+          </div>
+          <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6">
+          <div class="btn-group btn-group-vertical" data-toggle="buttons">
+            <label class="btn active">
+              <input type="radio" name='radioVir' (click)="selectAllPro()" [disabled]="!procategory.valid"><i class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+            </label>
+          </div>
+          <label class=" control-label">Select All</label>
+
+          <div class="btn-group btn-group-vertical" data-toggle="buttons" >
+            <label class="btn active">
+              <input type="radio" name='radioVir' (click)="removeAllPro()" [disabled]="!procategory.valid"><i class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+            </label>
+          </div>
+          <label class="control-label">Remove All</label>
+
+          <div class="btn-group btn-group-vertical" data-toggle="buttons" >
+            <label class="btn active">
+              <input type="radio" name='radioVir' (click)="addAllPro()" [disabled]="!procategory.valid"><i class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+            </label>
+          </div>
+          <label class="control-label">Add All</label>
+          </div>
+
+          <!--<small-->
+            <!--[hidden]="!radioVir.hasError('required') || radioVir.valid || (radioVir.pristine && !storeCreate.submitted)"-->
+            <!--class="text-danger">-->
+            <!--&lt;!&ndash;Shop Schedule is required.&ndash;&gt;-->
+          <!--</small>-->
+        </div>
+
+        <div class="form-group pull-right">
+          <div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 ">
+            <br><br>
+            <button type="submit" [disabled]="!add || virtualStoreArray.length <= 0" class="btn btn-info ">Create Store</button>
+          </div>
+        </div>
+      </div>
+      </form>
+
+      <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+          <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+        <table datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger"  class="display table table-striped table-bordered table-hover dataTables-example">
+          <thead>
+          <tr>
+            <th>Code</th>
+            <th>Company</th>
+            <th>Name</th>
+            <th>Price</th>
+            <!--<th>Unit</th>-->
+            <th>Base Prodcut Status</th>
+            <!--<th>Prodcut Status</th>-->
+            <th>Created By</th>
+            <th>Updated By</th>
+            <th>Action</th>
+            <th>View</th>
+            <th hidden></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let product of productObj; let i =index;">
+            <td>{{product?.code}}</td>
+            <td>{{product?.manufacturer}}</td>
+            <td>{{product?.name}}</td>
+            <td>{{product?.price}}</td>
+            <!--<td>{{product?.unit}}</td>-->
+            <td>{{product?.status}}</td>
+            <!--<td>{{product?.pStatus}}</td>-->
+            <td><b>{{product?.createBy?.firstName}} {{product?.createBy?.lastName}}</b><br> {{product?.createdAt | date: 'yMMMdjms'}}</td>
+            <td><b>{{product?.updateBy?.firstName}} {{product?.updateBy?.lastName}}</b><br> {{product?.updatedAt | date: 'yMMMdjms'}}</td>
+            <td [hidden]="product?.plus"><button type="button" [disabled]="!view" class="btn btn-info" (click)="addProd(product?._id,i)"><i class="fa fa-plus-circle fa-2x"></i></button></td>
+            <td [hidden]="product?.minus"><button type="button" [disabled]="!view" class="btn btn-danger" (click)="removeProd(product?._id,i)"><i class="fa fa-minus-circle fa-2x"></i></button></td>
+            <td><button type="button" [disabled]="!view" class="btn btn-primary" (click)="showProduct(showprod,product?._id,i)">View</button></td>
+          </tr>
+          </tbody>
+        </table>
+      </div></div>
+      </div>
+    </div>
+  </div>
+</div>

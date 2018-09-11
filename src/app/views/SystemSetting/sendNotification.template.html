@@ -1,0 +1,105 @@
+
+
+<ng-template #loading>
+  <alert type="danger"><strong>Warning!</strong> You are not authorised to access this page.</alert>
+</ng-template>
+<div>
+  <h1><b>Send Notification</b></h1>
+</div>
+
+
+<div  class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+  <div class="wrapper wrapper-content animated">
+    <div class="ibox float-e-margins">
+      <!--<h5 style="font-size: 25px;">Service Details</h5>-->
+      <form name="form" #sendNofication="ngForm"
+            (ngSubmit)="sendNofication.form.valid && sendNotifications(sendNofication.value)"
+            (keydown.enter)="$event.preventDefault()" autocomplete="off" novalidate>
+      <div>
+        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" style="background-color: white;">
+          <h6 style="font-size: 25px;"><b>Send Pincode Wise Notification</b></h6>
+          <hr>
+
+            <div class="form-group col-lg-12 col-sm-12 col-md-12 col-xs-12">
+              <label class="col-sm-2 control-label">Pincode</label>
+              <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                <input type="text" class="form-control"
+                       name="postalCode"
+                       ngModel
+                       #postalCode="ngModel" required
+                       pattern="^(0|[0-9][0-9]*)$" maxlength="6"
+                       minlength="6">
+                <small
+                  [hidden]="!postalCode.hasError('required') || postalCode.valid || (postalCode.pristine && !sendNofication.submitted)"
+                  class="text-danger">
+                  Pincode is required
+                </small>
+                <small
+                  [hidden]="!postalCode.hasError('pattern') || postalCode.valid || (postalCode.pristine && !sendNofication.submitted)"
+                  class="text-danger">
+                  Pincode should be only numbers
+                </small>
+              </div><br><br><br>
+            </div>
+            <div class="form-group col-lg-12 col-sm-12 col-md-12 col-xs-12">
+              <label class="col-sm-2 control-label">Select User</label>
+              <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                <select name="user" class="chosen-select select2_demo_3 form-control col-sm-10" ngModel required #user="ngModel">
+                  <option value="merchant">Merchant</option>
+                  <option value="customer">Customer</option>
+                </select>
+                <small [hidden]="!user.hasError('required') || user.valid || (user.pristine && !sendNofication.submitted)" class="text-danger">
+                  User is required
+                </small>
+              </div><br><br><br>
+            </div>
+          <div class="form-group col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <label class="col-sm-2 control-label">Title</label>
+            <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+              <input type="text" class="form-control"
+                     name="title"
+                     ngModel
+                     #title="ngModel" required>
+              <small
+                [hidden]="!title.hasError('required') || title.valid || (title.pristine && !sendNofication.submitted)"
+                class="text-danger">
+                Title is required
+              </small>
+            </div><br><br><br>
+          </div>
+          <div class="form-group col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <label class="col-sm-2 control-label">Message</label>
+            <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+              <input type="text" class="form-control"
+                     name="message"
+                     ngModel
+                     #Message="ngModel" required>
+              <small
+                [hidden]="!Message.hasError('required') || Message.valid || (Message.pristine && !sendNofication.submitted)"
+                class="text-danger">
+                Message is required
+              </small>
+            </div><br><br><br>
+          </div>
+          <div class="form-group col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <label class="col-sm-2 control-label">Send Notification Via</label>
+            <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+              <select name="Via" class="chosen-select select2_demo_3 form-control col-sm-10" ngModel required #Via="ngModel">
+                <option value="Notification">Notification</option>
+                <option value="SMS">SMS</option>
+              </select>
+              <small [hidden]="!Via.hasError('required') || Via.valid || (Via.pristine && !sendNofication.submitted)" class="text-danger">
+                Send Notification Via is required
+              </small>
+            </div><br><br><br>
+          </div>
+          <div class="col-lg-2">
+            <input type="submit" [disabled]="!add" class="btn btn-w-m btn-success" value="Send Notification" />
+            <br><br>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

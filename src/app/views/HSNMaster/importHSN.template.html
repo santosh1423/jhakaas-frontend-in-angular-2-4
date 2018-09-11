@@ -1,0 +1,27 @@
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+
+<ng-template #template>
+  <div class="modal-body" align="center">
+    <img src="https://gifimage.net/wp-content/uploads/2017/06/gif-upload-3.gif" /><hr><h3 align="center">Please Wait... Do Not Close Tab/Browser.</h3>
+  </div>
+</ng-template>
+
+<div>
+  <h1><b>Import HSN</b></h1>
+
+</div>
+<!--<div class="wrapper wrapper-content animated" *ngIf="view ;else loading;">-->
+<div *ngIf="view ;else loading;">
+  <div class="wrapper wrapper-content animated" >
+    <div class="ibox float-e-margins">
+      <form action="#" class="dropzone" id="dropzoneForm">
+        <input name="file" type="file" accept=".csv" (change)="changeListener($event.target.files)"/><br><br>
+        <button type="button" [disabled]="!edit || xyzzzz" (click)="import(template)" class="btn btn-w-m btn-primary">Import </button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,107 @@
+<ng-template #loading>
+  <alert type="danger">    <strong>Warning!</strong> You are not authorised to access this page.  </alert>
+</ng-template>
+
+<div>
+  <h1><b>Order Details</b></h1>
+</div>
+
+<div class="row" *ngIf="view ;else loading;" >
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <!-- <div class="panel-heading">
+          <h4>Invoice</h4>
+      </div> -->
+      <div class="panel-body">
+        <div class="clearfix">
+          <div class="pull-left">
+            <!--<h2 class="text-right" *ngIf="custview">-->
+              <!--{{orderIDObj?.merchant.name}}-->
+            <!--</h2>-->
+            <!--<h2 class="text-right" *ngIf="merview">-->
+            <h2 class="text-right" >
+              {{orderIDObj?.address.fullName}}
+            </h2>
+            <!--<p>{{orderIDObj?.customerName}}</p>-->
+          </div>
+          <div class="pull-right">
+            <!--<h4 >-->
+              <!--Invoice <br>-->
+            <!--</h4>-->
+
+            <button class="btn btn-primary" title="Save" type="submit" (click)="printinvoice()">Print</button>
+          </div>
+        </div>
+        <hr>
+        <div id="printinvoice">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="pull-left">
+                <address>
+                  <label *ngIf="merview">Merchant Name : {{orderIDObj?.merchant?.name}}</label>
+                  <label *ngIf="custview">Customer Name : {{orderIDObj?.address?.fullName}}</label>
+                 <!--<p *ngIf="custview"></p>-->
+                 <!--<p *ngIf="merview"></p>-->
+                  <br><br>
+                  <label>Delivery Address : </label>
+                  {{orderIDObj?.address?.address1}}<br><br>
+                  <label>Mobile No : </label> {{orderIDObj?.customer?.mobileNumber}} <span *ngIf="orderIDObj?.address?.mobileNum">/</span> {{orderIDObj?.address?.mobileNum}}
+                </address>
+              </div>
+              <div class="pull-right m-t-30">
+                <p><label>Order Date: </label> {{orderIDObj?.orderDate}}<br></p>
+                <p class="m-t-10"><label>Order Status: </label> {{orderIDObj?.orderStatus?.currentStatus}}<br></p>
+                <p class="m-t-10"><label>Order ID: </label>#{{orderIDObj?._id}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="m-h-50"></div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="table-responsive">
+                <table  class="table table-striped table-bordered table-hover dataTables-example">
+                  <thead>
+                  <tr>
+                    <th>Sr No.</th>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                    <th>Price</th>
+                    <th>Product Total</th>
+                    <th>Item Status</th>
+                    <!--<th>Reason</th>-->
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let order of orderIDObj?.items; let i = index;">
+                    <td>{{i +1}}</td>
+                    <td>{{order.name}}</td>
+                    <td>{{order.qty}}</td>
+                    <td>{{order.unit}}</td>
+                    <td>{{order.price  | number : '1.2-2'}}</td>
+                    <td>{{order.price*order.qty  | number : '1.2-2'}}</td>
+                    <td>{{order.status}}</td>
+                    <!--<td>{{order.reason}}</td>-->
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="row" style="border-radius: 0px;">
+            <div class="col-md-3 col-md-offset-9">
+              <!--<p class="text-right"><b>Total Amount :</b>{{orderIDObj?.totalAmount}}</p>-->
+              <!--<p class="text-right">Discout : 0.00</p>-->
+              <!--<p class="text-right">Tax : 0.00</p>-->
+              <!--<hr>-->
+              <h3 class="text-right">Total Amount :{{orderIDObj?.totalAmount | number : '1.2-2'}} </h3>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

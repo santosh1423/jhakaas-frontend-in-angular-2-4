@@ -1,0 +1,207 @@
+<!--<div>-->
+  <!--<h1><b>Virtual Store</b></h1>-->
+<!--</div>-->
+
+
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+
+<ng-template #proShow>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Edit Video Tutorial</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #videoEdit="ngForm" (ngSubmit)="videoEdit.form.valid && EditVideo(videoEdit.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">Video Title*</label>
+          <div class="col-sm-10">
+            <input type="text" name="title" class="form-control" [ngModel]="videoById?.title" (ngModelChange)="videoById.title=$event" #title="ngModel" required>
+
+            <!--<input type="text" name="title" Capitalize class="form-control"  [ngModel]="videoObj.url" (ngModelChange)="videoObj.title=$event" #title="ngModel" required>-->
+            <small [hidden]="!title.hasError('required') || title.valid || (title.pristine && !videoEdit.submitted)" class="text-danger">
+              Title is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Video Discription</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="description" [ngModel]="videoById?.description" (ngModelChange)="videoById.description=$event"></div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Video Link*</label>
+          <div class="col-sm-10">
+            <input type="text" name="url" Capitalize class="form-control" [ngModel]="videoById?.url" (ngModelChange)="videoById.url=$event" #url="ngModel" required>
+            <small
+              [hidden]="!url.hasError('required') || url.valid || (url.pristine && !videoEdit.submitted)"
+              class="text-danger">
+              Invalid Video Link
+            </small>
+            <small [hidden]="!url.hasError('required') || url.valid || (url.pristine && !videoEdit.submitted)" class="text-danger">
+              Link is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Video Code*</label>
+          <div class="col-sm-10">
+            <input type="text" name="code" class="form-control" [ngModel]="videoById?.code" (ngModelChange)="videoById.code=$event" #code="ngModel" required>
+            <small [hidden]="!code.hasError('required') || code.valid || (code.pristine && !videoEdit.submitted)" class="text-danger">
+              Code is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Type</label>
+          <div class="col-sm-10">
+            <select name="type" class="chosen-select select2_demo_3 form-control col-sm-10" [ngModel]="videoById?.type" (ngModelChange)="videoById.type=$event" required #type="ngModel">
+              <option value="Merchant">Merchant</option>
+              <option value="Customer">Customer</option>
+              <option value="Employee">Employee</option>
+            </select>
+            <small [hidden]="!type.hasError('required') || type.valid || (type.pristine && !videoEdit.submitted)" class="text-danger">
+              Code is required
+            </small>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Update"/>
+            <button type="button" class="btn btn-white" (click)="modalEdit.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<!--ProductTable-->
+<div *ngIf="view ;else loading;" readonly class="wrapper wrapper-content animated">
+  <div class="ibox float-e-margins">
+
+    <div class="ibox-content">
+      <div class="row">
+        <h5 style="font-size: 25px;">{{title}}</h5>
+        <br>
+        <div class="ibox-tools">
+          <div class="col-lg-12 col-sm-12 col-xs-12">
+            <form name="searchForm" autocomplete="off" class="form-horizontal" #searchForm="ngForm"
+                  (keydown.enter)="$event.preventDefault()">
+            <div class="row pull-left col-lg-11 col-sm-11 col-xs-11">
+              <input type="text" class="form-control" placeholder="Search for Product, Manufacturer" (keyup)="productSearch(searchForm.value)"
+                     Capitalize name="search" ngModel>
+
+            </div>
+            </form>
+            <div class="row pull-right">
+              <button class="btn btn-info m-r-sm" title="Save" type="button">{{prodCount}} / {{totalCount}}</button>
+            </div>
+          </div>
+          <!--<a [routerLink]="['/virtualstore/manageStore/'+_id]">-->
+            <!--<button type="button" [disabled]="!add" class="btn btn-outline btn-primary  dim ">-->
+              <!--<i class="fa fa-plus"></i>-->
+            <!--</button>-->
+          <!--</a>-->
+
+        </div>
+        <br><br>
+      </div>
+
+      <div class="row ibox-content">
+          <div class="col-lg-12 col-sm-12 col-xs-12">
+            <div class="col-lg-3 col-sm-3 col-xs-3" *ngFor="let product of allProduct;" >
+              <div align="center" style="border: 2px solid">
+                <br>
+                <img src={{product.url}} style="width: 150px; height: 150px;"/>
+                <br><hr style="border: 0.5px solid">
+                <div align="left">
+                  <td>
+                  <label>&nbsp; &nbsp;Product Name: </label> &nbsp; {{ (product?.name.length>25)? (product?.name | slice:0:25)+'....':(product?.name) }}
+                  </td>
+                </div>
+              <hr>
+                <div align="left">
+                  <td>
+                    &nbsp; &nbsp;<label>Comapny Name: </label> {{product?.manufacturer}}
+                  </td>
+
+                </div><hr>
+                <div align="left">
+                  &nbsp; &nbsp;<label>MRP: </label>  {{product?.price}}&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;
+                  <a [routerLink]="['/product/View',product?._id]"><button class="btn btn-primary" >View Product</button></a>
+                </div>
+              </div>
+              <div>
+              </div><br><br>
+            </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <!--<div class="col-lg-12 col-sm-12 col-xs-12">-->
+
+          <!--<div class="col-lg-3 col-sm-3 col-xs-3" *ngFor="let product of allProduct;" >-->
+            <!--<div  class="ibox">-->
+              <!--<div class="ibox-content product-box">-->
+                <!--<div class="product-imitation">-->
+                  <!--<img src={{product.url}} style="width: 150px; height: 150px;"/>-->
+                <!--</div>-->
+                <!--<div class="product-desc">-->
+                                <!--<span class="product-price">-->
+                                    <!--MRP:  {{product?.data?.price}}-->
+                                <!--</span>-->
+                  <!--&lt;!&ndash;<small class="text-muted">Category</small>&ndash;&gt;-->
+                  <!--<a  class="product-name"> Product Name: &nbsp; {{ (product?.data?.name.length>15)? (product?.data?.name | slice:0:15)+'....':(product?.data?.name) }}</a>-->
+
+
+
+                  <!--&lt;!&ndash;<div class="small m-t-xs">&ndash;&gt;-->
+                    <!--&lt;!&ndash;Many desktop publishing packages and web page editors now.&ndash;&gt;-->
+                  <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                  <!--<div class="m-t text-righ">-->
+
+                    <!--<a [routerLink]="['/product/View',product?.data?._id]" class="btn btn-xs btn-outline btn-primary">View <i class="fa fa-long-arrow-right"></i> </a>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--&lt;!&ndash;</div>&ndash;&gt;-->
+        <!--</div>-->
+        <!--</div>-->
+
+
+
+
+        <!--<div class="col-lg-12 col-sm-12 col-xs-12">-->
+          <!--<table class="col-lg-3 col-sm-3 col-xs-3" *ngFor="let product of productData;" style="border: 1px solid">-->
+            <!--<br>-->
+            <!--<tr align="center" style="border: 1px solid">-->
+
+              <!--<td colspan="2">-->
+                <!--<img [src]="product.url" style="width: 200px; height: 200px;" align="center"/>-->
+              <!--</td>-->
+            <!--</tr>-->
+            <!--<tr style="border: 1px solid">-->
+              <!--<td style="border: 1px solid">&nbsp; &nbsp;<label>Product Name:</label></td>-->
+              <!--<td style="border: 1px solid"> <label>{{ (product?.name.length>30)? (product?.name | slice:0:30)+'....':(product?.name) }}</label></td>-->
+            <!--</tr>-->
+          <!--</table><br><br>-->
+        <!--</div>-->
+          </div>
+        <div class="row pull-left" >
+          <h4>Showing 1 to {{prodCount}} of {{totalCount}} entries</h4>
+        </div>
+        <div class="row pull-right" *ngIf="hideLoadButton">
+          <button class="btn-primary btn" (click)="loadMoreData()" style="border-radius: 10px"><i class="fa fa-arrow-circle-down fa-2x" aria-hidden="true"></i></button>
+        </div>
+
+      <!--</div>-->
+
+    </div>
+      <!--<button class="btn btn-info m-r-sm" title="Save" type="button">{{prodCount}} / {{totalCount}}</button>-->
+  </div>
+</div>
+
+

@@ -1,0 +1,62 @@
+
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+
+<!--ProductTable-->
+<div *ngIf="view ;else loading;" >
+
+  <form name="form" class="form-horizontal" #addgroup="ngForm"
+        (ngSubmit)="add_group(addgroup.value)"
+        (keydown.enter)="$event.preventDefault()">
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal">
+      <div class="ibox float-e-margins col-lg-12 col-sm-12 col-md-12 col-xs-12">
+        <div class="ibox-title col-lg-12 col-sm-12 col-md-12 col-xs-12">
+          <h5 style="font-size: 25px;">Add Product Group</h5>
+
+
+        <div>
+          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" style="background-color: white;">
+            <hr>
+            <div class="form-group col-lg-12 col-lg-12 col-sm-12 col-md-12 col-xs-12">
+              <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Select Category:</label>
+              <ng-select class="col-lg-10 col-sm-10 col-md-10 col-xs-10"
+                         [multiple]="true" name="category"
+                         placeholder="Select Category" [items]="proCat"
+                         ngModel #category="ngModel" required>
+              </ng-select>
+              <small
+                [hidden]="!category.hasError('required') || category.valid || (category.pristine && !addgroup.submitted)"
+                class="text-danger">
+                Product Category is required
+              </small>
+            </div>
+          </div>
+          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" style="background-color: white;">
+            <div class="form-group col-lg-12 col-lg-12 col-sm-12 col-md-12 col-xs-12">
+              <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Group Name:</label>
+              <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                <input type="text" class="form-control"
+                       #name="ngModel" required placeholder="Enter Group Name"
+                       name="name" ngModel>
+                <small
+                  [hidden]="!name.hasError('required') || name.valid || (name.pristine && !addgroup.submitted)"
+                  class="text-danger">
+                  Group Name is required
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+          <div class="col-lg-2 pull-right">
+            <input type="submit" [disabled]="!add" class="btn btn-w-m btn-success" value="Add"/>
+          </div>
+      </div>
+        <br><br><hr>
+      </div>
+    </div>
+  </form>
+</div>
+

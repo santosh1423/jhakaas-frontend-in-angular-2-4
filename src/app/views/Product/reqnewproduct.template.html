@@ -1,0 +1,131 @@
+
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+
+<!--Change Price-->
+<ng-template #changePrice>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Change Price </h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalUpdate.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #change="ngForm" (ngSubmit)="change.form.valid && UpdatePrice(change.value)" class="form-horizontal" novalidate>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Product Price</label>
+          <div class="col-sm-10">
+            <input type="text" name="price" class="form-control" pattern="^(0|[0-9][0-9]*)$" ngModel #price="ngModel" required>
+            <small
+              [hidden]="!price.hasError('required') || price.valid || (price.pristine && !change.submitted)"
+              class="text-danger">
+              Price required
+            </small>
+            <small
+              [hidden]="!price.hasError('pattern') || price.valid || (price.pristine && !change.submitted)"
+              class="text-danger">
+              Price should be only numbers
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <button type="submit" class="btn btn-primary" >Update Price</button>
+            <button type="button" class="btn btn-white" (click)="modalUpdate.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<!--Merchant List-->
+<!--<ng-template #merchantList>-->
+  <!--<div class="modal-header">-->
+    <!--<h4 class="modal-title pull-left">Associated Vendor List</h4>-->
+    <!--<button type="button" class="close pull-right" aria-label="Close" (click)="modalList.hide()">-->
+    <!--</button>-->
+  <!--</div>-->
+  <!--<div class="modal-body">-->
+    <!--<div class="ibox-content">-->
+      <!--<div class="form-group">-->
+        <!--<table   class="table table-striped table-bordered table-hover dataTables-example">-->
+          <!--<thead>-->
+          <!--<tr>-->
+            <!--<th>Name</th>-->
+            <!--<th>Phone Number</th>-->
+            <!--<th>Email</th>-->
+            <!--<th>CreatedAt</th>-->
+          <!--</tr>-->
+          <!--</thead>-->
+          <!--<tbody>-->
+          <!--<tr>-->
+            <!--<td>{{this.prodbaseId.firstName}} {{this.prodbaseId.lastName}}</td>-->
+            <!--<td>{{this.prodbaseId.mobileNumber}}</td>-->
+            <!--<td>{{this.prodbaseId.email}}</td>-->
+            <!--<td>{{this.prodbaseId.firstName}}</td>-->
+          <!--</tr>-->
+          <!--</tbody>-->
+        <!--</table>-->
+      <!--</div>-->
+
+      <!--<div class="form-group">-->
+        <!--<div class="col-sm-8 col-sm-offset-2">-->
+          <!--<button type="button" class="btn btn-white pull-right" (click)="modalList.hide()">Close</button>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+<!--</ng-template>-->
+<!--ProductTable-->
+
+
+
+<div *ngIf="view ;else loading;" readonly class="wrapper wrapper-content animated">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">Requested Product</h5>
+
+    <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+      <div class="dataTables_wrapper form-inline dt-bootstrap">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"  class="table table-striped table-bordered table-hover dataTables-example">
+          <thead>
+          <tr>
+            <th>Code</th>
+            <th>Company</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Unit</th>
+            <th>Base Prodcut Status</th>
+            <th>Created By</th>
+            <th>Updated By</th>
+            <th>Edit</th>
+            <th>View Detail</th>
+            <th>View Merchant</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let product of reqProObj">
+            <td>{{product?.code}}</td>
+            <td>{{product?.manufacturer}}</td>
+            <td>{{product?.name}}</td>
+            <td>{{product?.price}}</td>
+            <td>{{product?.unit}}</td>
+            <td>{{product?.status}}</td>
+            <td><b>{{product?.mer_createBy?.firstName}} {{product?.mer_createBy?.lastName}}</b><br> {{product?.createdAt | date: 'yMMMdjms'}}</td>
+            <td><b>{{product?.mer_updateBy?.firstName}} {{product?.mer_updateBy?.lastName}}</b><br> {{product?.updatedAt | date: 'yMMMdjms'}}</td>
+            <td><a [routerLink]="['/product/Manage',product._id]"><button type="button" [disabled]="!edit" class="btn btn-success">Manage</button></a></td>
+            <td><a [routerLink]="['/product/View',product._id]"><button type="button" [disabled]="!view" class="btn btn-info">View</button></a></td>
+            <td><a [routerLink]="['/merchant/update/view/',product?.proprietary?.mid?._id]"><button type="button" [disabled]="!view" class="btn btn-info">View Merchant</button></a></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,15 @@
+.activestatus {
+  color: #fff;
+  background-color: #3f51b5;
+  border-color: rgba(61, 134, 230, 0.62);
+}
+.deactivestatus {
+  color: #fff;
+  background-color: #ffa000;
+  border-color: #d43f3a;
+}
+
+#expselect
+{
+  border-left: none;
+}

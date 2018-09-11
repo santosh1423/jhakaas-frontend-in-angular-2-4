@@ -1,0 +1,189 @@
+<ng-template #loading>
+  <alert type="danger">    <strong>Warning!</strong> You are not authorised to access this page.  </alert>
+</ng-template>
+
+<ng-template #addPolicy>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Create New Policy</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #policyAdd="ngForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()"  (ngSubmit)="policyAdd.form.valid && AddPolicy(policyAdd.value)" class="form-horizontal" novalidate>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Name:</label>
+          <div class="col-sm-10">
+            <select name="name" class="chosen-select select2_demo_3 form-control" required #name=ngModel ngModel>
+              <option value="terms_of_service">Terms Of Service</option>
+              <option value="privacy_policy">Privacy Policy</option>
+              <option value="return_policy">Return Policy</option>
+              <option value="refund_policy">Refund Policy</option>
+            </select>
+            <small
+              [hidden]="!name.hasError('required') || name.valid || (name.pristine && !policyAdd.submitted)"
+              class="text-danger">
+              Name is required
+            </small>
+          </div>
+        </div>
+        <div class="form-group">
+          <ckeditor
+            [config]="{extraPlugins: 'divarea'}"
+            ngModel
+            name="data"
+            debounce="500">
+          </ckeditor>
+        </div>
+
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalAdd.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #editPolicy >
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Update Policy</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #policyEdit="ngForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="policyEdit.form.valid && EditPolicy(policyEdit.value)" class="form-horizontal" novalidate>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Name:</label>
+          <div class="col-sm-10">
+            <select name="name" class="chosen-select select2_demo_3 form-control" [ngModel]="policyById.name" (ngModelChange)="policyById.name=$event" required #name=ngModel ngModel>
+              <option value="terms_of_service">Terms Of Service</option>
+              <option value="privacy_policy">Privacy Policy</option>
+              <option value="return_policy">Return Policy</option>
+              <option value="refund_policy">Refund Policy</option>
+            </select>
+            <small
+              [hidden]="!name.hasError('required') || name.valid || (name.pristine && !policyEdit.submitted)"
+              class="text-danger">
+              Name is required
+            </small>
+          </div>
+        </div>
+        <div class="form-group" >
+          <ckeditor
+            [config]="{extraPlugins: 'divarea'}"
+            [(ngModel)]="policyById.data"
+            name="data"
+            debounce="500">
+          </ckeditor>
+        </div>
+
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalEdit.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #viewPolicy>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Update Policy</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #policyEdit="ngForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="policyEdit.form.valid && AddPolicy(policyEdit.value)" class="form-horizontal" novalidate>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Name:</label>
+          <div class="col-sm-10">
+            <select name="name" class="chosen-select select2_demo_3 form-control" [disabled]="true" [ngModel]="policyById.name" (ngModelChange)="policyById.name=$event" required #name=ngModel ngModel>
+              <option value="terms_of_service">Terms Of Service</option>
+              <option value="privacy_policy">Privacy Policy</option>
+              <option value="return_policy">Return Policy</option>
+              <option value="refund_policy">Refund Policy</option>
+            </select>
+            <small
+              [hidden]="!name.hasError('required') || name.valid || (name.pristine && !policyEdit.submitted)"
+              class="text-danger">
+              Name is required
+            </small>
+          </div>
+        </div>
+        <div class="form-group">
+          <ckeditor
+            [config]="{extraPlugins: 'divarea'}"
+            [(ngModel)]="policyById.data"
+            name="data"
+            debounce="500">
+          </ckeditor>
+        </div>
+
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <button type="button" class="btn btn-white pull-right" (click)="modalEdit.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<div>
+  <h1><b>Policy Master Management</b></h1>
+</div>
+<div class ="row"  class="wrapper wrapper-content animated" *ngIf="view ;else loading;">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">Policy Master</h5>
+      <div class="ibox-tools">
+        <button class="btn btn-outline btn-primary  dim " title="Add" (keydown.enter)="$event.preventDefault()"  [disabled]="!add" (click)="addPolicyModal(addPolicy)"><i class="fa fa-plus"></i>
+        </button>
+      </div>
+
+      <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+          <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <table datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger"   class="display" class="display table table-striped table-bordered table-hover dataTables-example">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>CreatedBy</th>
+                <th>updatedBy</th>
+                <th>Status</th>
+                <th>View</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr  *ngFor="let policy of policyObj">
+                <td>{{policy?.name}}</td>
+                <td><b>{{policy?.createBy?.firstName}} {{policy?.createBy?.lastName}} </b><br> {{policy?.createdAt | date: 'yMMMdjms'}}</td>
+                <td><b>{{policy?.updateBy?.firstName}} {{policy?.updateBy?.lastName}} </b><br> {{policy?.updatedAt | date: 'yMMMdjms'}}</td>
+                <td><button [disabled]="!edit" class="btn btn-success btn-sm" (click)="statuschange(policy.status, policy._id)" [ngClass]="{'deactivestatus': policy?.status !== 'Active', 'activestatus': policy?.status == 'Active' }">{{policy?.status}}</button></td>
+                <td><button  type="button" [disabled]="!view" (keydown.enter)="$event.preventDefault()" class="btn btn-success" (click)="editPolicyModal(policy._id,viewPolicy)">View</button></td>
+                <td><button  type="button" [disabled]="!edit"  (keydown.enter)="$event.preventDefault()" class="btn btn-success" (click)="editPolicyModal(policy._id,editPolicy)">Edit</button></td>
+                <td><button  type="button" [disabled]="!delete" class="btn btn-danger" (click)="deletePolicyById(policy?._id)">Delete</button></td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,313 @@
+<ng-template #loading>
+  <alert type="danger">    <strong>Warning!</strong> You are not authorised to access this page.  </alert>
+</ng-template>
+
+<ng-template #addHSN>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Create New HSN Master</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" autocomplete="off" (keydown.enter)="$event.preventDefault()" #hsnAdd="ngForm" (ngSubmit)="hsnAdd.form.valid && AddHSN(hsnAdd.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">Country*</label>
+          <div class="col-sm-10">
+            <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12"
+                       [multiple]="false"
+                       name="country"
+                       [items]="countryObj" required
+                       ngModel #country="ngModel">
+            </ng-select>
+            <small [hidden]="!country.hasError('required') || country.valid || (country.pristine && !hsnAdd.submitted)" class="text-danger">
+              Country is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">HSN Code</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="code" #hcode="ngModel" ngModel required>
+            <small [hidden]="!hcode.hasError('required') || hcode.valid || (hcode.pristine && !hsnAdd.submitted)" class="text-danger">
+              HSN Code is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">HSN Name</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="name" #hname="ngModel" ngModel required>
+            <small [hidden]="!hname.hasError('required') || hname.valid || (hname.pristine && !hsnAdd.submitted)" class="text-danger">
+              HSN Name is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Chapter Number</label>
+          <!--<div class="col-sm-10"><input type="text" Capitalize class="form-control" name="cnumber" #cnumber="ngModel" ngModel required>-->
+          <div class="col-sm-10">
+            <input type="text" Capitalize class="form-control" name="chapterNo" #cnumber="ngModel" ngModel >
+            <!--<small [hidden]="!cnumber.hasError('required') || cnumber.valid || (cnumber.pristine && !hsnAdd.submitted)" class="text-danger">-->
+              <!--Chapter Number is required-->
+            <!--</small> -->
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Chapter Name</label>
+          <div class="col-sm-10">
+          <!--<textarea type="text" class="form-control"-->
+          <!--name="cname" Capitalize-->
+          <!--#cname="ngModel" ngModel-->
+          <!--required >-->
+            <textarea type="text" class="form-control"
+          name="chapterName" Capitalize
+          #cname="ngModel" ngModel
+           >
+            <!--<small [hidden]="!cname.hasError('required') || cname.valid || (cname.pristine && !hsnAdd.submitted)" class="text-danger">-->
+              <!--Chapter Name is required-->
+            <!--</small>-->
+          </textarea>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">HSN SubChapter</label>
+          <!--<div class="col-sm-10"><input type="text" Capitalize class="form-control" name="subchapter" #subchapter="ngModel" ngModel required>-->
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="subChapterNo" #subchapter="ngModel" ngModel>
+            <!--<small [hidden]="!subchapter.hasError('required') || subchapter.valid || (subchapter.pristine && !hsnAdd.submitted)" class="text-danger">-->
+              <!--HSN Sub Chapter is required-->
+            <!--</small>-->
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Sub Chapter Name</label>
+          <div class="col-sm-10">
+          <!--<textarea type="text" class="form-control"-->
+                    <!--name="scname" Capitalize-->
+                    <!--#scname="ngModel" ngModel-->
+                    <!--required >-->
+           <textarea type="text" class="form-control"
+                    name="subChapterName" Capitalize
+                    #scname="ngModel" ngModel>
+            <!--<small [hidden]="!scname.hasError('required') || scname.valid || (scname.pristine && !hsnAdd.submitted)" class="text-danger">-->
+             <!--Sub Chapter Name is required-->
+            <!--</small>-->
+          </textarea>
+          </div>
+        </div>
+
+
+        <div class="form-group"><label class="col-sm-2 control-label">GST Rate</label>
+          <!--<div class="col-sm-10"><input type="text" Capitalize class="form-control" name="gst" #gst="ngModel" ngModel required>-->
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="gstRate" #gst="ngModel" ngModel>
+            <!--<small [hidden]="!gst.hasError('required') || gst.valid || (gst.pristine && !hsnAdd.submitted)" class="text-danger">-->
+              <!--GST Rate is required-->
+            <!--</small>-->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Remarks</label>
+          <!--<div class="col-sm-10"><input type="text" Capitalize class="form-control" name="remarks" #remarks="ngModel" ngModel required>-->
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="remarks" #remarks="ngModel" ngModel>
+        </div>
+        <br><br><br>
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalAdd.hide()">Close</button>
+          </div>
+        </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #editHSN>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Update HSN Master</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" autocomplete="off" (keydown.enter)="$event.preventDefault()" #hsnEdit="ngForm" (ngSubmit)="hsnEdit.form.valid && EditHSN(hsnEdit.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">Country*</label>
+          <div class="col-sm-10">
+            <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12"
+                       [multiple]="false"
+                       id="expselect"
+                       name="country"
+                       [disabled]="true"
+                       (selected)="getCountryId($event)"
+                       [items]="countryObj"
+                       [active]="[activeCountry]">
+            </ng-select>
+            <!--<small [hidden]="!country.hasError('required') || country.valid || (country.pristine && !hsnEdit.submitted)" class="text-danger">-->
+              <!--Country is required-->
+            <!--</small>-->
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">HSN Code</label>
+          <div class="col-sm-10"><input type="text" Capitalize
+                                        class="form-control" name="hcode"
+                                        #hcode="ngModel"
+                                        [ngModel]="hsnById?.code"
+                                        (ngModelChange)="hsnById.code=$event" required>
+            <small [hidden]="!hcode.hasError('required') || hcode.valid || (hcode.pristine && !hsnEdit.submitted)" class="text-danger">
+              HSN Code is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">HSN Name</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control"
+                                        name="hname" #hname="ngModel"
+                                        [ngModel]="hsnById?.name"
+                                        (ngModelChange)="hsnById.name=$event"
+                                        required>
+            <small [hidden]="!hname.hasError('required') || hname.valid || (hname.pristine && !hsnEdit.submitted)" class="text-danger">
+              HSN Name is required
+            </small></div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Chapter Number</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="cnumber"
+                                        #cnumber="ngModel"
+                                        [ngModel]="hsnById?.chapterNo"
+                                        (ngModelChange)="hsnById.chapterNo=$event"
+                                        >
+            <!--<small [hidden]="!cnumber.hasError('required') || cnumber.valid || (cnumber.pristine && !hsnAdd.submitted)" class="text-danger">-->
+              <!--Chapter Number is required-->
+            <!--</small>-->
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Chapter Name</label>
+          <div class="col-sm-10">
+          <textarea type="text" class="form-control"
+                    name="cname" Capitalize
+                    #cname="ngModel"
+                    [ngModel]="hsnById?.chapterName"
+                    (ngModelChange)="hsnById.chapterName=$event"
+                    required >
+          </textarea>
+            <!--<small [hidden]="!cname.hasError('required') || cname.valid || (cname.pristine && !hsnAdd.submitted)" class="text-danger">-->
+              <!--Chapter Name is required-->
+            <!--</small>-->
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">HSN SubChapter No</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control"
+                                        name="subchapter" #subchapter="ngModel"
+                                        [ngModel]="hsnById?.subChapterNo"
+                                        (ngModelChange)="hsnById.subChapterNo=$event" >
+            <!--<small [hidden]="!subchapter.hasError('required') || subchapter.valid || (subchapter.pristine && !hsnAdd.submitted)" class="text-danger">-->
+              <!--HSN Sub Chapter is required-->
+            <!--</small>-->
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Sub Chapter Name</label>
+          <div class="col-sm-10">
+          <textarea type="text" class="form-control"
+                    name="scname" Capitalize
+                    #scname="ngModel"
+                    [ngModel]="hsnById?.subChapterName"
+                    (ngModelChange)="hsnById.subChapterName=$event"
+                    required >
+          </textarea>
+            <!--<small [hidden]="!scname.hasError('required') || scname.valid || (scname.pristine && !hsnAdd.submitted)" class="text-danger">-->
+              <!--Sub Chapter Name is required-->
+            <!--</small>-->
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">GST Rate</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="gst" #gst="ngModel"
+                                        [ngModel]="hsnById?.gstRate"
+                                        (ngModelChange)="hsnById.gstRate=$event">
+            <!--<small [hidden]="!gst.hasError('required') || gst.valid || (gst.pristine && !hsnAdd.submitted)" class="text-danger">-->
+              <!--GST Rate is required-->
+            <!--</small>-->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Remarks</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control"
+                                        name="remark"
+                                        [ngModel]="hsnById?.remark"
+                                        (ngModelChange)="hsnById.remark=$event">
+          </div>
+          <br><br><br>
+          <div class="form-group">
+            <div class="col-sm-8 col-sm-offset-2">
+              <input type="submit" class="btn btn-w-m btn-primary" value="Update"/>
+              <button type="button" class="btn btn-white" (click)="modalEdit.hide()">Close</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<div>
+  <h1><b>HSN Code Management</b></h1>
+</div>
+<div class ="row"  class="wrapper wrapper-content animated" *ngIf="view ;else loading;">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">Add HSN Code</h5>
+      <div class="ibox-tools">
+        <button class="btn btn-outline btn-primary  dim " title="Add" (keydown.enter)="$event.preventDefault()" [disabled]="!add" (click)="addHSNModal(addHSN)"><i class="fa fa-plus"></i>
+        </button>
+      </div>
+
+      <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+          <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <table datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger"   class="display" class="display table table-striped table-bordered table-hover dataTables-example">
+              <thead>
+              <tr>
+                <th>HSN Code</th>
+                <th>HSN Name</th>
+                <th>Chapter No.</th>
+                <th>Chapter Name</th>
+                <th>Sub Chapter</th>
+                <th>Sub Chapter Name</th>
+                <th>GST Rate</th>
+                <th>Remark</th>
+                <th>CreateBy</th>
+                <th>UpdateBy</th>
+                <th>Status</th>
+                <th>Edit</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let hsn of hsnObj">
+                <td>{{hsn?.name}}</td>
+                <td>{{hsn?.code}}</td>
+                <td>{{hsn?.chapterNo}}</td>
+                <td>{{hsn?.chapterName}}</td>
+                <td>{{hsn?.subChapterNo}}</td>
+                <td>{{hsn?.subChapterName}}</td>
+                <td>{{hsn?.gstRate}}</td>
+                <td>{{hsn?.remark}}</td>
+                <td><b>{{hsn?.createBy?.firstName}} {{hsn?.createBy?.lastName}} </b><br> {{hsn?.createdAt | date: 'yMMMdjms'}}</td>
+                <td><b>{{hsn?.updateBy?.firstName}} {{hsn?.updateBy?.lastName}} </b><br> {{hsn?.updatedAt | date: 'yMMMdjms'}}</td>
+                <td><button [disabled]="!edit" class="btn btn-success btn-sm" (click)="statuschange(hsn.status, hsn._id)" [ngClass]="{'deactivestatus': hsn?.status !== 'Active', 'activestatus': hsn?.status == 'Active' }">{{hsn?.status}}</button></td>
+                <td><button  [disabled]="!edit" type="button" [disabled]="!edit" class="btn btn-success" (click)="editHSNModal(hsn._id,editHSN)">Edit</button></td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

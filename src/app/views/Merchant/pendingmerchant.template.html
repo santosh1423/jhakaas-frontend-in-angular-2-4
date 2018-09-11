@@ -1,0 +1,56 @@
+<ng-template #loading>
+  <alert type="danger">    <strong>Warning!</strong> You are not authorised to access this page.  </alert>
+</ng-template>
+
+<div>
+  <h1><b>Pending Merchant</b></h1>
+</div>
+<div class="wrapper wrapper-content animated" *ngIf="view ;else loading;">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">Pending Merchant</h5>
+      <div class="ibox-tools">
+        <button class="btn btn-info m-r-sm" title="Save" type="button">{{count}}</button>
+      </div>
+    </div>
+    <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+      <div class="dataTables_wrapper form-inline dt-bootstrap">
+          <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <table datatable [dtOptions]="dtOptions"   class="display" class="display table table-striped table-bordered table-hover dataTables-example">
+              <thead>
+              <tr>
+                <th>Compony Name</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Mobile</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Action</th>
+                <th>View Merchant</th>
+              </tr>
+              </thead>
+              <tbody>
+
+              <tr *ngFor="let merchant of merchantObj">
+                <td>{{merchant?.name}}</td>
+                <td>{{merchant?.firstName}}</td>
+                <td>{{merchant?.email}}</td>
+                <td>{{merchant?.mobileNumber}}</td>
+                <td>{{merchant?.address?.address1}}</td>
+                <td>{{merchant?.status}}</td>
+                <td><a [routerLink]="['/merchant/update/edit/',merchant._id]"><button [disabled]="!edit" type="button" class="btn btn-info">Manage</button></a></td>
+                <td><a [routerLink]="['/merchant/update/view/',merchant._id]"><button type="button" [disabled]="!view" class="btn btn-success">View</button></a></td>
+              </tr>
+              <tr *ngIf="merchantObj?.length === 0">
+                <td colspan="8" class="no-data-available">No matching record found</td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+
+      </div>
+    </div>
+  </div>
+</div>

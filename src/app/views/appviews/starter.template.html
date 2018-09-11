@@ -1,0 +1,278 @@
+<ng-template #AddCat>
+
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Dashboard Filter</h4>
+    <!--<button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">-->
+    <!--</button>-->
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+
+    </div>
+  </div>
+</ng-template>
+<br><br>
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-10">
+    <h1 style="font-size: 25px;"><b>Dashboard</b></h1>
+  </div>
+  <div class="ibox-tools" style="margin-top: 10px;">
+    <a><button class="btn btn-outline btn-primary  dim " (click)="addCatModel()" title="Filter"><i class="fa fa-filter"></i></button></a>
+  </div>
+  <div class="col-lg-2">
+
+  </div>
+</div>
+
+<div class="row wrapper wrapper-content animated">
+  <!--<div class="ibox float-e-margins">-->
+    <div *ngIf="ShowFilter" class="wrapper white-bg">
+      <br><br>
+      <form #dashFilter="ngForm" (ngSubmit)="filter(dashFilter.value)" class="form-horizontal">
+        <select class="chosen-select select2_demo_3 form-control" ngModel name="filtValue" (change)="SelectedFilter($event.target.value)">
+          <option value="">All</option>
+          <option value="7">1 Week</option>
+          <option value="30">1 Month</option>
+          <option value="365">1 year</option>
+          <option value="custom">Date Range</option>
+        </select>
+        <br><br>
+        <div *ngIf="showcustom" class="col-sm-12">
+          <div class="form-group">
+            <label class="control-label">From-To Date</label>
+            <div class="input-group date">
+                  <span class="input-group-addon" (click)="dp1.show()">
+                    <i class="fa fa-calendar"></i>
+                  </span>
+              <input class="form-control"
+                     name="tofrom"
+                     [(ngModel)]="tofrom"
+                     #tofromdate="ngModel"
+                     bsDaterangepicker
+                     [maxDate]="maxDate"
+                     #dp1="bsDaterangepicker">
+            </div>
+            <small
+              [hidden]="!tofromdate.hasError('required') || tofromdate.valid || (tofromdate.pristine && !merchantExport.submitted)"
+              class="text-danger">
+              From-To Date is required.
+            </small>
+          </div>
+        </div>
+        <div class="form-group modal-footer">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-primary" value="Filter"/>
+            <button type="button" class="btn btn-white" (click)="closeFilter()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+      <form class="">
+        <!--<div class="col-lg-12">-->
+            <!--<div class="col-lg-4">-->
+              <!--<div class="ibox ">-->
+                <!--<div class="ibox-title">-->
+                  <!--<div class="widget navy-bg p-lg text-center">-->
+                    <!--<div class="m-b-md">-->
+                      <!--<i class="fa fa-user-circle fa-4x"></i>-->
+                      <!--<h1 class="m-xs">{{merlen}}</h1>-->
+                      <!--<h3 class="font-bold no-margins">-->
+                        <!--Total Merchants-->
+                      <!--</h3>-->
+                      <!--&lt;!&ndash;<h4></h4>&ndash;&gt;-->
+                    <!--</div>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="col-lg-4">-->
+              <!--<div class="ibox ">-->
+                <!--<div class="ibox-title">-->
+                  <!--<div class="widget navy-bg p-lg text-center">-->
+                    <!--<div class="m-b-md">-->
+                      <!--<i class="fa fa-user-circle-o fa-4x"></i>-->
+                      <!--<h1 class="m-xs">{{custlen}}</h1>-->
+                      <!--<h3 class="font-bold no-margins">-->
+                        <!--Total Customers-->
+                      <!--</h3>-->
+                      <!--&lt;!&ndash;<h4></h4>&ndash;&gt;-->
+                    <!--</div>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="col-lg-4">-->
+              <!--<div class="ibox ">-->
+                <!--<div class="ibox-title">-->
+                  <!--<div class="widget navy-bg p-lg text-center">-->
+                    <!--<div class="m-b-md">-->
+                      <!--<i class="fa fa-product-hunt fa-4x"></i>-->
+                      <!--<h1 class="m-xs">{{prolen}}</h1>-->
+                      <!--<h3 class="font-bold no-margins">-->
+                        <!--Total Products-->
+                      <!--</h3>-->
+                      <!--&lt;!&ndash;<h4></h4>&ndash;&gt;-->
+                    <!--</div>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+
+
+        <!--</div>-->
+        <!--<div class="col-lg-12">-->
+
+          <!--<div class="col-lg-4">-->
+            <!--<div class="ibox ">-->
+              <!--<div class="ibox-title">-->
+                <!--<div class="widget navy-bg p-lg text-center">-->
+                  <!--<div class="m-b-md">-->
+                    <!--<i class="fa fa-list fa-4x"></i>-->
+                    <!--<h1 class="m-xs">{{catlen}}</h1>-->
+                    <!--<h3 class="font-bold no-margins">-->
+                      <!--Total Categories-->
+                    <!--</h3>-->
+                    <!--&lt;!&ndash;<h4></h4>&ndash;&gt;-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+            <!--<div class="col-lg-4">-->
+              <!--<div class="ibox ">-->
+                <!--<div class="ibox-title">-->
+                  <!--<div class="widget navy-bg p-lg text-center">-->
+                    <!--<div class="m-b-md">-->
+                      <!--<i class="fa fa-inr fa-4x"></i>-->
+                      <!--<h1 class="m-xs">{{paylen}}</h1>-->
+                      <!--<h3 class="font-bold no-margins">-->
+                        <!--Total Payment Options-->
+                      <!--</h3>-->
+                      <!--&lt;!&ndash;<h4></h4>&ndash;&gt;-->
+                    <!--</div>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+
+            <!--<div class="col-lg-4">-->
+              <!--<div class="ibox ">-->
+                <!--<div class="ibox-title">-->
+                  <!--<div class="widget navy-bg p-lg text-center">-->
+                    <!--<div class="m-b-md">-->
+                      <!--<i class="fa fa-shopping-cart fa-4x"></i>-->
+                      <!--<h1 class="m-xs">{{orderlen}}</h1>-->
+                      <!--<h3 class="font-bold no-margins">-->
+                        <!--Total Amount Of Orders-->
+                      <!--</h3>-->
+                      <!--&lt;!&ndash;<h4></h4>&ndash;&gt;-->
+                    <!--</div>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <div class="col-lg-12">
+        <div class="col-lg-4">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-xs-3">
+                  <i class="fa fa-user-circle fa-4x"></i>
+                </div>
+                <div class="col-xs-9 text-right">
+                 <h2>{{merlen}}</h2>
+                 <h3>Total Merchants</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-xs-3">
+                  <i class="fa fa-user-circle-o fa-4x"></i>
+                </div>
+                <div class="col-xs-9 text-right">
+                 <h2>{{custlen}}</h2>
+                 <h3> Total Customers</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-xs-3">
+                  <i class="fa fa-product-hunt fa-4x"></i>
+                </div>
+                <div class="col-xs-9 text-right">
+                 <h2>{{prolen}}</h2>
+                 <h3> Total Products</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="col-lg-4">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col-xs-3">
+                    <i class="fa fa-list fa-4x"></i>
+                  </div>
+                  <div class="col-xs-9 text-right">
+                    <h2>{{catlen}}</h2>
+                    <h3>Total Categories</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col-xs-3">
+                    <i class="fa fa-inr fa-4x"></i>
+                  </div>
+                  <div class="col-xs-9 text-right">
+                    <h2>{{paylen}}</h2>
+                    <h3> Total Payment Options</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <div class="row">
+                  <div class="col-xs-2">
+                    <i class="fa fa-shopping-cart fa-4x"></i>
+                  </div>
+                  <div class="col-xs-10 text-right">
+                   <h2> <i class="fa fa-inr fa-1x"></i> {{orderlen}}</h2>
+                    <h3> Total Amount Of Orders</h3>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+  <!--</div>-->
+</div>
+
+
+

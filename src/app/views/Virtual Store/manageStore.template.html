@@ -1,0 +1,127 @@
+<div>
+  <h1><b>Virtual Store</b></h1>
+</div>
+
+
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="medium"
+  color="#fff"
+  [loadingText]="loadingtext"
+  type="ball-scale-ripple-multiple">
+</ngx-spinner>
+<!--ProductTable-->
+<div *ngIf="view ;else loading;" readonly class="wrapper wrapper-content animated">
+  <div class="ibox float-e-margins">
+
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">Manage Virtual Store</h5>
+      <div class="ibox-tools">
+        <button class="btn btn-outline btn-success  dim" title="Update Store" [disabled]="!edit" (click)="updateStore()" type="button"><i class="fa fa-save"></i></button>
+      </div>
+    </div>
+
+    <div class="ibox-content">
+      <!--<h5 style="font-size: 25px;">Manage Virtual Store </h5>-->
+      <!--<hr>-->
+      <h3><b>Store Name: {{activeCat}}</b> </h3> <br>
+      <h3><b>Product Category: {{procatName}}</b> </h3> <br><br>
+      <div class="col-lg-12 col-sm-12 col-xs-12 ibox-content">
+      <div class="form-group">
+
+        <div class="btn-group btn-group-vertical" data-toggle="buttons">
+          <label class="btn active">
+            <input type="radio" name='radioVir' (click)="selectAllPro()" ><i class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+          </label>
+        </div>
+        <label class=" control-label">Select All</label>
+
+        <div class="btn-group btn-group-vertical" data-toggle="buttons" >
+          <label class="btn active">
+            <input type="radio" name='radioVir' (click)="removeAllPro()"><i class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+          </label>
+        </div>
+        <label class="control-label">Remove All</label>
+
+        <div class="btn-group btn-group-vertical" data-toggle="buttons" >
+          <label class="btn active">
+            <input type="radio" name='radioVir' (click)="addAllPro()"><i class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+          </label>
+        </div>
+        <label class="control-label">Add All</label>
+        <!--<small-->
+        <!--[hidden]="!radioVir.hasError('required') || radioVir.valid || (radioVir.pristine && !storeCreate.submitted)"-->
+        <!--class="text-danger">-->
+        <!--&lt;!&ndash;Shop Schedule is required.&ndash;&gt;-->
+        <!--</small>-->
+      </div>
+      </div>
+      <!--<form name="form" #storeUpdate="ngForm" (ngSubmit)="updateStores(storeUpdate.value)"-->
+            <!--(keydown.enter)="$event.preventDefault()"-->
+            <!--class="form-horizontal">-->
+        <!--<div class="col-lg-12 col-sm-12 col-xs-12 ibox-content">-->
+          <!--<div class="form-group">-->
+            <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Product Category: </label>-->
+            <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+              <!--<ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12" id="expselect"-->
+                         <!--name="category" [multiple]="false" [active]="proCat"-->
+                         <!--[items]="proCat1" #category="ngModel" (selected)="selectedProCat($event)"-->
+                         <!--ngModel>-->
+              <!--</ng-select>-->
+              <!--<br><br>-->
+            <!--</div>-->
+          <!--</div>-->
+          <!--<div class="form-group pull-right">-->
+            <!--<div class="col-lg-2 col-sm-2 col-md-2 col-xs-2 ">-->
+              <!--<br><br>-->
+              <!--<button type="submit" [disabled]="!edit" class="btn btn-info pull-right">Update Store</button>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</form>-->
+
+      <div class="dataTables_wrapper form-inline dt-bootstrap" style="width:100%; overflow-x:scroll;">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"  class="table table-striped table-bordered table-hover dataTables-example">
+          <thead>
+          <tr>
+            <th>Code</th>
+            <th>Company</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Unit</th>
+            <th>Base Prodcut Status</th>
+            <!--<th>Prodcut Status</th>-->
+            <th>Created By</th>
+            <th>Updated By</th>
+            <th>Action</th>
+            <th hidden></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let product of productObj; let i =index;">
+            <td>{{product?.code}}</td>
+            <td>{{product?.manufacturer}}</td>
+            <td>{{product?.name}}</td>
+            <td>{{product?.price}}</td>
+            <td>{{product?.unit}}</td>
+            <td>{{product?.status}}</td>
+            <!--<td>{{product?.pStatus}}</td>-->
+            <td><b>{{product?.createBy?.firstName}} {{product?.createBy?.lastName}}</b><br> {{product?.createdAt | date: 'yMMMdjms'}}</td>
+            <td><b>{{product?.updateBy?.firstName}} {{product?.updateBy?.lastName}}</b><br> {{product?.updatedAt | date: 'yMMMdjms'}}</td>
+            <td [hidden]="product?.plus"><button type="button" [disabled]="!view" class="btn btn-info" (click)="addProd(product?._id,i)"><i class="fa fa-plus-circle fa-2x"></i></button></td>
+            <td [hidden]="product?.minus"><button type="button" [disabled]="!view" class="btn btn-danger" (click)="removeProd(product?._id,i)"><i class="fa fa-minus-circle fa-2x"></i></button></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+
+    </div>
+  </div>
+</div>

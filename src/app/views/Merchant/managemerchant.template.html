@@ -1,0 +1,2332 @@
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="medium"
+  color="#fff"
+  [loadingText]="loadingtext"
+  type="ball-scale-ripple-multiple">
+</ngx-spinner>
+<!--mobile add model-->
+<ng-template #mobadd>
+  <form name="form" autocomplete="off" #mobadd="ngForm" (ngSubmit)="NumberAdd(mobadd.value)"
+        class="form-horizontal" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Number Add</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="mobadd.hide()">
+      </button>
+    </div>
+    <div class="modal-body" style="height: 100%;">
+      <div *ngIf="addMobile" class="ibox-content">
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Name:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <select name="name"
+                    class="chosen-select select2_demo_3 form-control" required #name=ngModel ngModel>
+              <option value="Mobile">Mobile</option>
+              <option value="Landline">Landline</option>
+              <option value="Other">Other</option>
+            </select>
+            <small
+              [hidden]="!name.hasError('required') || name.valid || (name.pristine && !mobadd.submitted)"
+              class="text-danger">
+              Name is required
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Number:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="value"
+                   class="form-control" ngModel
+                   #value="ngModel" required
+                   pattern="^(0|[0-9][0-9]*)$" maxlength="10"
+                   minlength="10"
+            >
+            <small
+              [hidden]="!value.hasError('required') || value.valid || (value.pristine && !mobadd.submitted)"
+              class="text-danger">
+              Number is required
+            </small>
+            <small
+              [hidden]="!value.hasError('pattern') || value.valid || (value.pristine && !mobadd.submitted)"
+              class="text-danger">
+              Number should be only numbers
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row pull-right">
+          <button type="button" class="btn btn-w-m btn-warning" (click)="pushNumber(mobadd.value)"
+                  [disabled]="!mobadd.valid">Add
+          </button>
+          <!--<button type="button" class="btn btn-white" (click)="mobaddhide()">Close</button>-->
+        </div>
+      </div>
+
+      <div *ngIf="updateMobile" class="ibox-content">
+        <div class="ibox-tools">
+          <button type="button" class="btn btn-primary dim" (click)="addNewMobile()"><i class="fa fa-plus"></i></button>
+          <!--<button class="btn btn-outline btn-primary  dim " title="Save" type="submit"></button>-->
+        </div>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Name:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <select name="name" [ngModel]="mobileEdit?.name"
+                    class="chosen-select select2_demo_3 form-control" required #name=ngModel>
+              <option value="Mobile">Mobile</option>
+              <option value="Landline">Landline</option>
+              <option value="Other">Other</option>
+            </select>
+            <small
+              [hidden]="!name.hasError('required') || name.valid || (name.pristine && !mobadd.submitted)"
+              class="text-danger">
+              Name is required
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Number:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="value"
+                   class="form-control" [ngModel]="mobileEdit?.value"
+                   #value="ngModel" required
+                   pattern="^(0|[0-9][0-9]*)$" maxlength="10"
+                   minlength="10">
+            <small
+              [hidden]="!value.hasError('required') || value.valid || (value.pristine && !mobadd.submitted)"
+              class="text-danger">
+              Number is required
+            </small>
+            <small
+              [hidden]="!value.hasError('pattern') || value.valid || (value.pristine && !mobadd.submitted)"
+              class="text-danger">
+              Number should be only numbers
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row pull-right">
+          <!--<button type="button" class="btn btn-w-m btn-warning" (click)="addNewMobile()">Add New</button>-->
+          <button type="submit" class="btn btn-w-m btn-warning">Update</button>
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" style="background-color: white;">
+        <hr>
+        <table class="table table-striped table-bordered table-hover dataTables-example">
+          <tr>
+            <th>Name</th>
+            <th>Number</th>
+            <th>Call On</th>
+            <th>Whatspp</th>
+            <th>OTP</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+          <tr *ngFor='let row of addedNumber;let i = index'>
+            <td>{{row?.name}}</td>
+            <td>{{row?.value}}</td>
+            <td>
+              <div class="btn-group btn-group-vertical" data-toggle="buttons">
+                <label class="btn active">
+                  <input type="radio" name='callOn' (click)="callOnClick(i)" [checked]="row?.isPrimary"><i
+                  class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+                </label>
+              </div>
+            </td>
+            <td>
+              <div class="btn-group btn-group-vertical" data-toggle="buttons">
+                <label class="btn active">
+                  <input type="radio" name='Whatapp' (click)="whatappClick(i)" [checked]="row?.isWhatapp"><i
+                  class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+                </label>
+              </div>
+            </td>
+            <td>
+              <div class="btn-group btn-group-vertical" data-toggle="buttons">
+                <label class="btn active">
+                  <input type="radio" name='Otp' (click)="otpClick(i)" [checked]="row?.isOtp"><i
+                  class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+                </label>
+              </div>
+            </td>
+            <td>
+              <button [disabled]="i === 0" type="button" class="btn btn-primary" (click)="getMobile(row._id)">Edit
+              </button>
+            </td>
+            <td>
+              <button [disabled]="i === 0" type="button" class="btn btn-danger" (click)="removeNumber(row._id,i)"><i
+                class="fa fa-trash"></i>Remove
+              </button>
+            </td>
+          </tr>
+        </table>
+        <hr>
+      </div>
+      <div class="row" align="right">
+        <button type="button" class="btn btn-w-m btn-warning" (click)="updateMobileClick()">Save</button>
+        <button type="button" class="btn btn-white" (click)="mobaddhide()">Close</button>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<!--Email add model-->
+<ng-template #emailadd>
+  <form name="form" autocomplete="off" #Emailadd="ngForm" (ngSubmit)="EmailAdding(Emailadd.value)"
+        class="form-horizontal" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Email Add</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="emailadd.hide()">
+      </button>
+    </div>
+    <div class="modal-body" style="height: 100%;">
+      <div *ngIf="addEmail" class="ibox-content">
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Email:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="email"
+                   class="form-control" ngModel
+                   #email="ngModel" required
+                   pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                   minlength="10"
+            >
+            <small
+              [hidden]="!email.hasError('required') || email.valid || (email.pristine && !Emailadd.submitted)"
+              class="text-danger">
+              Email address is required
+            </small>
+            <small
+              [hidden]="!email.hasError('pattern') || email.valid || (email.pristine && !Emailadd.submitted)"
+              class="text-danger">
+              Please enter valid email address.
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row pull-right">
+          <button type="button" class="btn btn-w-m btn-warning" [disabled]="!Emailadd.valid"
+                  (click)="pushEmail(Emailadd.value)">Add
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="updateEmail" class="ibox-content">
+        <div class="ibox-tools">
+          <button type="button" class="btn btn-primary dim" (click)="addNewEmail()"><i class="fa fa-plus"></i></button>
+          <!--<button class="btn btn-outline btn-primary  dim " title="Save" type="submit"></button>-->
+        </div>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Email:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="email"
+                   class="form-control" [ngModel]="emailEdit?.value"
+                   #email="ngModel" required
+                   pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                   minlength="10"
+            >
+            <small
+              [hidden]="!email.hasError('required') || email.valid || (email.pristine && !Emailadd.submitted)"
+              class="text-danger">
+              Email address is required
+            </small>
+            <small
+              [hidden]="!email.hasError('pattern') || email.valid || (email.pristine && !Emailadd.submitted)"
+              class="text-danger">
+              Please enter valid email address.
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row pull-right">
+          <button type="submit" class="btn btn-w-m btn-warning">Update</button>
+          <!--<button type="button" class="btn btn-white" (click)="emailadd.hide()">Close</button>-->
+        </div>
+      </div>
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" style="background-color: white;">
+        <hr>
+        <table class="table table-striped table-bordered table-hover dataTables-example">
+          <tr>
+            <th>Email</th>
+            <th>Primary</th>
+            <th>UserName</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+          <tr *ngFor='let row of addedEmail;let i = index'>
+            <td>{{row?.value}}</td>
+            <td>
+              <div class="btn-group btn-group-vertical" data-toggle="buttons">
+                <label class="btn active">
+                  <input type="radio" name='isPrimary' (click)="primaryEmailClick(i)" [checked]="row?.isPrimary"><i
+                  class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+                </label>
+              </div>
+            </td>
+            <td>
+              <div class="btn-group btn-group-vertical" data-toggle="buttons">
+                <label class="btn active">
+                  <input [disabled]="true" type="radio" [checked]="i === 0"><i
+                  class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+                </label>
+              </div>
+            </td>
+            <td>
+              <button [disabled]="i === 0" type="button" class="btn btn-primary" (click)="getEmail(row._id)">Edit
+              </button>
+            </td>
+            <td>
+              <button [disabled]="i === 0" type="button" class="btn btn-danger" (click)="removeEmail(row._id,i)"><i
+                class="fa fa-trash"></i>Remove
+              </button>
+            </td>
+          </tr>
+        </table>
+        <hr>
+      </div>
+      <div class="row" align="right">
+        <button type="button" class="btn btn-w-m btn-warning" (click)="updateEmailClick()">Save</button>
+        <button type="button" class="btn btn-white" (click)="EmailAdd.hide()">Close</button>
+
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<!--Social Media Model-->
+<ng-template #socialMediaModel>
+  <form name="form" autocomplete="off" #mngsocialUpload="ngForm" (ngSubmit)="mngsocialUpload.form.valid &&  addSocial(mngsocialUpload.value)"
+        class="form-horizontal" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Social Media</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="ibox-content">
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Name:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <select class="form-control" name="pgname" #pgname="ngModel" ngModel required>
+              <option value="Facebook">Facebook</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Linkedin">Linkedin</option>
+              <option value="YouTube">YouTube</option>
+            </select>
+            <small
+              [hidden]="!pgname.hasError('required') || pgname.valid || (pgname.pristine && !mngsocialUpload.submitted)"
+              class="text-danger">
+              Page Name Required
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">URL:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="url" class="form-control" name="pgurl" required #pgurl="ngModel" ngModel
+                   [(ngModel)]="defSocialURL"
+                   pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$">
+            <small
+              [hidden]="!pgurl.hasError('pattern') || pgurl.valid || (pgurl.pristine && !mngsocialUpload.submitted)"
+              class="text-danger">
+              Invalid Page Link
+            </small>
+            <small
+              [hidden]="!pgurl.hasError('required') || pgurl.valid || (pgurl.pristine && !mngsocialUpload.submitted)"
+              class="text-danger">
+              Page URL Required
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row pull-right">
+          <button type="submit" class="btn btn-w-m btn-warning">Submit</button>
+          <button type="button" class="btn btn-white" (click)="socialModalAdd.hide()">Close</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<!--Social Media Edit  Model-->
+<ng-template #socialMediaEditModel>
+  <form name="form" autocomplete="off" #mngsocialEditUpload="ngForm" (ngSubmit)="mngsocialEditUpload.form.valid && EditSocial(mngsocialEditUpload.value)"
+        class="form-horizontal" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Social Media</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="ibox-content">
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Name:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <select class="form-control" name="name" [ngModel]="socialEdit?.name" required>
+              <option value="Facebook">Facebook</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Linkedin">Linkedin</option>
+              <option value="YouTube">YouTube</option>
+            </select>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">URL:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="url" class="form-control" name="url" [ngModel]="socialEdit?.url" required #pgurl="ngModel"
+                   ngModel pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$">
+            <small
+              [hidden]="!pgurl.hasError('pattern') || pgurl.valid || (pgurl.pristine && !mngsocialEditUpload.submitted)"
+              class="text-danger">
+              Invalid Page Link
+            </small>
+            <small
+              [hidden]="!pgurl.hasError('required') || pgurl.valid || (pgurl.pristine && !mngsocialEditUpload.submitted)"
+              class="text-danger">
+              Page URL Required
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row pull-right">
+          <button type="submit" class="btn btn-w-m btn-warning">Update</button>
+          <button type="button" class="btn btn-white" (click)="socialModalEdit.hide()">Close</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<!--Document Model-->
+<ng-template #documentModel>
+  <form name="form" autocomplete="off" #mngdocumentUpload="ngForm"
+        (ngSubmit)="addDoc(mngdocumentUpload,mngdocumentUpload.form.valid && mngdocumentUpload.value)"
+        class="form-horizontal" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Document Management</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalUpdate.hide()">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="ibox-content">
+        <div class="row"
+             [ngClass]="{ 'has-error': mngdocumentUpload.submitted && !docname.valid }">
+          <select name="docname" ngModel required #docname="ngModel" data-placeholder="Select Document"
+                  class="chosen-select select2_demo_3 form-control">
+            <option value="">Select Document</option>
+            <option value="KYC Form">KYC Form</option>
+            <option value="Passport Photo">Passport Photo</option>
+            <option value="Location">Location</option>
+            <option value="Telephone Bill">Telephone Bill</option>
+            <option value="Light Bill">Light Bill</option>
+            <option value="Shop Act Licencse">Shop Act Licencse</option>
+            <option value="ROC Certificate">ROC Certificate</option>
+            <option value="Pan Card">Pan Card</option>
+            <option value="Driving License">Driving License</option>
+            <option value="Voter ID">Voter ID</option>
+            <option value="Aadhar Card">Aadhar Card</option>
+            <option value="Cancelled Cheque">Cancelled Cheque</option>
+          </select>
+          <div *ngIf="!docname?.valid && (docname?.touched)" class="text-danger">
+            <div [hidden]="!docname.errors.required">
+              Document Name is required
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <input name="docImg" ngModel #myInput class="btn-bs-file btn btn-primary" type="file" accept="image/*"
+                 (change)="fileSelect($event)"/>
+        </div>
+        <br>
+        <div class="row">
+          <button type="submit" class="btn btn-w-m btn-warning" [disabled]="!mngdocumentUpload.valid">Submit</button>
+          <button type="button" class="btn btn-white" (click)="documentModalAdd.hide()">Close</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<!--Document Edit Model-->
+<ng-template #documentEditModel>
+  <form name="form" autocomplete="off" #mngdocumentEditUpload="ngForm" (ngSubmit)="EditDoc(mngdocumentEditUpload.value)"
+        class="form-horizontal" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Document Management</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalUpdate.hide()">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="ibox-content">
+        <div class="row"
+             [ngClass]="{ 'has-error': mngdocumentEditUpload.submitted && !docname.valid }">
+          <select name="name" [ngModel]="documentEdit?.name" required #docname="ngModel"
+                  data-placeholder="Select Document"
+                  class="chosen-select select2_demo_3 form-control">
+            <option value="">Select Document</option>
+            <option value="KYC Form">KYC Form</option>
+            <option value="Passport Photo">Passport Photo</option>
+            <option value="Location">Location</option>
+            <option value="Telephone Bill">Telephone Bill</option>
+            <option value="Light Bill">Light Bill</option>
+            <option value="Shop Act Licencse">Shop Act Licencse</option>
+            <option value="ROC Certificate">ROC Certificate</option>
+            <option value="Pan Card">Pan Card</option>
+            <option value="Driving License">Driving License</option>
+            <option value="Voter ID">Voter ID</option>
+            <option value="Aadhar Card">Aadhar Card</option>
+            <option value="Cancelled Cheque">Cancelled Cheque</option>
+          </select>
+          <div *ngIf="!docname?.valid && (docname?.touched)" class="text-danger">
+            <div [hidden]="!docname.errors.required">
+              Document Name is required
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <input name="key" ngModel #myInput class="btn-bs-file btn btn-primary" type="file" accept="image/*"
+                 (change)="fileSelect($event)"/>
+        </div>
+        <br>
+        <div class="row">
+          <button type="submit" class="btn btn-w-m btn-warning">Update</button>
+          <button type="button" class="btn btn-white" (click)="documentModalEdit.hide()">Close</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<!--Bank Details Model-->
+<ng-template #bankDetailsModel>
+  <form name="form" autocomplete="off" #mngbankUpload="ngForm" (ngSubmit)="mngbankUpload.form.valid && addBank(mngbankUpload.value)"
+        class="form-horizontal" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Bank Details</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalManage.hide()">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="ibox-content">
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Bank Country Name:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <!--<select name="bcountry" class="chosen-select select2_demo_3 form-control" required #bcountry="ngModel"-->
+            <!--ngModel>-->
+            <!--<option value="India">India</option>-->
+            <!--<option value="Australia">Australia</option>-->
+            <!--<option value="Canada">Canada</option>-->
+            <!--<option value="UK">United kingdom</option>-->
+            <!--<option value="USA">United States</option>-->
+            <!--</select>-->
+            <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12"
+                       [multiple]="false"
+                       name="bcountry"
+                       [items]="countryObj" required
+                       [ngModel] #bcountry="ngModel">
+            </ng-select>
+            <small
+              [hidden]="!bcountry.hasError('required') || bcountry.valid || (bcountry.pristine && !mngbankUpload.submitted)"
+              class="text-danger">
+              bank Country is required!
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Bank Name:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"><input type="text" class="form-control"
+                                                                  name="bname" ngModel></div>
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Account Number:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"><input type="text" class="form-control"
+                                                                  name="accNo" #accNo="ngModel" required
+                                                                  pattern="^(0|[1-9][0-9]*)$"
+                                                                  ngModel>
+            <!--<small-->
+            <!--[hidden]="!accNo.hasError('required') || accNo.valid || (accNo.pristine && !mngbankUpload.submitted)"-->
+            <!--class="text-danger">-->
+            <!--Account number is required-->
+            <!--</small>-->
+            <small
+              [hidden]="!accNo.hasError('pattern') || accNo.valid || (accNo.pristine && !mngbankUpload.submitted)"
+              class="text-danger">
+              Account number should be only numbers
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">UPI ID:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"><input type="text" class="form-control"
+                                                                  name="UPI" #UPI="ngModel" ngModel></div>
+
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">IFSC Code:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"><input type="text" class="form-control" name="IFSC"
+                                                                  ngModel maxlength="11" minlength="11" required
+                                                                  #IFSC="ngModel" pattern="^[A-Za-z]{4}0[A-Z0-9a-z]{6}$">
+
+            <small
+              [hidden]="!IFSC.hasError('pattern') || IFSC.valid || (IFSC.pristine && !mngbankUpload.submitted)"
+              class="text-danger">
+              Please Enter Correct IFSC Code
+              (eg. ICIC0000267)
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row pull-right">
+
+          <button type="submit" class="btn btn-w-m btn-warning" [disabled]="!mngbankUpload.valid">Submit</button>
+          <button type="button" class="btn btn-white" (click)="bankModalAdd.hide()">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<!--Bank Details Edit Model-->
+<ng-template #bankDetailsEditModel>
+  <form name="form" autocomplete="off" #mngbankEditUpload="ngForm" (ngSubmit)="mngbankEditUpload.form.valid && EditBank(mngbankEditUpload.value)"
+        class="form-horizontal" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Bank Details</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalManage.hide()">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="ibox-content">
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Bank Country Name:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <!--<select name="country" class="chosen-select select2_demo_3 form-control" [ngModel]="bankEdit?.country" required #country="ngModel">-->
+            <!--<option value="India">India</option>-->
+            <!--<option value="Australia">Australia</option>-->
+            <!--<option value="Canada">Canada</option>-->
+            <!--<option value="UK">United kingdom</option>-->
+            <!--<option value="USA">United States</option>-->
+            <!--</select>-->
+            <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12"
+                       [multiple]="false" id="expselect"
+                       name="country" [active]="[bankCountryActive]"
+                       [items]="countryObj" required
+                       ngModel #country="ngModel">
+            </ng-select>
+            <!--<small-->
+            <!--[hidden]="!country.hasError('required') || country.valid || (country.pristine && !mngbankEditUpload.submitted)"-->
+            <!--class="text-danger">-->
+            <!--Bank Country is required!-->
+            <!--</small>-->
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Bank Name:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"><input type="text" class="form-control"
+                                                                  [ngModel]="bankEdit?.name"
+                                                                  name="name"></div>
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Account Number:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"><input type="text" class="form-control"
+                                                                  [ngModel]="bankEdit?.accNo"
+                                                                  name="accNo" #accNo="ngModel" required
+                                                                  pattern="^(0|[1-9][0-9]*)$"
+          >
+            <small
+              [hidden]="!accNo.hasError('required') || accNo.valid || (accNo.pristine && !mngbankEditUpload.submitted)"
+              class="text-danger">
+              Account number is required
+            </small>
+            <small
+              [hidden]="!accNo.hasError('pattern') || accNo.valid || (accNo.pristine && !mngbankEditUpload.submitted)"
+              class="text-danger">
+              Account number should be only numbers
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">UPI ID:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"><input type="text" class="form-control"
+                                                                  name="UPI" #UPI="ngModel"
+                                                                  [ngModel]="bankEdit?.UPI"></div>
+
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">IFSC Code:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"><input type="text" class="form-control" name="IFSC"
+                                                                  maxlength="11" minlength="11" required
+                                                                  [ngModel]="bankEdit?.IFSC"
+                                                                  #IFSC="ngModel" pattern="^[A-Za-z]{4}0[A-Z0-9a-z]{6}$">
+
+            <small
+              [hidden]="!IFSC.hasError('required') || IFSC.valid || (IFSC.pristine && !mngbankEditUpload.submitted)"
+              class="text-danger">
+             IFSC Code Required
+            </small>
+            <small
+              [hidden]="!IFSC.hasError('pattern') || IFSC.valid || (IFSC.pristine && !mngbankEditUpload.submitted)"
+              class="text-danger">
+              Please Enter Correct IFSC Code
+              (eg. ICIC0000267)
+            </small>
+          </div>
+        </div>
+        <br>
+        <div class="row pull-right">
+
+          <button type="submit" class="btn btn-w-m btn-warning">Update</button>
+          <button type="button" class="btn btn-white" (click)="BankModalEdit.hide()">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+
+<!--SLA Model-->
+<ng-template #SLAModal>
+  <form name="form" #SLAadd="ngForm" (ngSubmit)="addSLA(SLAadd.value)"
+        class="form-horizontal" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Add SLA</h4>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="SLAaddModal.hide()">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="ibox-content">
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Key:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"><input type="text" class="form-control"
+                                                                  Capitalize name="key" #key="ngModel" required ngModel>
+            <small
+              [hidden]="!key.hasError('required') || key.valid || (key.pristine && !SLAadd.submitted)"
+              class="text-danger">
+              Key is Required
+            </small>
+          </div>
+
+        </div>
+        <br>
+        <div class="row">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Value:</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9"><input type="text" class="form-control"
+                                                                  Capitalize name="value" #value="ngModel" required
+                                                                  ngModel>
+            <small
+              [hidden]="!value.hasError('required') || value.valid || (value.pristine && !SLAadd.submitted)"
+              class="text-danger">
+              Value is Required
+            </small>
+          </div>
+
+        </div>
+        <br>
+        <div class="row pull-right">
+          <button type="submit" class="btn btn-w-m btn-warning" [disabled]="!SLAadd.valid">Add</button>
+          <button type="button" class="btn btn-white" (click)="SLAaddModal.hide()">Close</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<div>
+  <h1><b>{{ title }}</b></h1>
+</div>
+<div class="row">
+  <div class="col-lg-12" *ngIf="view ;else loading;">
+
+    <!--//>New Merchant Details -->
+    <fieldset [disabled]="!edit">
+
+      <fieldset [disabled]="!mdEdit">
+        <form name="form" autocomplete="off" #merchantDetails="ngForm"
+              (ngSubmit)="merchantDetails.form.valid && update_Merchant('Merchant Details', merchantDetails.value)"
+              (keydown.enter)="$event.preventDefault()" novalidate
+              class="form-horizontal">
+          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                <h5 style="font-size: 25px;">Merchant Details</h5>
+                <div class="ibox-tools">
+                  <button class="btn btn-outline btn-primary  dim " title="Save" type="submit"><i
+                    class="fa fa-save"></i>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div class="ibox-content col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal"
+                     style="background-color: white;">
+                  <div class="row">
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Country</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12"
+                                   [multiple]="false"
+                                   name="country" id="expselect"
+                                   [items]="countryObj"
+                                   [disabled]="true"
+                                   (selected)="getCountryId($event)"
+                                   [active]="[countryShow]"
+                                   [ngModel] #country="ngModel">
+                        </ng-select>
+                        <small
+                          [hidden]="!country.hasError('required') || country.valid || (country.pristine && !businessDetails.submitted)"
+                          class="text-danger">
+                          Country is required
+                        </small>
+                      </div>
+                      <br><br><br>
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Email Id</label>
+                      <div class="col-lg-8 col-sm-8 col-md-8 col-xs-8">
+                        <input type="email" name="email" class="form-control" #email="ngModel" required
+                               disabled
+                               pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$"
+                               [ngModel]="primaryEmail" (ngModelChange)="primaryEmail=$event">
+                        <small
+                          [hidden]="!email.hasError('required') || email.valid || (email.pristine && !merchantDetails.submitted)"
+                          class="text-danger">
+                          Email is required
+                        </small>
+                        <small
+                          [hidden]="!email.hasError('pattern') || email.valid || (email.pristine && !merchantDetails.submitted)"
+                          class="text-danger">
+                          Please enter valid email address.
+                        </small>
+                      </div>
+                      <div class="col-lg-1 col-sm-1 col-md-1 col-xs-1" style="margin-left: -15px;">
+                        <a>
+                          <button type="button" class="btn btn-primary dim"
+                                  (click)="emailAdd(emailadd)"><i class="fa fa-plus"></i></button>
+                        </a>
+                        <!--<i class="fa fa-plus-square-o fa-3x"  (click)="mobAdd(mobadd)"></i>-->
+                      </div>
+                      <!--<div class="col-lg-1 col-sm-1 col-md-1 col-xs-1" style="margin-left: -15px;">-->
+                      <!--<a>-->
+                      <!--<button type="button" class="btn btn-primary dim" (click)="emailAdd(emailadd)"><i-->
+                      <!--class="fa fa-plus"></i></button>-->
+                      <!--</a>-->
+                      <!--</div>-->
+                      <br><br><br>
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">First Name</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="text" name="firstName" class="form-control"
+                               Capitalize (keydown)="preventNumberInput($event)"
+                               [ngModel]="merchantObj?.firstName" (ngModelChange)="merchantObj.firstName=$event"
+                               #firstName="ngModel" ngModel required>
+                        <small
+                          [hidden]="!firstName.hasError('required') || firstName.valid || (firstName.pristine && !merchantDetails.submitted)"
+                          class="text-danger">
+                          First Name is required
+                        </small>
+                        <small
+                          [hidden]="!firstName.hasError('pattern') || firstName.valid || (firstName.pristine && !merchantDetails.submitted)"
+                          class="text-danger">
+                          First Name dose not contain the number
+                        </small>
+                      </div>
+                      <br><br><br>
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Last Name</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="text" name="lastName" #lastName="ngModel"
+                               Capitalize (keydown)="preventNumberInput($event)"
+                               [ngModel]="merchantObj?.lastName" (ngModelChange)="merchantObj.lastName=$event"
+                               class="form-control" ngModel required>
+                        <small
+                          [hidden]="!lastName.hasError('required') || lastName.valid || (lastName.pristine && !merchantDetails.submitted)"
+                          class="text-danger">
+                          LastName is required
+                        </small>
+                        <small
+                          [hidden]="!lastName.hasError('pattern') || lastName.valid || (lastName.pristine && !merchantDetails.submitted)"
+                          class="text-danger">
+                          LastName dose not contain the number
+                        </small>
+                      </div>
+                      <br><br><br>
+
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Mobile No *</label>
+                      <div class="col-lg-8 col-sm-8 col-md-8 col-xs-8">
+                        <div class="input-group m-b ">
+                          <span class="input-group-addon ">{{callingCodes}}</span>
+                          <input type="text" name="mobileNumber" disabled
+                                 [ngModel]="merchantObj?.primaryMobile" (ngModelChange)="merchantObj.primaryMobile=$event"
+                                 class="form-control" ngModel
+                                 #mobileNumber="ngModel" required
+                                 pattern="^(0|[0-9][0-9]*)$" maxlength="10"
+                                 minlength="10">
+                        </div>
+                      </div>
+                      <div class="col-lg-1 col-sm-1 col-md-1 col-xs-1" style="margin-left: -15px;">
+                        <a>
+                          <button type="button" class="btn btn-primary dim" (click)="mobAdd(mobadd)"><i
+                            class="fa fa-plus"></i></button>
+                        </a>
+                      </div>
+                      <!--<div *ngIf="minusmob" class="col-lg-1 col-sm-1 col-md-1 col-xs-1" style="margin-left: -15px;">-->
+                      <!--<i class="fa fa-minus-square-o fa-3x" (click)="mobileminus()"></i>-->
+                      <!--</div>-->
+                      <small
+                        [hidden]="!mobileNumber.hasError('required') || mobileNumber.valid || (mobileNumber.pristine && !merchantDetails.submitted)"
+                        class="text-danger">
+                        Mobile number is required
+                      </small>
+                      <small
+                        [hidden]="!mobileNumber.hasError('pattern') || mobileNumber.valid || (mobileNumber.pristine && !merchantDetails.submitted)"
+                        class="text-danger">
+                        Mobile number should be only numbers
+                      </small>
+                    </div>
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6" align="center">
+                      <div>
+                        <td class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label"><label>QR Code: </label></td>
+                        <td>
+                          <tr class="col-lg-9 col-sm-9 col-md-9 col-xs-9" align="center" id="printqr">
+                            <!--<img id='barcode' src='https://api.qrserver.com/v1/create-qr-code/?data={{ngxQrcode2}}' alt="" title="HELLO" width="200" height="200" />-->
+                            <ngx-qrcode qrc-element-type="img" [qrc-value]=ngxQrcode2 qrc-version="7"></ngx-qrcode>
+                          </tr>
+                          <tr>
+                            <button class="btn btn-success" type="button" (click)="printqr()"><i
+                              class="fa fa-print"></i>&nbsp;&nbsp;<span class="bold">Print</span></button>
+                          </tr>
+                        </td>
+                      </div>
+
+                    </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Gender</label>
+                      <div class="col-sm-9">
+                        <select data-placeholder="Choose a Gender" name="gender"
+                                class="chosen-select select2_demo_3 form-control" required #gender="ngModel"
+                                [ngModel]="merchantObj?.gender" (ngModelChange)="merchantObj.gender=$event"
+                                ngModel>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Other">Other</option>
+                        </select>
+                        <small
+                          [hidden]="!gender.hasError('required') || gender.valid || (gender.pristine && !merchantDetails.submitted)"
+                          class="text-danger">
+                          Gender is required.
+                        </small>
+                      </div>
+                    </div>
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-sm-3 control-label">Date of Establishment</label>
+                      <!--<div class="col-sm-9 col-lg-9  col-md-9 col-xs-9 input-group">-->
+                      <div class="col-sm-9 col-lg-9  col-md-9 col-xs-9">
+                        <!--<input type="text" class="form-control" bsDatepicker #dp="bsDatepicker">-->
+                        <input name="dob" class="form-control"
+                               [ngModel]="merchantObj?.dob" (ngModelChange)="merchantObj.dob=$event"
+                               [maxDate]="maxDate" #dob="ngModel"
+                               bsDatepicker #dp="bsDatepicker" required>
+                        <small
+                          [hidden]="!dob.hasError('required') || dob.valid || (dob.pristine && !merchantDetails.submitted)"
+                          class="text-danger">
+                          Date of Establisment is required.
+                        </small>
+                      </div>
+                      <!--<div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">-->
+                      <!--<button type="button" class="btn btn-default" (click)="dp.show()"><i class="fa fa-calendar"></i>-->
+                      <!--</button>-->
+                      <!--</div>-->
+                      <!--</div>-->
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Merchant Type</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12"
+                                   [multiple]="false" [disabled]="!mdEdit"
+                                   (selected)="selected($event)"
+                                   name="cate" id="expselect"
+                                   [items]="catObj"
+                                   [active]="[merCat]">
+                        </ng-select>
+                      </div>
+                    </div>
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Shop/Company Name: *</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="text" name="name" class="form-control"
+                               Capitalize
+                               [ngModel]="merchantObj?.name" (ngModelChange)="merchantObj.name=$event"
+                               #name="ngModel" ngModel required>
+                        <small
+                          [hidden]="!name.hasError('required') || name.valid || (name.pristine && !merchantDetails.submitted)"
+                          class="text-danger">
+                          Name is required
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <label class="col-lg-1 col-sm-1 col-md-1 col-xs-1 control-label">Tags:</label>
+                    <div class="col-lg-11 col-sm-11 col-md-11 col-xs-11" *ngIf="edit">
+                      <rl-tag-input [(ngModel)]="tags" name="tags"
+                                    addOnComma="true" addOnEnter="true"
+                                    addOnPaste="true" style="color: black;"></rl-tag-input>
+                    </div>
+                    <div class="col-lg-11 col-sm-11 col-md-11 col-xs-11" *ngIf="!edit">
+                      <input type="text" class="form-control" name="tags" [disabled]="true" [(ngModel)]="tags">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </fieldset>
+      <!--//>Business Details -->
+      <fieldset [disabled]="!bdEdit">
+        <form name="form" autocomplete="off" #businessDetails="ngForm"
+              (ngSubmit)="update_Merchant('Business Details', businessDetails.value)"
+              (keydown.enter)="$event.preventDefault()"
+              class="form-horizontal">
+          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                <h5 style="font-size: 25px;">Business Details</h5>
+                <div class="ibox-tools">
+                  <button class="btn btn-outline btn-primary  dim " title="Save" type="submit"><i
+                    class="fa fa-save"></i>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div class="ibox-content col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal"
+                     style="background-color: white;">
+                  <div class="row">
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Aadhar No</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="text" class="form-control" name="aadharCard"
+                               [ngModel]="merchantObj?.aadharCard" (ngModelChange)="merchantObj.aadharCard=$event"
+                               pattern="^(0|[0-9][0-9]*)$"
+                               maxlength="12" minlength="12" #aadharCard="ngModel" ngModel/>
+                        <small
+                          [hidden]="!aadharCard.hasError('pattern') || aadharCard.valid || (aadharCard.pristine && !businessDetails.submitted)"
+                          class="text-danger">
+                          AadharCard should be only numbers
+                        </small>
+                      </div>
+                    </div>
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">GSTIN</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="text" class="form-control" name="gst"
+                               [ngModel]="merchantObj?.gst" (ngModelChange)="merchantObj.gst=$event"
+                               #gst=ngModel
+                               pattern="^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
+                               maxlength="15" minlength="15" ngModel/>
+                        <small
+                          [hidden]="!gst.hasError('pattern') || gst.valid || (gst.pristine && !businessDetails.submitted)"
+                          class="text-danger">
+                          Enter valid GSTIN Number (example
+                          <small>
+                            <button type="button" (click)="gstEx()">click here</button>
+                          </small>
+                          )
+                          <!--Enter valid GSTIN Number (example <small><a (click)="gstEx()">click here</a></small> )-->
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="row">
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">State</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12"
+                                   [multiple]="false"
+                                   placeholder="Select State"
+                                   name="state" id="expselect"
+                                   [items]="stateObj"
+                                   (selected)="getStateId($event)"
+                                   [active]="[stateShow]"
+                                   [disabled]="stateDisable"
+                                   [ngModel] #State="ngModel">
+                        </ng-select>
+                        <small
+                          [hidden]="!State.hasError('required') || State.valid || (State.pristine && !businessDetails.submitted)"
+                          class="text-danger">
+                          State is required
+                        </small>
+                      </div>
+                    </div>
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">City</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12"
+                                   [multiple]="false"
+                                   (selected)="selected($event)"
+                                   name="city" id="expselect"
+                                   [items]="cityObj"
+                                   [active]="[cityShow]"
+                                   [disabled]="cityDisable"
+                                   [ngModel] #City="ngModel">
+                        </ng-select>
+                        <small
+                          [hidden]="!City.hasError('required') || City.valid || (City.pristine && !businessDetails.submitted)"
+                          class="text-danger">
+                          City is required
+                        </small>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-sm-3 control-label">Pincode</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="text" class="form-control" name="postalCode" ngModel
+                               [ngModel]="merchantObj?.address?.postalCode" maxlength="6"
+                               (ngModelChange)="merchantObj.address.postalCode=$event"
+                               #postalCode="ngModel" required>
+                        <small
+                          [hidden]="!postalCode.hasError('required') || postalCode.valid || (postalCode.pristine && !businessDetails.submitted)"
+                          class="text-danger">
+                          Pincode is required
+                        </small>
+                        <!--<small-->
+                        <!--[hidden]="!postalCode.hasError('pattern') || postalCode.valid || (postalCode.pristine && !businessDetails.submitted)"-->
+                        <!--class="text-danger">-->
+                        <!--Pincode should be only numbers-->
+                        <!--</small>-->
+                      </div>
+                      <br><br><br>
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Landmark/Area:</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                      <textarea type="text" class="form-control" name="landmark"
+                                [ngModel]="geoAddress"
+                                #landmark="ngModel" ngModel
+                                required
+                                (keydown.enter)="getAdd($event.target.value)"
+                      >
+                      <small
+                        [hidden]="!landmark.hasError('required') || landmark.valid || (landmark.pristine && !businessDetails.submitted)"
+                        class="text-danger">
+                        Landmark/Area is required
+                      </small>
+                      </textarea>
+                      </div>
+                    </div>
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Address:</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <textarea type="text" class="form-control" name="address1" rows="5"
+                                  [ngModel]="merchantObj?.address?.address1" Capitalize
+                                  (ngModelChange)="merchantObj.address.address1=$event"
+                                  ngModel>
+                        </textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label
+                        class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Latitude</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="text" class="form-control" name="lat"
+                               [ngModel]="lat" (ngModelChange)="lat.lat=$event"
+                               ngModel></div>
+                    </div>
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label
+                        class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Longitude:</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="text" class="form-control" name="lng"
+                               [ngModel]="lng" (ngModelChange)="lng.lng=$event"
+                               ngModel></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </fieldset>
+
+      <!--//>Service Details -->
+      <fieldset [disabled]="!sdEdit">
+        <form name="form" autocomplete="off" #serviceDetails="ngForm" (ngSubmit)="serviceDetails.form.valid &&  update_Merchant('Service Details', serviceDetails.value)"
+              (keydown.enter)="$event.preventDefault()"
+              class="form-horizontal">
+          <div class=" col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <div class=" ibox float-e-margins">
+              <div class="ibox-title">
+                <h5 style="font-size: 25px;">Service Details</h5>
+                <div class="ibox-tools">
+                  <a>
+                    <button type="button" class="btn btn-outline btn-primary  dim " (click)="SLAmodal(SLAModal)"
+                            title="Add SLA"><i class="fa fa-plus"></i></button>
+                  </a>
+                  <button type="submit" class="btn btn-outline btn-primary  dim "><i class="fa fa-save"></i></button>
+                </div>
+              </div>
+
+              <div>
+
+                <div class="ibox-content col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal"
+                     style="background-color: white;">
+                  <!--<div class="row">-->
+                  <!--<div class="form-group col-lg-12 col-lg-12 col-sm-12 col-md-12 col-xs-12">-->
+                  <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Shown Values:</label>-->
+                  <!--<div class="col-lg-8 col-lg-8  col-sm-8  col-md-8  col-xs-8 ">-->
+                  <!--<ng-select class="col-lg-9 col-sm-9 col-md-9 col-xs-9" [multiple]="true" name="State"-->
+                  <!--class="col-sm-12" [disabled]="disShownValue"-->
+                  <!--[(items)]="SLADropdownValue" id="expselect"-->
+                  <!--[active]="activeShownValue"-->
+                  <!--(selected)="SLASelected($event)"-->
+                  <!--(data)="SLAData($event)"-->
+                  <!--(removed)="SLARemoved($event)"-->
+                  <!--ngModel #shownValue="ngModel">-->
+                  <!--</ng-select>-->
+                  <!--<small-->
+                  <!--[hidden]="!shownValue.hasError('required') || shownValue.valid || (shownValue.pristine && !serviceDetails.submitted)"-->
+                  <!--class="text-danger">-->
+                  <!--Shown Values is required-->
+                  <!--</small>-->
+                  <!--</div>-->
+                  <!--<div class="col-lg-2 col-lg-2  col-sm-2  col-md-2  col-xs-2 ">-->
+                  <!--<button type="button"  class="btn btn-primary" [disabled]="enableButton" (click)="SlaButton()">Enable</button>-->
+                  <!--</div>-->
+                  <!--</div>-->
+                  <!--</div>-->
+                  <!--<hr>-->
+                  <div class="row">
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Delivery Time*</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <select data-placeholder="Choose a Delivery" name="deliveryTime" #deliveryTime="ngModel"
+                                [ngModel]="merchantObj?.deliveryTime" (ngModelChange)="merchantObj.deliveryTime=$event"
+                                class="chosen-select select2_demo_3 form-control" ngModel required
+                                [disabled]="disdeliveryTime">
+                          <option value="0.5">30 min</option>
+                          <option value="1">1 hr</option>
+                          <option value="1.5">1 hr 30 min</option>
+                          <option value="2">2 hr</option>
+                          <option value="3">3 hr</option>
+                          <option value="4">4 hr</option>
+                          <option value="5">5 hr</option>
+                          <option value="6">6 hr</option>
+                          <option value="7">7 hr</option>
+                          <option value="8">8 hr</option>
+                          <option value="9">9 hr</option>
+                          <option value="10">10 hr</option>
+                          <option value="11">11 hr</option>
+                          <option value="12">12 hr</option>
+                        </select>
+                        <small
+                          [hidden]="!deliveryTime.hasError('required') || deliveryTime.valid || (deliveryTime.pristine && !serviceDetails.submitted)"
+                          class="text-danger">
+                          Delivery Time is required.
+                        </small>
+                      </div>
+                    </div>
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label
+                        class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Special Offer</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="text" class="form-control"
+                               Capitalize [disabled]="disSpecialOffer"
+                               [ngModel]="merchantObj?.specialOffer"
+                               (ngModelChange)="merchantObj.specialOffer=$event"
+                               name="specialOffer" ngModel>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Radius</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <select data-placeholder="Choose a Radius" name="visibilityRadius"
+                                class="chosen-select select2_demo_3 form-control"
+                                [ngModel]="merchantObj?.visibilityRadius" [disabled]="disRadius"
+                                (ngModelChange)="merchantObj.visibilityRadius=$event"
+                                #visibilityRadius="ngModel" ngModel>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="8">8</option>
+                          <option value="9">9</option>
+                          <option value="10">10</option>
+                          <option value="11">11</option>
+                          <option value="12">12</option>
+                          <option value="13">More Than 12</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">RadiusMeasure</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <select name="visibilityRadiusMeasure" required #vrm=ngModel
+                                class="chosen-select select2_demo_3 form-control" [disabled]="disRadiusMeasure"
+                                [ngModel]="merchantObj?.visibilityRadiusMeasure"
+                                (ngModelChange)="merchantObj.visibilityRadiusMeasure=$event"
+                                ngModel>
+                          <option value="KM">KM</option>
+                          <option value="Mile">Mile</option>
+                          <option value="Meter">Meter</option>
+                        </select>
+                        <small
+                          [hidden]="!vrm.hasError('required') || vrm.valid || (vrm.pristine && !serviceDetails.submitted)"
+                          class="text-danger">
+                          Radius Measure is required
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Payment Type</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <select data-placeholder="Choose a PaymentType" name="paymentTypes" [disabled]="disPaymentType"
+                                class="chosen-select select2_demo_3 form-control" required #paymentType=ngModel
+                                [ngModel]="merchantObj?.paymentTypes" (ngModelChange)="merchantObj.paymentTypes=$event"
+                                ngModel>
+                          <option value="CASH">CASH</option>
+                          <option value="Cards">Accept Cards</option>
+                          <option value="Both">Cash/Cards</option>
+                        </select>
+                        <small
+                          [hidden]="!paymentType.hasError('required') || paymentType.valid || (paymentType.pristine && !serviceDetails.submitted)"
+                          class="text-danger">
+                          Payment Type is required
+                        </small>
+                      </div>
+                    </div>
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Order Placement</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <select data-placeholder="Choose a OrderPlacement" name="orderPlacement"
+                                class="chosen-select select2_demo_3 form-control"
+                                [ngModel]="merchantObj?.orderPlacement" [disabled]="disOrderPlacement"
+                                (ngModelChange)="merchantObj.orderPlacement=$event"
+                                required #orderPlacement=ngModel ngModel>
+                          <option value="Call">Call</option>
+                          <option value="Online">Online</option>
+                          <option value="Both">Both</option>
+                        </select>
+                        <small
+                          [hidden]="!orderPlacement.hasError('required') || orderPlacement.valid || (orderPlacement.pristine && !serviceDetails.submitted)"
+                          class="text-danger">
+                          Order Placement is required
+                        </small>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="row">
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                      <label
+                        class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Minimum order value</label>
+                      <div class="input-group m-b">
+                        <span class="input-group-addon">{{code}}</span>
+                        <input type="text" class="form-control" [disabled]="disMinimumOrder"
+                               [ngModel]="merchantObj?.minimumOrder"
+                               (ngModelChange)="merchantObj.minimumOrder=$event"
+                               name="minimumOrder" ngModel>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div class="row" *ngIf="SLA.length > 0">
+                    <hr>
+                    <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6"
+                         *ngFor="let sla of SLA;let i = index">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">{{sla.key}}</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="text" class="form-control" [(ngModel)]="sla.value"
+                               (ngModelChange)="sla.value=$event" name="{{sla.key}}" ngModel>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </fieldset>
+
+      <!--Country Details-->
+      <fieldset [disabled]="true">
+        <form autocomplete="off">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="ibox-title">
+              <h5 style="font-size: 25px;">Country Details</h5>
+              <div class="ibox-content">
+
+                <div class="row">
+                  <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                    <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Currency</label>
+                    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                      <input type="text" class="form-control"
+                             [ngModel]="currencies"
+                             disabled
+                             (ngModelChange)="currencies"
+                             name="currencies" ngModel>
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6"><label
+                    class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Time Zone</label>
+                    <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                      <input type="text" class="form-control"
+                             [ngModel]="timezone"
+                             disabled
+                             (ngModelChange)="timezones"
+                             name="timezone" ngModel>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </fieldset>
+
+      <!--// Shop Schedule On-->
+      <fieldset [disabled]="!ssEdit">
+        <form name="form" autocomplete="off" #shopSchedule="ngForm" (ngSubmit)="shopSchedule.form.valid && update_Merchant('Shop Schedule', shopSchedule.value)"
+              (keydown.enter)="$event.preventDefault()"
+              class="form-horizontal">
+          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 ">
+            <div class="ibox-content col-lg-12 col-lg-12 col-sm-12 col-md-12 col-xs-12 ">
+              <div class="row">
+                <div class="col-lg-11 col-lg-11 col-sm-11 col-md-11 col-xs-11">
+                  <h5 style="font-size: 25px;">Shop Scheduled On</h5>
+                </div>
+                <div class="col-lg-1 col-lg-1 col-sm-1 col-md-1 col-xs-1">
+                  <button class="btn btn-outline btn-primary  dim " title="Save" type="submit"><i
+                    class="fa fa-save"></i>
+                  </button>
+                </div>
+              </div>
+              <hr>
+              <div class="form-group col-lg-12 col-lg-12 col-sm-12 col-md-12 col-xs-12 " style="padding-left: 1px;">
+                <label class="col-lg-3 col-lg-3 col-sm-3 col-md-3 col-xs-3">Shop Schedule On:</label>
+                <div class="radio radio-danger col-lg-3 col-lg-3 col-sm-3 col-md-3 col-xs-3" style="margin-top: -3px;">
+                  <label>Closed On</label>
+                  <div class="btn-group btn-group-vertical" data-toggle="buttons">
+                    <label class="btn active">
+                      <input type="radio" name="radio1" [value]="1" [(ngModel)]="selectedOption" (click)="ShowButton()"><i
+                      class="fa fa-circle-o fa-2x"></i><i
+                      class="fa fa-dot-circle-o fa-2x"></i>
+                    </label>
+                  </div>
+                  <!--<input type="radio" name="radio1" [value]="1" [(ngModel)]="selectedOption" (click)="ShowButton()">-->
+                  <!--<label>-->
+                  <!--Closed On-->
+                  <!--</label>-->
+                </div>
+                <div class="radio col-lg-3 col-lg-3 col-sm-3 col-md-3 col-xs-3">
+                  <label>24 x 7</label>
+                  <div class="btn-group btn-group-vertical" data-toggle="buttons">
+                    <label class="btn active">
+                      <input type="radio" name="radio1" [value]="2" [(ngModel)]="selectedOption" (click)="HideButton()"><i
+                      class="fa fa-circle-o fa-2x"></i><i
+                      class="fa fa-dot-circle-o fa-2x"></i>
+                    </label>
+                  </div>
+                  <!--<input type="radio" name="radio1" [value]="2" [(ngModel)]="selectedOption" (click)="HideButton()">-->
+                  <!--<label>-->
+                  <!--24 x 7-->
+                  <!--</label>-->
+                </div>
+                <div class="radio col-lg-3 col-lg-3 col-sm-3 col-md-3 col-xs-3">
+                  <label>7 Days</label>
+                  <div class="btn-group btn-group-vertical" data-toggle="buttons">
+                    <label class="btn active">
+                      <input type="radio" name="radio1" [value]="3" [(ngModel)]="selectedOption"
+                             (click)="HideButton2()"><i class="fa fa-circle-o fa-2x"></i><i
+                      class="fa fa-dot-circle-o fa-2x"></i>
+                    </label>
+                  </div>
+                  <!--<input type="radio" name="radio1" [value]="3" [(ngModel)]="selectedOption" (click)="HideButton2()">-->
+                  <!--<label>-->
+                  <!--7 Days-->
+                  <!--</label>-->
+                </div>
+              </div>
+              <!--select days-->
+              <div *ngIf="showSelected">
+                <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12" [multiple]="true" name="Closeddays"
+                           [items]="daysList" required #Closeddays="ngModel" ngModel
+                           [active]="selectedDays"
+                           (data)="refreshValue($event)">
+                </ng-select>
+                <br><br>
+                <br><br>
+                <small
+                  [hidden]="!Closeddays.hasError('required') || Closeddays.valid || (Closeddays.pristine && !shopSchedule.submitted)"
+                  class="text-danger">
+                  Closed On Day is Required
+                </small>
+                <br><br>
+              </div>
+
+
+
+              <br><br>
+              <div class="form-group col-lg-12 col-lg-12 col-sm-12 col-md-12 col-xs-12" *ngIf="hidetime">
+                <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                  <label class="col-lg-5 col-sm-5 col-md-5 col-xs-5 control-label">Open Time: </label>
+                  <div class="form-group col-lg-7 col-sm-7 col-md-7 col-xs-7">
+                    <!--<input type="text" class="form-control" name="shopSchedule.openingTime" ngModel >-->
+                    <timepicker name="openTime" [(ngModel)]="openTime" [readonlyInput]="isEnabled"
+                                (ngModelChange)="openTime.openTime=$event"></timepicker>
+                  </div>
+                </div>
+                <div class="form-group col-lg-6 col-lg-6 col-sm-6 col-md-6 col-xs-6">
+                  <label class="col-lg-5 col-sm-5 col-md-5 col-xs-5 control-label">Close Time: </label>
+                  <div class="form-group col-lg-7 col-sm-7 col-md-7 col-xs-7">
+                    <!--<input type="text" class="form-control" name="shopSchedule.closingTime" ngModel >-->
+                    <timepicker name="closeTime" [(ngModel)]="closeTime" [readonlyInput]="isEnabled"
+                                (ngModelChange)="closeTime.closeTime=$event"></timepicker>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <br><br>
+      </fieldset>
+
+      <!--//>Social Media -->
+      <fieldset [disabled]="!smEdit">
+        <form name="form" autocomplete="off" class="form-horizontal" #social="ngForm"
+              (ngSubmit)="update_Merchant('Social Media', social.value)"
+              (keydown.enter)="$event.preventDefault()">
+          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                <h5 style="font-size: 25px;">Social Media</h5>
+                <div class="ibox-tools">
+                  <a>
+                    <button type="button" class="btn btn-outline btn-primary  dim " (click)="SMM(socialMediaModel)"
+                            title="Add Social"><i class="fa fa-plus"></i></button>
+                  </a>
+                  <!--<button type="submit" class="btn btn-outline btn-primary  dim "><i class="fa fa-save"></i></button>-->
+                </div>
+              </div>
+              <div>
+                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" style="background-color: white;">
+                  <hr>
+                  <table class="table table-striped table-bordered table-hover dataTables-example">
+                    <tr>
+                      <th>Name</th>
+                      <th>URL</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
+                    </tr>
+                    <tr *ngFor='let row of socialMedia;let i = index'>
+                      <td>{{row.name}}</td>
+                      <td>{{row.url}}</td>
+                      <td>
+                        <button [disabled]="!edit" type="button" class="btn btn-primary"
+                                (click)="getSocial(row._id, socialMediaEditModel)">Edit
+                        </button>
+                      </td>
+                      <td>
+                        <button [disabled]="!delete" type="button" class="btn btn-outline btn-danger"
+                                (click)="removeSocial(row._id,i)"><i
+                          class="fa fa-trash"></i>Delete
+                        </button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="socialMedia?.length === 0">
+                      <td colspan="4" class="no-data-available">Record not found</td>
+                      <td hidden class="no-data-available"></td>
+                      <td hidden class="no-data-available"></td>
+                      <td hidden class="no-data-available"></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </fieldset>
+
+      <!--bank Details-->
+      <fieldset [disabled]="!bankdEdit">
+        <form name="form" autocomplete="off" class="form-horizontal" #bank="ngForm"
+              (ngSubmit)="update_Merchant('Bank Details', bank.value)"
+              (keydown.enter)="$event.preventDefault()">
+          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                <h5 style="font-size: 25px;">Bank Details</h5>
+                <div class="ibox-tools">
+                  <a>
+                    <button type="button" class="btn btn-outline btn-primary dim " (click)="BDM(bankDetailsModel)"
+                            title="Add Social">
+                      <i class="fa fa-plus"></i>
+                    </button>
+                  </a>
+                  <!--<button type="submit" class="btn btn-outline btn-primary  dim "><i class="fa fa-save"></i></button>-->
+                </div>
+              </div>
+              <div>
+                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" style="background-color: white;">
+                  <hr>
+                  <table class="table table-striped table-bordered table-hover dataTables-example">
+                    <tr>
+                      <th>Name</th>
+                      <th>Country</th>
+                      <th>A/C No.</th>
+                      <th>UPI Code</th>
+                      <th>IFSC Code</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
+                    </tr>
+                    <tr *ngFor='let row of bankDetails;let i = index'>
+                      <td>{{row.name}}</td>
+                      <td>{{row.country}}</td>
+                      <td>{{row.accNo}}</td>
+                      <td>{{row.UPI}}</td>
+                      <td>{{row.IFSC}}</td>
+                      <td>
+                        <button [disabled]="!edit" type="button" class="btn btn-primary"
+                                (click)="getBank(row._id, bankDetailsEditModel)">Edit
+                        </button>
+                      </td>
+                      <td>
+                        <button [disabled]="!delete" type="button" class="btn btn-outline btn-danger"
+                                (click)="removeBank(row._id,i)"><i
+                          class="fa fa-trash"></i>Delete
+                        </button>
+                      </td>
+                    </tr>
+                    <tr *ngIf="bankDetails?.length === 0">
+                      <td colspan="7" class="no-data-available">Record not found</td>
+                      <td hidden class="no-data-available"></td>
+                      <td hidden class="no-data-available"></td>
+                      <td hidden class="no-data-available"></td>
+                      <td hidden class="no-data-available"></td>
+                      <td hidden class="no-data-available"></td>
+                      <td hidden class="no-data-available"></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </fieldset>
+
+      <!--// >Document Management-->
+      <fieldset [disabled]="!dmEdit">
+        <form name="form" autocomplete="off" class="form-horizontal" #Documents="ngForm"
+              (ngSubmit)="update_Merchant('Documents', Documents.value)"
+              (keydown.enter)="$event.preventDefault()">
+          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                <h5 style="font-size: 25px;">Document Management</h5>
+                <div class="ibox-tools">
+                  <a>
+                    <button type="button" class="btn btn-outline btn-primary  dim " (click)="DMM(documentModel)"
+                            title="Add Social"><i class="fa fa-plus"></i></button>
+                  </a>
+                  <!--<button type="submit" class="btn btn-outline btn-primary  dim "><i class="fa fa-save"></i></button>-->
+                </div>
+              </div>
+              <div>
+                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" style="background-color: white;">
+                  <hr>
+                  <table class="table table-striped table-bordered table-hover dataTables-example">
+                    <tr>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th>Download</th>
+                      <th>Edit</th>
+                      <th>Delete</th>
+                    </tr>
+                    <tr *ngFor='let row of documents;let i = index'>
+                      <td><img class="img-thumbnail" alt="{{row.name}}" width="60" height="60" type="multiple"
+                               src={{row.url}}></td>
+                      <td>{{row.name}}</td>
+                      <td>
+                        <a [href]="row.url" target="_blank" download>
+                          <button type="button" class="btn btn-outline btn-primary">
+                            <i class="fa fa-download"></i>Download
+                          </button>
+                        </a>
+                      </td>
+                      <td>
+                        <button [disabled]="!edit" type="button" class="btn btn-primary"
+                                (click)="getDocument(row._id, documentEditModel)">Edit
+                        </button>
+                      </td>
+                      <td>
+                        <button [disabled]="!delete" type="button" class="btn btn-outline btn-danger"
+                                (click)="remove(row._id,i)"><i
+                          class="fa fa-trash"></i>Delete
+                        </button>
+                      </td>
+                      <!--<td><button type="button" class="btn btn-outline btn-danger" >Edit</button></td>-->
+
+                    </tr>
+                    <tr *ngIf="documents?.length === 0">
+                      <td colspan="5" class="no-data-available">Record not found</td>
+                      <td hidden class="no-data-available"></td>
+                      <td hidden class="no-data-available"></td>
+                      <td hidden class="no-data-available"></td>
+                      <td hidden class="no-data-available"></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </fieldset>
+
+      <!--//Store Image-->
+      <fieldset [disabled]="!siEdit">
+        <form name="form" autocomplete="off" class="form-horizontal">
+          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                <h5 style="font-size: 25px;">Store Image Management</h5>
+                <div class="ibox-tools">
+                  <a>
+                    <button type="button" class="btn btn-outline btn-primary  dim " (click)="saveStore()"
+                            title="Add Social"><i class="fa fa-save"></i></button>
+                  </a>
+                </div>
+              </div>
+              <div>
+                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" style="background-color: white;">
+                  <hr>
+                  <input type="file" id="tt" name="storeImage" (change)="dim($event)" ngModel #storeImage="ngModel"
+                         class="btn-bs-file btn btn-primary" accept="image/*">
+                  <br>
+                  <hr>
+                  <table class="table table-striped table-bordered table-hover dataTables-example">
+                    <tr>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th>Uploaded At</th>
+                      <th>Primary</th>
+                      <th>Delete</th>
+                      <th>Download</th>
+                      <!--<th>Edit</th>-->
+                    </tr>
+                    <tr *ngFor='let row of storebanner;let i = index'>
+                      <td><img class="img-thumbnail" alt="{{row.name}}" width="60" height="60" type="multiple"
+                               src={{row.url}}></td>
+                      <td>Banner {{i+1}}</td>
+                      <td>{{row.uploadedOn | date: 'medium'}}</td>
+                      <td>
+                        <div class="btn-group btn-group-vertical" data-toggle="buttons">
+                          <label class="btn active">
+                            <input type="radio" name='gender1' (click)="storeclick(i)" [checked]="row.isPrimary"><i
+                            class="fa fa-circle-o fa-2x"></i><i class="fa fa-dot-circle-o fa-2x"></i>
+                          </label>
+                        </div>
+                      </td>
+                      <td>
+                        <button type="button" [disabled]="!delete" class="btn btn-outline btn-danger"
+                                (click)="removestore(row,i)"><i
+                          class="fa fa-trash"></i>Delete
+                        </button>
+                      </td>
+                      <td>
+                        <a [href]="row.url" target="_blank" download>
+                          <button type="button" class="btn btn-outline btn-primary">
+                            <i class="fa fa-download"></i>Download
+                          </button>
+                        </a>
+                      </td>
+                      <!--<td><button type="button" class="btn btn-outline btn-danger" >Edit</button></td>-->
+
+                    </tr>
+                    <tr *ngIf="storebanner?.length === 0">
+                      <td colspan="6" class="no-data-available">Record not found</td>
+                    </tr>
+                  </table>
+                  <hr>
+                  <carousel>
+                    <slide *ngFor='let row of storebanner; let i = index'>
+                      <img src={{row.url}} alt="Second slide" style="height: 400px; display: block; width: 100%;">
+                      <div class="carousel-caption d-none d-md-block">
+                        <h3>Banner {{i+1}}</h3>
+                      </div>
+                    </slide>
+                  </carousel>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </fieldset>
+
+      <!--Geo Location-->
+      <fieldset [disabled]="!geoEdit">
+        <form name="form" autocomplete="off" #locationDetails="ngForm"
+              (ngSubmit)="update_Merchant('Location Details', locationDetails.value)"
+              (keydown.enter)="$event.preventDefault()"
+              class="form-horizontal">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="ibox-title">
+            <h5 style="font-size: 25px;">Merchant Geo Location</h5>
+            <div class="ibox-tools">
+              <button class="btn btn-outline btn-primary  dim " title="Save" type="submit"><i
+                class="fa fa-save"></i>
+              </button>
+            </div>
+            <div class="ibox-content">
+              <div class="row">
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="geoAddress"
+                         [ngModel]="geoAddress" (ngModelChange)="geoAddress.geoAddress=$event">
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="lat"
+                         [ngModel]="lat" (ngModelChange)="lat.lat=$event">
+                </div>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="lng"
+                         [ngModel]="lng" (ngModelChange)="lng.lng=$event">
+                </div>
+
+              </div>
+              <hr>
+              <div>
+                <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoomM">
+                  <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]="geoEdit"
+                              (dragEnd)="getLatLng($event)">
+                    <agm-info-window>{{ geoAddress }}</agm-info-window>
+                  </agm-marker>
+                </agm-map>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        </form>
+      </fieldset>
+      <!--Policy-->
+      <fieldset [disabled]="!pEdit">
+        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+          <div class="ibox-content">
+            <ng-template #TermsCondition>
+              <form name="form" autocomplete="off" #TermsCondition="ngForm"
+                    (ngSubmit)="update_Merchant('Terms Condition', TermsCondition.value)"
+                    (keydown.enter)="$event.preventDefault()"
+                    class="form-horizontal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title pull-left">Terms & Condition</h4>
+                  </div>
+                  <div class="modal-body">
+                    <ckeditor
+                      [config]="{extraPlugins: 'divarea'}"
+                      [(ngModel)]="terms_of_service"
+                      name="terms_of_service"
+                      debounce="500">
+                    </ckeditor>
+                  </div>
+
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-danger pull-right" (click)="TnC.hide()"
+                            aria-label="Close">
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </ng-template>
+
+            <ng-template #PrivacyPolicy>
+              <form name="form" autocomplete="off" #PrivacyPolicy="ngForm"
+                    (ngSubmit)="update_Merchant('Privacy Policy', PrivacyPolicy.value)"
+                    (keydown.enter)="$event.preventDefault()"
+                    class="form-horizontal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title pull-left">PrivacyPolicy</h4>
+                  </div>
+                  <div class="modal-body">
+                    <ckeditor
+                      ngModel
+                      [config]="{extraPlugins: 'divarea'}"
+                      [(ngModel)]="privacy_policy"
+                      name="privacy_policy"
+                      debounce="500">
+                    </ckeditor>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-danger pull-right" (click)="PnP.hide()"
+                            aria-label="Close">
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </ng-template>
+
+            <ng-template #RefundExchangePolicy>
+              <form name="form" autocomplete="off" #RefundExchangePolicy="ngForm"
+                    (ngSubmit)="update_Merchant('Refund Exchange Policy', RefundExchangePolicy.value)"
+                    (keydown.enter)="$event.preventDefault()"
+                    class="form-horizontal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title pull-left">Refund Exchange Policy</h4>
+                    <button type="button" class="close pull-right" (click)="RnE.hide()"
+                            aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <ckeditor
+                      ngModel
+                      [config]="{extraPlugins: 'divarea'}"
+                      [(ngModel)]="refund_policy"
+                      name="refund_policy"
+                      debounce="500">
+                    </ckeditor>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-danger pull-right" (click)="RnE.hide()"
+                            aria-label="Close">
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </ng-template>
+
+            <ng-template #ReturnPolicy>
+              <form name="form" autocomplete="off" #ReturnPolicy="ngForm"
+                    (ngSubmit)="update_Merchant('Return Policy', ReturnPolicy.value)"
+                    (keydown.enter)="$event.preventDefault()"
+                    class="form-horizontal">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title pull-left">Return Policy</h4>
+                    <button type="button" class="close pull-right" (click)="RnP.hide()" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <ckeditor
+                      ngModel
+                      [config]="{extraPlugins: 'divarea'}"
+                      [(ngModel)]="return_policy"
+                      name="return_policy"
+                      debounce="500">
+                    </ckeditor>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-danger pull-right" (click)="RnP.hide()"
+                            aria-label="Close">
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </ng-template>
+
+            <div class="ibox float-e-margins form-horizontal">
+              <div class="col-lg-10 float-e-margins">
+                <button class="btn btn-info  dim btn-dim btn-outline" type="button" (click)="TC(TermsCondition)">Terms &
+                  Condition
+                </button>
+                <button class="btn btn-primary  dim btn-dim btn-outline" type="button" (click)="PP(PrivacyPolicy)">
+                  Privacy
+                  Policy
+                </button>
+                <button class="btn btn-success  dim btn-dim btn-outline" type="button"
+                        (click)="REP(RefundExchangePolicy)">
+                  Refund/Exchange Policy
+                </button>
+                <button class="btn btn-danger  dim btn-dim btn-outline" type="button" (click)="RP(ReturnPolicy)">Return
+                  Policy
+                </button>
+              </div>
+              <br>
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <!--//>Call Record -->
+      <fieldset [disabled]="!crmEdit">
+        <form name="callform" autocomplete="off" class="form-horizontal" #Record="ngForm"
+              (ngSubmit)="CallDataUpload(Record.value)"
+              (keydown.enter)="$event.preventDefault()">
+          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+            <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                <h5 style="font-size: 25px;">Call Record Management</h5>
+                <div class="ibox-tools">
+                  <button type="submit" class="btn btn-outline btn-primary  dim "><i class="fa fa-save"></i></button>
+                </div>
+              </div>
+              <div>
+                <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" style="background-color: white;">
+                  <hr>
+                  <div class="row">
+                    <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 form-horizontal">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Date & TIme:</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <h4><b>{{currentTime}}</b></h4>
+                      </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 form-horizontal">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Posted By:</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <h4><b>{{emp?.firstName}}{{emp?.lastName}}</b></h4>
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 form-horizontal">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Comments:</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="text" class="form-control" name="comments"
+                               ngModel/>
+
+                      </div>
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 form-horizontal">
+                      <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Audio File:</label>
+                      <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+                        <input type="file" class="btn-bs-file btn btn-primary" name="key"
+                               accept="audio/*" (change)="callupload($event)"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <br><br>
+                  <table class="table table-striped table-bordered table-hover dataTables-example">
+                    <tr>
+                      <th>Posted By</th>
+                      <th>Date & Time</th>
+                      <th>Audio File</th>
+                      <th>Comments</th>
+                    </tr>
+                    <tr *ngFor='let call of callRecordData;let i = index'>
+                      <td>{{call?.posted_by?.firstName}}{{call?.posted_by?.lastName}}</td>
+                      <td>{{call?.postOn | date: 'yMMMdjms'}}</td>
+                      <!--<td>{{call?.key}}</td>-->
+                      <td *ngIf="call?.key !== null">
+                        <audio controls="controls" src={{call?.key}}></audio>
+                      </td>
+                      <td *ngIf="call?.key === null">No Audio File</td>
+                      <!--<td><audio controls><source [src]="abcd"></audio></td>-->
+                      <td>{{call.comments}}</td>
+                    </tr>
+                    <tr *ngIf="merchantObj?.callRecord?.length === 0">
+                      <td colspan="4" class="no-data-available">Record not found</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </fieldset>
+
+      <!--Apporve Management-->
+      <fieldset [disabled]="!utEdit">
+        <form name="form" autocomplete="off" class="form-horizontal">
+          <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+              <div class="ibox-title">
+                <h5 style="font-size: 25px;">Utility</h5>
+                <div class="ibox-tools">
+                  <button class="btn btn-outline btn-primary  dim " title="Save" type="submit"><i
+                    class="fa fa-save"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="ibox-content col-lg-12">
+                <tabset>
+                  <!--SYSTEM INFO-->
+                  <tab heading="SYSTEM INFO">
+                    <table class="table table-bordered">
+                      <tbody>
+                      <tr>
+                        <td><b>Registration Datetime</b></td>
+                        <td>{{merchantObj?.createdAt | date: 'yMMMdjms'}}</td>
+                        <td><b>Registrater By</b></td>
+                        <td [hidden]="merchantObj?.registered_by?.firstName">User not found</td>
+                        <td [hidden]="!merchantObj?.registered_by?.firstName">{{merchantObj?.registered_by?.firstName}}
+                          {{merchantObj?.registered_by?.lastName}}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Register From</b></td>
+                        <td [hidden]="merchantObj?.created_by">Not found</td>
+                        <td [hidden]="!merchantObj?.created_by">{{merchantObj?.created_by}}</td>
+                        <td><b>Status</b></td>
+                        <td>{{merchantObj?.status}}</td>
+                      </tr>
+                      <tr>
+                      <tr *ngIf="merchantObj?.status == 'Approved'">
+                        <td><b>Approved BY</b></td>
+                        <td [hidden]="merchantObj?.approved?.approved_by?.firstName">User not found</td>
+                        <td [hidden]="!merchantObj?.approved?.approved_by?.firstName">
+                          {{merchantObj?.approved?.approved_by?.firstName}}
+                          {{merchantObj?.approved?.approved_by?.lastName}}
+                        </td>
+                        <td><b>Approved Datetime</b></td>
+                        <td [hidden]="merchantObj?.approved?.approved_date">Date not found</td>
+                        <td [hidden]="!merchantObj?.approved?.approved_date">{{merchantObj?.approved?.approved_date |
+                          date: 'yMMMdjms'}}
+                        </td>
+                      </tr>
+                      <tr *ngIf="merchantObj?.status == 'Approved'">
+                        <td><b>Mobile Number</b></td>
+                        <td [hidden]="merchantObj?.approved?.approved_by?.mobileNumber">User not found</td>
+                        <td [hidden]="!merchantObj?.approved?.approved_by?.mobileNumber">
+                          {{merchantObj?.approved?.approved_by?.mobileNumber}}
+                        </td>
+                        <td><b>Approved Remark</b></td>
+                        <td [hidden]="merchantObj?.approved?.remark">No Remark</td>
+                        <td [hidden]="!merchantObj?.approved?.remark">{{merchantObj?.approved?.remark}}</td>
+                      </tr>
+                      <tr *ngIf="merchantObj?.status == 'Rejected'">
+                        <td><b>Rejected BY</b></td>
+                        <td [hidden]="merchantObj?.approved?.approved_by?.firstName">User not found</td>
+                        <td [hidden]="!merchantObj?.approved?.approved_by?.firstName">
+                          {{merchantObj?.approved?.approved_by?.firstName}}
+                          {{merchantObj?.approved?.approved_by?.lastName}}
+                        </td>
+                        <td><b>Rejected Datetime</b></td>
+                        <td [hidden]="merchantObj?.approved?.approved_date">Date not found</td>
+                        <td [hidden]="!merchantObj?.approved?.approved_date">{{merchantObj?.approved?.approved_date |
+                          date: 'yMMMdjms'}}
+                        </td>
+                      </tr>
+                      <tr *ngIf="merchantObj?.status == 'Rejected'">
+                        <td><b>Mobile Number</b></td>
+                        <td [hidden]="merchantObj?.approved?.approved_by?.mobileNumber">User not found</td>
+                        <td [hidden]="!merchantObj?.approved?.approved_by?.mobileNumber">
+                          {{merchantObj?.approved?.approved_by?.mobileNumber}}
+                        </td>
+                        <td><b>Rejected Remark</b></td>
+                        <td [hidden]="merchantObj?.approved?.remark">No Remark</td>
+                        <td [hidden]="!merchantObj?.approved?.remark">{{merchantObj?.approved?.remark}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </tab>
+                  <!--APPROVE-->
+                  <tab heading="APPROVE">
+                    <div class="form-group">
+                      <div class="col-sm-12">
+                        <input type="text" name="remark" placeholder="Remark"
+                               Capitalize [disabled]="!appEdit"
+                               [(ngModel)]="remark" class="form-control">
+                      </div>
+                      <div>
+
+                        <div *ngIf="firstshow" class="col-md-2 col-sm-2 col-lg-2 col-xs-2">
+                          <button type="button" (click)="approved()" [disabled]="!appEdit"
+                                  class="btn btn-w-m btn-success">Approve
+                          </button>
+                        </div>
+                        <div *ngIf="secondshow" class="col-md-2 col-sm-2 col-lg-2 col-xs-2">
+                          <button type="button" (click)="rejectby()" [disabled]="!appEdit" class="btn btn-w-m btn-danger">
+                            Reject
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <table datatable class="table table-striped table-bordered table-hover dataTables-example">
+                      <thead>
+                      <tr>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                        <th>Status</th>
+                        <th>Remark</th>
+                        <th>DateTime</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let app of merchantObj?.approvedBy">
+                        <td>{{app?.approved_by?.firstName}}</td>
+                        <td>{{app?.approved_by?.lastName}}</td>
+                        <td *ngIf="app?.approve === true">Approved</td>
+                        <td *ngIf="app?.approve === false">Rejected</td>
+                        <td *ngIf="app?.remark">{{app?.remark}}</td>
+                        <td *ngIf="!app?.remark">No Remark</td>
+                        <td>{{app?.approved_date | date: 'yMMMdjms'}}</td>
+                      </tr>
+                      <tr *ngIf="merchantObj?.approvedBy?.length === 0">
+                        <td colspan="5" class="no-data-available">Record not found</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </tab>
+                  <!--SUBSCRIPTION-->
+                  <tab heading="SUBSCRIPTION">
+                    <table datatable [dtOptions]="dtOptions"
+                           class="table table-striped table-bordered table-hover dataTables-example">
+                      <thead>
+                      <tr>
+                        <th>CompanyName</th>
+                        <th>Sub. Name</th>
+                        <th>Sub. From</th>
+                        <th>Sub. to</th>
+                        <th>Sub. Status</th>
+                        <th>CreatedDateTime</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let sub of merchantObj?.subscription">
+                        <td>{{merchantObj?.name}}</td>
+                        <td>{{sub?.name}}</td>
+                        <td>{{sub?.fromDate}}</td>
+                        <td>{{sub?.toDate}}</td>
+                        <td>{{sub?.status}}</td>
+                        <td>{{sub?.createDate}}</td>
+                      </tr>
+                      <tr *ngIf="merchantObj?.subscription?.length === 0">
+                        <td colspan="6" class="no-data-available">Record not found</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </tab>
+                  <!--REVIEW-->
+                  <tab heading="REVIEW">
+                    <table datatable [dtOptions]="dtOptions"
+                           class="table table-striped table-bordered table-hover dataTables-example">
+                      <thead>
+                      <tr>
+                        <th>Customer Name</th>
+                        <th>Ratting</th>
+                        <th>Comment</th>
+                        <th>CreatedDateTime</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr *ngFor="let review of merchantObj?.ratings">
+                        <td>{{review?.customer?.firstName}} {{review?.customer?.lastName}}</td>
+                        <td>{{review?.score}}</td>
+                        <td>{{review?.comments}}</td>
+                        <td>{{review?.createdDateTime}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </tab>
+                  <!--SMS-->
+                  <tab heading="SMS">
+                    <table datatable [dtOptions]="dtOptions"
+                           class="table table-striped table-bordered table-hover dataTables-example">
+                      <thead>
+                      <tr>
+                        <th>Mobile No</th>
+                        <th>Message</th>
+                        <th>OTP</th>
+                        <th>OTP Type</th>
+                        <th>Status</th>
+                        <th>CreatedDateTime</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <!--<tr *ngFor="let category of categoryObj">-->
+                      <!--<td>{{category.code}}</td>-->
+                      <!--<td>{{category.name}}</td>-->
+                      <!--<td>{{category.parentCategory}}</td>-->
+                      <!--&lt;!&ndash;<td>{{category.hsnCode}}</td>&ndash;&gt;-->
+                      <!--<td>{{category.type}}</td>-->
+                      <!--<td><button class="btn btn-success btn-sm" (click)="statuschange(category.status, category._id )" [ngClass]="{'pendingstatus': category.status !== 'Active', 'activestatus': category.status == 'Active' }">{{category.status}}</button></td>-->
+                      <!--<td><button type="button" class="btn btn-primary" (click)="getCategoryById(category._id, EditCat)">Edit</button></td>-->
+                      <!--<td><a [routerLink]="['/category/manage',category._id]"><button type="button" class="btn btn-primary">Manage</button></a></td>-->
+                      <!--<td><a><button type="button" class="btn btn-primary">View Details</button></a></td>-->
+                      <!--</tr>-->
+                      </tbody>
+                    </table>
+                  </tab>
+                  <!--VERIFICATION-->
+                  <tab heading="VERIFICATION">
+                    <div *ngIf="merchantObj?.verified == true">
+                      <table>
+                        <tr>
+                          <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                          <td><label class="switch">
+                            <input type="checkbox" checked (change)="onChange($event.target.checked)"
+                                   [disabled]="!verEdit">
+                            <span class="slider round"></span>
+                          </label></td>
+                          <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div *ngIf="merchantObj?.verified == false">
+                      <table>
+                        <tr>
+                          <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                          <td><label class="switch">
+                            <input type="checkbox" (change)="onChange($event.target.checked)" [disabled]="!verEdit">
+                            <span class="slider round"></span>
+                          </label></td>
+                          <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+                        </tr>
+                      </table>
+                    </div>
+
+                    <button type="button" (click)="verify()" class="btn btn-w-m btn-success" [disabled]="!verEdit">
+                      Save
+                    </button>
+                  </tab>
+                </tabset>
+              </div>
+            </div>
+          </div>
+        </form>
+      </fieldset>
+      <br><br>
+    </fieldset>
+  </div>
+
+</div>

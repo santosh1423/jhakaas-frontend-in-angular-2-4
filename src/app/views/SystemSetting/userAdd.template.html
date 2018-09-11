@@ -1,0 +1,328 @@
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+
+<div *ngIf="view ;else loading;" class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal"
+     style="background-color: white;">
+  <h5 style="font-size: 25px;">New User Registration</h5>
+  <hr>
+  <fieldset [disabled]="!add">
+    <form name="form" #adduser="ngForm" (ngSubmit)="adduser.form.valid && addUser(adduser.value)"
+          (keydown.enter)="$event.preventDefault()" autocomplete="off" novalidate>
+      <div class="row">
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">First Name: *</label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10"><input type="text" name="firstName" class="form-control"
+                                                                    Capitalize
+                                                                    #firstName="ngModel" ngModel
+                                                                    required pattern="[a-zA-Z][a-zA-Z ]+">
+          <small
+            [hidden]="!firstName.hasError('required') || firstName.valid || (firstName.pristine && !adduser.submitted)"
+            class="text-danger">
+            First Name is required
+          </small>
+          <small
+            [hidden]="!firstName.hasError('pattern') || firstName.valid || (firstName.pristine && !adduser.submitted)"
+            class="text-danger">
+            First Name dose not contain the number
+          </small>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Last Name: *</label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10"><input type="text" name="lastName" class="form-control"
+                                                                    Capitalize
+                                                                    #lastName="ngModel" ngModel
+                                                                    required pattern="[a-zA-Z][a-zA-Z ]+">
+          <small
+            [hidden]="!lastName.hasError('required') || lastName.valid || (lastName.pristine && !adduser.submitted)"
+            class="text-danger">
+            Last Name is required
+          </small>
+          <small
+            [hidden]="!lastName.hasError('pattern') || lastName.valid || (lastName.pristine && !adduser.submitted)"
+            class="text-danger">
+            Last Name dose not contain the number
+          </small>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Password:</label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+          <show-hide-password icon="fa fa-eye">
+            <input type="password" class="form-control" name="password" validateEqual="confirmPassword"
+                   reverse="true" minlength="8"
+                   #password="ngModel" ngModel required>
+          </show-hide-password>
+          <small [hidden]="!password.hasError('required') || (password.pristine && !adduser.submitted)"
+                 class="text-danger">
+            Password is required
+          </small>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Confirm Password:</label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+          <show-hide-password icon="fa fa-eye">
+            <input type="password" class="form-control" name="confirmPassword"
+                   required validateEqual="password" ngModel reverse="false" #confirmPassword="ngModel">
+          </show-hide-password>
+          <small [hidden]="confirmPassword.valid || (confirmPassword.pristine && !adduser.submitted)"
+                 class="text-danger">
+            Password mismatch
+          </small>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Date of Birth</label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10 input-group">
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <input type="text"
+                   name="dob" [maxDate]="maxDate"
+                   class="form-control"
+                   bsDatepicker
+                   #dob="ngModel"
+                   #dp="bsDatepicker"
+                   ngModel required
+            >
+          </div>
+          <div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">
+            <button type="button" class="btn btn-default" (click)="dp.show()"><i class="fa fa-calendar"></i>
+            </button>
+          </div>
+        </div>
+        <small
+          [hidden]="!dob.hasError('required') || dob.valid || (dob.pristine && !adduser.submitted)"
+          class="text-danger">
+          Date of Birth is required.
+        </small>
+      </div>
+      <br>
+      <div class="row">
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Mobile No *</label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+          <input type="text" name="mobileNumber"
+                 class="form-control" ngModel
+                 #mobileNumber="ngModel" required
+                 pattern="^(0|[0-9][0-9]*)$" maxlength="10"
+                 minlength="10">
+          <small
+            [hidden]="!mobileNumber.hasError('required') || mobileNumber.valid || (mobileNumber.pristine && !adduser.submitted)"
+            class="text-danger">
+            Mobile number is required
+          </small>
+          <small
+            [hidden]="!mobileNumber.hasError('pattern') || mobileNumber.valid || (mobileNumber.pristine && !adduser.submitted)"
+            class="text-danger">
+            Mobile number should be only numbers
+          </small>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Email *</label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+          <input type="email" name="email" class="form-control" #email="ngModel" ngModel required
+                 pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$">
+          <small
+            [hidden]="!email.hasError('required') || email.valid || (email.pristine && !adduser.submitted)"
+            class="text-danger">
+            Email is required
+          </small>
+          <small
+            [hidden]="!email.hasError('pattern') || email.valid || (email.pristine && !adduser.submitted)"
+            class="text-danger">
+            Please enter valid email address.
+          </small>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Gender:</label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+          <select data-placeholder="Choose a Gender" name="gender"
+                  class="chosen-select select2_demo_3 form-control" required #gender="ngModel"
+                  ngModel>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+          <small
+            [hidden]="!gender.hasError('required') || gender.valid || (gender.pristine && !adduser.submitted)"
+            class="text-danger">
+            Gender is required.
+          </small>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Employee Type:</label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+          <select name="empType"
+                  class="chosen-select select2_demo_3 form-control" required #empType="ngModel"
+                  ngModel>
+            <option value="Back office">Back office</option>
+            <option value="Sales Person">Sales Person</option>
+            <option value="Admin">Admin</option>
+            <option value="Sales Manager">Sales Manager</option>
+            <option value="Operator">Operator</option>
+            <option value="Other">Other</option>
+          </select>
+          <small
+            [hidden]="!empType.hasError('required') || empType.valid || (empType.pristine && !adduser.submitted)"
+            class="text-danger">
+            Sales Person is required.
+          </small>
+        </div>
+      </div>
+      <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; <h3>Address:</h3>
+      <hr>
+      <div class="row">
+        <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 ">
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Name:</label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <select name="name"
+                    class="chosen-select select2_demo_3 form-control" required #name="ngModel"
+                    ngModel>
+              <option value="Home">Home</option>
+              <option value="office">office</option>
+              <option value="Permanent">Permanent</option>
+            </select>
+            <small
+              [hidden]="!name.hasError('required') || name.valid || (name.pristine && !adduser.submitted)"
+              class="text-danger">
+              Name is required.
+            </small>
+          </div>
+        </div>
+        <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 ">
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Country:</label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <!--<select name="country"-->
+            <!--class="chosen-select select2_demo_3 form-control" required #country="ngModel"-->
+            <!--ngModel>-->
+            <!--<option value="India">India</option>-->
+            <!--<option value="US">US</option>-->
+            <!--</select>-->
+            <ng-select class="col-lg-9 col-sm-9 col-md-9 col-xs-9" [multiple]="false" name="country"
+                       class="col-sm-12"
+                       [items]="countryObj"
+                       (selected)="getCountryId($event)"
+                       placeholder="Select Country" ngModel #country="ngModel" required>
+            </ng-select>
+            <small
+              [hidden]="!country.hasError('required') || country.valid || (country.pristine && !adduser.submitted)"
+              class="text-danger">
+              Country is required.
+            </small>
+          </div>
+        </div>
+
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 ">
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">State:</label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <!--<select name="state"-->
+            <!--class="chosen-select select2_demo_3 form-control" required #state="ngModel"-->
+            <!--ngModel>-->
+            <!--<option value="Maharashtra">Maharashtra</option>-->
+            <!--<option value="Gujarat">Gujarat</option>-->
+            <!--</select>-->
+            <ng-select class="col-lg-9 col-sm-9 col-md-9 col-xs-9" [multiple]="false" name="state"
+                       class="col-sm-12" [active]="stateActive"
+                       [items]="stateObj" [disabled]="stateDisable"
+                       (selected)="getStateId($event)"
+                       placeholder="Select State" ngModel #state="ngModel">
+            </ng-select>
+            <!--<small-->
+              <!--[hidden]="!state.hasError('required') || state.valid || (state.pristine && !adduser.submitted)"-->
+              <!--class="text-danger">-->
+              <!--State is required.-->
+            <!--</small>-->
+          </div>
+        </div>
+        <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 ">
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">City:</label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <!--<select name="city"-->
+            <!--class="chosen-select select2_demo_3 form-control" required #city="ngModel"-->
+            <!--ngModel>-->
+            <!--<option value="Mumbai">Mumbai</option>-->
+            <!--<option value="Kolkata">Kolkata</option>-->
+            <!--</select>-->
+            <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12" [multiple]="false" name="city"
+                       [items]="cityObj" [disabled]="cityDisable" [active]="cityActive"
+                       placeholder="Select City" ngModel #city="ngModel" >
+            </ng-select>
+            <!--<small-->
+              <!--[hidden]="!city.hasError('required') || city.valid || (city.pristine && !adduser.submitted)"-->
+              <!--class="text-danger">-->
+              <!--City is required.-->
+            <!--</small>-->
+          </div>
+        </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 ">
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Landmark:</label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <input type="text" name="landmarks" class="form-control" Capitalize
+                   #landmarks="ngModel" ngModel
+                   required>
+            <small
+              [hidden]="!landmarks.hasError('required') || landmarks.valid || (landmarks.pristine && !adduser.submitted)"
+              class="text-danger">
+              Landmark is required
+            </small>
+          </div>
+          <br><br> <br>
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Pincode</label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10"><input type="text" class="form-control" name="postalCode"
+                                                                      ngModel
+                                                                      #postalCode="ngModel" required
+                                                                      pattern="^(0|[0-9][0-9]*)$" maxlength="6"
+                                                                      minlength="6">
+            <small
+              [hidden]="!postalCode.hasError('required') || postalCode.valid || (postalCode.pristine && !adduser.submitted)"
+              class="text-danger">
+              Pincode is required
+            </small>
+            <small
+              [hidden]="!postalCode.hasError('pattern') || postalCode.valid || (postalCode.pristine && !adduser.submitted)"
+              class="text-danger">
+              Pincode should be only numbers
+            </small>
+          </div>
+        </div>
+        <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6 ">
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Address:</label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <textarea type="text" class="form-control" required rows="3"
+                      Capitalize name="address1" #address1="ngModel"
+                      ngModel></textarea>
+            <small
+              [hidden]="!address1.hasError('required') || address1.valid || (address1.pristine && !adduser.submitted)"
+              class="text-danger">
+              Address is required
+            </small>
+          </div>
+        </div>
+
+      </div>
+      <br> <br>
+      <button type="submit" [disabled]="!add" class="btn btn-primary">Register</button>
+      <a [routerLink]="['/systemsettings/userList']">
+        <button type="button" class="btn btn-warning">Cancel</button>
+      </a><br><br>
+    </form>
+  </fieldset>
+</div>

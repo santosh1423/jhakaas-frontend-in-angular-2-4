@@ -1,0 +1,157 @@
+
+<ng-template #loading>
+  <alert type="danger">    <strong>Warning!</strong> You are not authorised to access this page.  </alert>
+</ng-template>
+
+<ng-template #addSMS>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Create New SMS Api</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #smsAdd="ngForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="smsAdd.form.valid && AddSms(smsAdd.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">SMS Title*</label>
+          <div class="col-sm-10">
+            <input type="text" name="title" Capitalize class="form-control" ngModel #title="ngModel" required>
+            <small [hidden]="!title.hasError('required') || title.valid || (title.pristine && !smsAdd.submitted)" class="text-danger">
+              SMS Title is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">SMS API*</label>
+          <div class="col-sm-10">
+            <input type="text" name="api" Capitalize class="form-control" ngModel #api="ngModel" required>
+            <small [hidden]="!api.hasError('required') || api.valid || (api.pristine && !smsAdd.submitted)" class="text-danger">
+              SMS API is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">SMS Use For</label>
+          <div class="col-sm-10">
+            <select name="usefor" class="chosen-select select2_demo_3 form-control col-sm-10" ngModel required #usefor="ngModel">
+              <option value="Merchant">Merchant</option>
+              <option value="Customer">Customer</option>
+              <option value="Office">Office</option>
+            </select>
+            <small [hidden]="!usefor.hasError('required') || usefor.valid || (usefor.pristine && !smsAdd.submitted)" class="text-danger">
+              SMS Use for is required
+            </small>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalAdd.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #editSMS>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Update SMS Api</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #smsEdit="ngForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="smsEdit.form.valid && EditSMS(smsEdit.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">SMS Title*</label>
+          <div class="col-sm-10">
+            <input type="text" name="title" Capitalize class="form-control" [ngModel]="SmsById?.title" (ngModelChange)="SmsById.title=$event" #title="ngModel" required>
+            <small [hidden]="!title.hasError('required') || title.valid || (title.pristine && !smsEdit.submitted)" class="text-danger">
+              SMS Title is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">SMS API*</label>
+          <div class="col-sm-10">
+            <input type="text" name="api" Capitalize class="form-control" [ngModel]="SmsById?.api" (ngModelChange)="SmsById.api=$event"  #api="ngModel" required>
+            <small [hidden]="!api.hasError('required') || api.valid || (api.pristine && !smsEdit.submitted)" class="text-danger">
+              SMS API is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">SMS Use For</label>
+          <div class="col-sm-10">
+            <select name="usefor" class="chosen-select select2_demo_3 form-control col-sm-10"  [ngModel]="SmsById?.usefor" (ngModelChange)="SmsById.usefor=$event" required #UseFor="ngModel">
+              <option value="Merchant">Merchant</option>
+              <option value="Customer">Customer</option>
+              <option value="Office">Office</option>
+            </select>
+            <small [hidden]="!UseFor.hasError('required') || UseFor.valid || (UseFor.pristine && !smsEdit.submitted)" class="text-danger">
+              SMS Use for is required
+            </small>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalEdit.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<div>
+  <h1><b>SMS Api Management</b></h1>
+</div>
+<div class ="row"  class="wrapper wrapper-content animated" *ngIf="view ;else loading;">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">SMS API</h5>
+      <div class="ibox-tools">
+        <button class="btn btn-outline btn-primary  dim " title="Add" (keydown.enter)="$event.preventDefault()"  [disabled]="!add" (click)="addSMSModal(addSMS)"><i class="fa fa-plus"></i>
+        </button>
+      </div>
+
+      <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+          <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <table datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger"   class="display" class="display table table-striped table-bordered table-hover dataTables-example">
+              <thead>
+              <tr>
+                <th>SMS Title</th>
+                <th>SMS API</th>
+                <th>API Use for</th>
+                <th>CreatedBy</th>
+                <th>updatedBy</th>
+                <th>Is Default</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr  *ngFor="let sms of smsObj">
+                <td>{{sms?.title}}</td>
+                <td>{{sms?.api}}</td>
+                <td>{{sms?.usefor}}</td>
+                <td><b>{{sms?.createBy?.firstName}} {{sms?.createBy?.lastName}} </b><br> {{sms?.createdAt | date: 'yMMMdjms'}}</td>
+                <td><b>{{sms?.updateBy?.firstName}} {{sms?.updateBy?.lastName}} </b><br> {{sms?.updatedAt | date: 'yMMMdjms'}}</td>
+                <td><button [disabled]="!edit" class="btn btn-success btn-sm" (click)="isDefaultchange(sms?.isDefault, sms._id)" [ngClass]="{'deactivestatus': sms?.isDefault !== 'True', 'activestatus': sms?.isDefault == 'True' }">{{sms?.isDefault}}</button></td>
+                <td><button [disabled]="!edit" class="btn btn-success btn-sm" (click)="statuschange(sms?.status, sms._id)" [ngClass]="{'deactivestatus': sms?.status !== 'Active', 'activestatus': sms?.status == 'Active' }">{{sms?.status}}</button></td>
+                <td><button  [disabled]="!edit" type="button" [disabled]="!edit" (keydown.enter)="$event.preventDefault()" class="btn btn-success" (click)="editSMSModal(sms._id,editSMS)">Edit</button></td>
+                <td><button [disabled]="!delete" type="button" [disabled]="!delete" class="btn btn-danger" (click)="deleteSMSById(sms?._id)">Delete</button></td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

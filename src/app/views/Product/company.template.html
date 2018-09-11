@@ -1,0 +1,161 @@
+<div >
+  <h1><b>Company Management</b></h1>
+</div>
+<!--Add New Company-->
+<ng-template #AddComp>
+
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Add Company</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #companyAdd="ngForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="companyAdd.form.valid && addCompany(companyAdd.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">Company Name*</label>
+          <div class="col-sm-10" [ngClass]="{ 'has-error': companyAdd.submitted && !name.valid }">
+            <input type="text" name="name" class="form-control" ngModel #name="ngModel" required>
+            <small [hidden]="name.valid || (name.pristine && !companyAdd.submitted)" class="text-danger">
+              Company Name is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalAdd.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<!--Update Company-->
+<ng-template #EditComp>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Update Company {{companyIdObj?.name}} </h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalUpdate.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+
+
+      <form name="form" (ngSubmit)="companyUpdate.form.valid && updateCompany(companyUpdate.value)" (keydown.enter)="$event.preventDefault()" #companyUpdate="ngForm" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">Company Name*</label>
+          <div class="col-sm-10" [ngClass]="{ 'has-error': companyUpdate.submitted && !name.valid }">
+            <input type="text" name="name" class="form-control" [ngModel]="companyIdObj?.name" (ngModelChange)="companyIdObj.name=$event" #name="ngModel" required>
+            <small [hidden]="name.valid || (name.pristine && !companyUpdate.submitted)" class="text-danger">
+              Company Name is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Update"/>
+            <button type="button" class="btn btn-white" (click)="modalUpdate.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<!--View Company-->
+<ng-template #ViewComp>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">View Product Company {{companyIdObj?.name}} </h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalUpdate.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" class="form-horizontal" (keydown.enter)="$event.preventDefault()" novalidate>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Company Name</label>
+          <div class="col-sm-10">
+            <input type="text" name="name" class="form-control" disabled [ngModel]="companyIdObj?.name" (ngModelChange)="companyIdObj.name=$event" #name="ngModel" required>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Status</label>
+          <div class="col-sm-10"><input type="text" disabled class="form-control" name="index" [ngModel]="companyIdObj?.status" (ngModelChange)="companyIdObj.status=$event"></div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Created By</label>
+          <div class="col-sm-10"><input type="text" disabled class="form-control" name="icon" [ngModel]="companyIdObj?.createBy?.firstName + companyIdObj?.createBy?.lastName" (ngModelChange)="companyIdObj.createdBy.firstName=$event"></div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Created At</label>
+          <div class="col-sm-10"><input type="text" disabled class="form-control" name="createdAt" [ngModel]="companyIdObj?.createdAt" (ngModelChange)="companyIdObj.createdAt=$event"></div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Updated At</label>
+          <div class="col-sm-10"><input type="text" disabled class="form-control" name="createdAt" [ngModel]="companyIdObj?.updatedAt" (ngModelChange)="companyIdObj.updatedAt=$event"></div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">ID</label>
+
+          <div class="col-sm-10"><input type="text" disabled class="form-control" name="id" [ngModel]="companyIdObj?._id" (ngModelChange)="companyIdObj._id=$event"></div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <button type="button" class="btn btn-white" (click)="modalUpdate.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+
+<!--CompanyTable-->
+<div *ngIf="view ;else loading;" readonly class="wrapper wrapper-content animated">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">Product Company List</h5>
+      <div class="ibox-tools">
+        <a><button class="btn btn-outline btn-primary  dim " title="Add Company" (keydown.enter)="$event.preventDefault()"  [disabled]="!add"  (click)="addCompModel(AddComp)"><i class="fa fa-plus"></i></button></a>
+        <!--<button class="btn btn-outline btn-info  dim " type="button" [disabled]="!edit" (click)="download()" title="Export"><i class="fa fa-file-text"></i></button>-->
+      </div>
+    </div>
+    <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+      <div class="dataTables_wrapper form-inline dt-bootstrap ">
+        <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-striped table-bordered table-hover dataTables-example">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <!--<th>CreatedBy</th>-->
+            <th>CreatedAt</th>
+            <th>UpdatedAt</th>
+            <th>Status</th>
+            <th>Edit</th>
+            <th>Delete</th>
+            <th>View Detail</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let company of companyObj">
+            <td>{{company?.name}}</td>
+            <!--<td>{{company?.createdBy?.firstName}} {{company?.createdBy?.lastName}}</td>-->
+            <td><b>{{company?.createBy?.firstName}} {{company?.createBy?.lastName}}</b><br> {{company?.createdAt | date: 'yMMMdjms'}}</td>
+            <td><b>{{company?.updateBy?.firstName}} {{company?.updateBy?.lastName}}</b><br> {{company?.updatedAt | date: 'yMMMdjms'}}</td>
+            <td><button [disabled]="!edit" class="btn btn-success btn-sm" (keydown.enter)="$event.preventDefault()" (click)="statuschange(company.status, company._id)" [ngClass]="{'deactivestatus': company.status !== 'Active', 'activestatus': company.status == 'Active' }">{{company?.status}}</button></td>
+            <td><button [disabled]="!edit" type="button" class="btn btn-primary" (keydown.enter)="$event.preventDefault()" (click)="getCompanyById(company?._id, EditComp)">Edit</button></td>
+            <td><button [disabled]="!delete" type="button" class="btn btn-danger" (keydown.enter)="$event.preventDefault()" (click)="deleteCompanyById(company?._id)">Delete</button></td>
+            <td><a><button [disabled]="!view" type="button" (keydown.enter)="$event.preventDefault()" (click)="getCompanyById(company._id, ViewComp)" class="btn btn-primary">View Details</button></a></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

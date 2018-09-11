@@ -1,0 +1,263 @@
+<div>
+  <h1><b>Attribute Management</b></h1>
+</div>
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+
+<ng-template #EditCat>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Update Attribute {{categoryIdObj?.name}}</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalUpdate.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form"(ngSubmit)="attributeUpdate.form.valid && updateAttribute(attributeUpdate.value)" #attributeUpdate="ngForm" class="form-horizontal" novalidate>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Name: </label>
+          <div class="col-sm-10">
+            <input type="text" name="attName" Capitalize ngModel class="form-control" [ngModel]="attributeObj?.attName" (ngModelChange)="attributeObj.attName=$event" #attName="ngModel" required>
+            <small [hidden]="attName.valid || (attName.pristine && !attributeUpdate.submitted)" class="text-danger">
+             Name is required
+            </small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Type: </label>
+          <div class="col-sm-10">
+            <select name="type"
+                    [ngModel]="attributeObj?.type" (ngModelChange)="attributeObj.type=$event"
+                    class="chosen-select select2_demo_3 form-control"
+                    ngModel required #type="ngModel">
+              <option value="Core">Core</option>
+              <option value="Variation">Variation</option>
+            </select>
+            <small [hidden]="type.valid || (type.pristine && !attributeUpdate.submitted)" class="text-danger">
+              Type is required
+            </small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">DataType:</label>
+          <div class="col-sm-10">
+            <select name="attType"
+                    [ngModel]="attributeObj?.attType" (ngModelChange)="attributeObj.attType=$event"
+                    class="chosen-select select2_demo_3 form-control"
+                    ngModel required #attType="ngModel">
+              <option value="String">String</option>
+              <option value="Number">Number</option>
+              <option value="Alphanumeric">Alphanumeric</option>
+              <!--<option value="Date">Date</option>-->
+              <option value="Color">Color</option>
+              <option value="Image">Image</option>
+              <!--<option value="Time">Time</option>-->
+              <option value="Dropdown">Dropdown</option>
+              <!--<option value="Range">Range</option>-->
+              <option value="Boolean">Boolean</option>
+            </select>
+            <small [hidden]="attType.valid || (attType.pristine && !attributeUpdate.submitted)" class="text-danger">
+              Type is required
+            </small>
+          </div>
+        </div>
+        <div *ngIf="attributeObj?.attType === 'Dropdown'" class="form-group" >
+          <label class="col-sm-2 control-label">Dropdown:</label>
+          <div class="col-sm-10">
+            <rl-tag-input [(ngModel)]="attributeObj.attDropdown" name="attDropdown" addOnSpace="true"
+                          addOnComma="true" addOnEnter="true" #dd="ngModel" ngModel
+                          addOnPaste="true" style="color: black;">
+            </rl-tag-input>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-1 control-label">Mandatory:</label>
+          <div>
+            <table>
+              <tr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                <td><label class="switch">
+                  <input type="checkbox"  [ngModel]="attributeObj?.mandatory" [checked]="attributeObj?.mandatory" (ngModelChange)="attributeObj.mandatory=$event" name="mandatory">
+                  <span class="slider round"></span>
+                </label></td>
+                <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Update"/>
+            <button type="button" class="btn btn-white" (click)="modalUpdate.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+
+<div *ngIf="view ;else loading;" class="wrapper wrapper-content animated">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">{{title}}</h5>
+
+
+    <div class="ibox-content">
+      <form name="form" #attributeAdd="ngForm" (ngSubmit)="attributeAdd.form.valid && add_Attribute(attributeAdd.value)" class="form-horizontal" novalidate>
+        <div class="form-group">
+          <label class="col-sm-1 control-label">Name:</label>
+          <div class="col-sm-10" [ngClass]="{ 'has-error': attributeAdd.submitted && !attName.valid }">
+            <input type="text" name="attName" Capitalize class="form-control" ngModel #attName="ngModel" required>
+            <small [hidden]="!attName.hasError('required') || !attName.value || attName.valid || (attName.pristine && !attributeAdd.submitted)" class="text-danger">
+             Name is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-1 control-label">Type: </label>
+          <div class="col-sm-10">
+            <select name="type" (change)="selectedType($event.target.value)"
+                    class="chosen-select select2_demo_3 form-control"
+                    ngModel required #type="ngModel">
+              <option value="Core">Core</option>
+              <option value="Variation">Variation</option>
+            </select>
+            <small [hidden]="type.valid || (type.pristine && !attributeAdd.submitted)" class="text-danger">
+              Type is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-1 control-label">DataType:</label>
+          <div class="col-sm-10">
+          <select name="attType" [ngClass]="{ 'has-error': attributeAdd.submitted && !attType.valid }" class="chosen-select select2_demo_3 form-control"
+                  (change)="selected($event.target.value)"
+                  ngModel required #attType="ngModel">
+            <!--<option *ngFor="let c of category" [Value]="c">{{c.name}}</option>-->
+            <option value="String">String</option>
+            <option value="Number">Number</option>
+            <option value="Alphanumeric">Alphanumeric</option>
+            <!--<option value="Date">Date</option>-->
+            <option value="Color">Color</option>
+            <option *ngIf="NoImage" value="Image">Image</option>
+            <!--<option value="Time">Time</option>-->
+            <option value="Dropdown">Dropdown</option>
+            <!--<option value="Range">Range</option>-->
+            <option value="Boolean">Boolean</option>
+
+          </select>
+            <small [hidden]="!attType.hasError('required') || !attType.value || attType.valid || (attType.pristine && !attributeAdd.submitted)" class="text-danger">
+              Type is required
+            </small>
+        </div>
+        </div>
+        <div *ngIf="dd" class="form-group">
+          <label class="col-sm-1 control-label">DropdownValue:</label>
+          <div class="col-sm-10">
+            <rl-tag-input [(ngModel)]="attDropdown" name="attDropdown" addOnSpace="true"
+                          placeholder="Add dropdown values"
+                          addOnComma="true" addOnEnter="true" #dd="ngModel"
+                          addOnPaste="true" style="color: black;">
+            </rl-tag-input>
+          </div>
+        </div>
+
+        <div *ngIf="rp" class="form-group">
+          <div class="col-sm-6">
+              <label class="col-sm-2 control-label">Min Value:</label>
+              <div class="col-sm-9" [ngClass]="{ 'has-error': attributeAdd.submitted && !minv.valid }">
+                <input type="text" name="rmin" class="form-control" ngModel
+                       #minv="ngModel" pattern="^(0|[0-9][0-9]*)$" required>
+                <small [hidden]="!minv.hasError('required') || minv.valid || (minv.pristine && !attributeAdd.submitted)" class="text-danger">
+                  Minimum value is required
+                </small>
+                <small
+                  [hidden]="!minv.hasError('pattern') || minv.valid || (minv.pristine && !mobadd.submitted)"
+                  class="text-danger">
+                  Minimum value be only numbers
+                </small>
+              </div>
+          </div>
+          <div class="col-sm-6">
+            <label class="col-sm-2 control-label">Max Value:</label>
+            <div class="col-sm-8" [ngClass]="{ 'has-error': attributeAdd.submitted && !maxv.valid }">
+              <input type="text" name="rmax" class="form-control" ngModel
+                     pattern="^(0|[0-9][0-9]*)$"
+                     #maxv="ngModel" required>
+              <small [hidden]="!maxv.hasError('required') || maxv.valid || (maxv.pristine && !attributeAdd.submitted)" class="text-danger">
+                Maximum value is required
+              </small>
+              <small
+                [hidden]="!maxv.hasError('pattern') || maxv.valid || (maxv.pristine && !mobadd.submitted)"
+                class="text-danger">
+                Maximum value be only numbers
+              </small>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-1 control-label">Mandatory:</label>
+          <div>
+            <table>
+              <tr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                <td><label class="switch">
+                  <input type="checkbox"  ngModel name="mandatory">
+                  <span class="slider round"></span>
+                </label></td>
+                <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div >
+            <button align="center" type="submit" [disabled]="!add" class="btn btn-w-m btn-primary col-sm-12" >Add</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    </div>
+  </div>
+      <div class="ibox float-e-margins">
+        <div class="ibox-content">
+          <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-striped table-bordered table-hover dataTables-example">
+              <thead>
+              <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>DataType</th>
+                <th>Mandatory</th>
+                <th>Edit</th>
+                <th>Delete</th>
+
+              </tr>
+              </thead>
+              <tbody>
+
+              <tr *ngFor="let attribute of allAttributeObj; let i = index">
+                <td>{{attribute.attName}}</td>
+                <td>{{attribute.type}}</td>
+                <td>{{attribute.attType}}</td>
+                <td>{{attribute.mandatory}}</td>
+                <td><button [disabled]="!edit" type="button" class="btn btn-primary" (click)="get_AttributeById(attribute._id, EditCat)">Edit</button></td>
+                <td><button [disabled]="!delete" type="button" class="btn btn-danger" (click)="delete_AttributeById(attribute._id, i)">Delete</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+</div>
+

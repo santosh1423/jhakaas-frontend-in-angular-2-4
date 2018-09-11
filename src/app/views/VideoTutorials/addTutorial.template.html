@@ -1,0 +1,197 @@
+<ng-template #loading>
+  <alert type="danger">    <strong>Warning!</strong> You are not authorised to access this page.  </alert>
+</ng-template>
+
+<ng-template #addVideo>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Create New Video Tutorial</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" autocomplete="off" #videoAdd="ngForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="videoAdd.form.valid && AddVideo(videoAdd.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">Video Title*</label>
+          <div class="col-sm-10">
+            <input type="text" name="title" Capitalize class="form-control" ngModel #title="ngModel" required>
+            <small [hidden]="!title.hasError('required') || title.valid || (title.pristine && !videoAdd.submitted)" class="text-danger">
+              Title is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Video Discription</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="description" ngModel></div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Video Link*</label>
+          <div class="col-sm-10">
+            <input type="text" name="url" Capitalize class="form-control" ngModel #url="ngModel"
+                   pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$" required>
+            <small
+              [hidden]="!url.hasError('pattern') || url.valid || (url.pristine && !videoAdd.submitted)"
+              class="text-danger">
+              Invalid Video Link
+            </small>
+            <small [hidden]="!url.hasError('required') || url.valid || (url.pristine && !videoAdd.submitted)" class="text-danger">
+              Link is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Video Code*</label>
+          <div class="col-sm-10">
+            <input type="text" name="code" class="form-control" ngModel #code="ngModel" required>
+            <small [hidden]="!code.hasError('required') ||code.valid || (code.pristine && !videoAdd.submitted)" class="text-danger">
+              Code is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Type</label>
+          <div class="col-sm-10">
+            <select name="type" class="chosen-select select2_demo_3 form-control col-sm-10" ngModel required #type="ngModel">
+            <option value="Merchant">Merchant</option>
+            <option value="Customer">Customer</option>
+            <option value="Employee">Employee</option>
+          </select>
+            <small [hidden]="!type.hasError('required') || type.valid || (type.pristine && !videoAdd.submitted)" class="text-danger">
+              Type is required
+            </small>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalAdd.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #editVideo>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Edit Video Tutorial</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" autocomplete="off"  #videoEdit="ngForm" (keydown.enter)="$event.preventDefault()" (ngSubmit)="videoEdit.form.valid && EditVideo(videoEdit.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">Video Title*</label>
+          <div class="col-sm-10">
+            <input type="text" name="title" class="form-control" [ngModel]="videoById?.title" (ngModelChange)="videoById.title=$event" #title="ngModel" required>
+
+            <!--<input type="text" name="title" Capitalize class="form-control"  [ngModel]="videoObj.url" (ngModelChange)="videoObj.title=$event" #title="ngModel" required>-->
+            <small [hidden]="!title.hasError('required') || title.valid || (title.pristine && !videoEdit.submitted)" class="text-danger">
+              Title is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Video Discription</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="description" [ngModel]="videoById?.description" (ngModelChange)="videoById.description=$event"></div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Video Link*</label>
+          <div class="col-sm-10">
+            <input type="text" name="url" Capitalize class="form-control" [ngModel]="videoById?.url" (ngModelChange)="videoById.url=$event" #url="ngModel" required>
+            <small
+              [hidden]="!url.hasError('required') || url.valid || (url.pristine && !videoEdit.submitted)"
+              class="text-danger">
+              Invalid Video Link
+            </small>
+            <small [hidden]="!url.hasError('required') || url.valid || (url.pristine && !videoEdit.submitted)" class="text-danger">
+              Link is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Video Code*</label>
+          <div class="col-sm-10">
+            <input type="text" name="code" class="form-control" [ngModel]="videoById?.code" (ngModelChange)="videoById.code=$event" #code="ngModel" required>
+            <small [hidden]="!code.hasError('required') || code.valid || (code.pristine && !videoEdit.submitted)" class="text-danger">
+              Code is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Type</label>
+          <div class="col-sm-10">
+            <select name="type" class="chosen-select select2_demo_3 form-control col-sm-10" [ngModel]="videoById?.type" (ngModelChange)="videoById.type=$event" required #type="ngModel">
+              <option value="Merchant">Merchant</option>
+              <option value="Customer">Customer</option>
+              <option value="Employee">Employee</option>
+            </select>
+            <small [hidden]="!type.hasError('required') || type.valid || (type.pristine && !videoEdit.submitted)" class="text-danger">
+              Code is required
+            </small>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Update"/>
+            <button type="button" class="btn btn-white" (click)="modalEdit.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<div>
+  <h1><b>Add Video Tutorial</b></h1>
+</div>
+<div class ="row"  class="wrapper wrapper-content animated" *ngIf="view ;else loading;">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">Video Tutorial</h5>
+      <div class="ibox-tools">
+        <button class="btn btn-outline btn-primary  dim " title="Add" (keydown.enter)="$event.preventDefault()"  [disabled]="!add" (click)="addVideoModal(addVideo)"><i class="fa fa-plus"></i>
+        </button>
+      </div>
+
+      <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+          <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <table datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger"   class="display" class="display table table-striped table-bordered table-hover dataTables-example">
+              <thead>
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Video Link</th>
+                <th>Video For</th>
+                <th>CreatedBy</th>
+                <th>updatedBy</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr  *ngFor="let video of videoObj">
+                <td>{{video?.title}}</td>
+                <td>{{video?.description}}</td>
+                <td>{{video?.url}}</td>
+                <td>{{video?.type}}</td>
+                <td><b>{{video?.createBy?.firstName}} {{video?.createBy?.lastName}} </b><br> {{video?.createdAt | date: 'yMMMdjms'}}</td>
+                <td><b>{{video?.updateBy?.firstName}} {{video?.updateBy?.lastName}} </b><br> {{video?.updatedAt | date: 'yMMMdjms'}}</td>
+                <td><button [disabled]="!edit" class="btn btn-success btn-sm" (click)="statuschange(video.status, video._id)" [ngClass]="{'deactivestatus': video?.status !== 'Active', 'activestatus': video?.status == 'Active' }">{{video?.status}}</button></td>
+                <td><button  [disabled]="!edit" type="button" [disabled]="!edit" (keydown.enter)="$event.preventDefault()" class="btn btn-success" (click)="editVideoModal(video._id,editVideo)">Edit</button></td>
+                <td><button [disabled]="!delete" type="button" [disabled]="!delete" class="btn btn-danger" (click)="deleteVideoById(video?._id)">Delete</button></td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

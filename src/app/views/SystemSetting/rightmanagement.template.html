@@ -1,0 +1,149 @@
+<div>
+  <h1><b>User Profile Management</b></h1>
+</div>
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+<ng-template #AddSub>
+  <form #profilemgmt="ngForm" (ngSubmit)="add_profile(profilemgmt.value)"
+        (keydown.enter)="$event.preventDefault()"
+        class="form-horizontal">
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Create a User Access Profile</h4>
+      <button type="submit" class="close pull-right" aria-label="Close">
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="ibox-content form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Profile Name</label>
+          <div class="col-sm-10">
+            <input type="text" placeholder="Enter Profile Name" required
+                   class="form-control" name="pname" ngModel
+                   maxlength="150"></div>
+        </div>
+        <div class="col-sm-8 col-sm-offset-2">
+          <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<div *ngIf="view ;else loading;">
+<form #right="ngForm" (ngSubmit)="rights()"
+      (keydown.enter)="$event.preventDefault()"
+      class="form-horizontal">
+  <div class="ibox-title">
+    <h5 style="font-size: 25px;">User Profile</h5>
+    <div class="ibox-tools">
+      <button class="btn btn-outline btn-primary  dim " [disabled]="!add" (click)="openModal(AddSub)" title="Add" type="button"><i
+        class="fa fa-plus"></i></button>
+    </div>
+    <hr>
+
+    <div class="col-sm-12">
+      <label class="col-sm-2">Select Profile Type: </label>
+      <ng-select [multiple]="false" class="col-sm-10"
+                 placeholder="Select Profile"
+                 [disabled]="!edit"
+                 name="profile.name" id="expselect" (data)="refreshValue($event)"
+                 [(items)]="profileName">
+      </ng-select>
+    </div>&nbsp;&nbsp;&nbsp;
+    <div class="col-sm-12">
+      <label class="col-sm-2">Select User: </label>
+      <ng-select [multiple]="true" class="col-sm-10"
+                 name="user" id="expselect"
+                 placeholder="Select profile first"
+                 [disabled]="!edit"
+                 [(items)]="userName" (data)="refreshValue1($event)"
+                 [(active)]="empName">
+      </ng-select>
+      <br><br><br><br><br>
+    </div>
+    <div></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button type="button" [disabled]="!delete" class="btn btn-w-m btn-danger" (click)="deleteProfile()">Delete Profile</button>
+    <button type="submit" [disabled]="!edit" class="btn btn-w-m btn-success">Save Profile</button>
+    <br><br><br>
+  </div>
+  <br>
+
+  <div  class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-title">
+          <h3>Manage Profile Access</h3>
+        </div>
+        <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+          <table class="table table-striped table-bordered table-hover dataTables-example ng-isolate-scope dataTable">
+            <thead>
+            <tr>
+              <th>Master Name</th>
+              <th>View</th>
+              <th>Add</th>
+              <th>Edit</th>
+              <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let profile of profileAllObj; let i = index">
+              <td>
+                {{profile?.name}}
+              </td>
+              <td>
+                <div class="onoffswitch">
+                  <input type="checkbox" name="view" [disabled]="!edit"
+                         (change)="onClick(profile._id, $event.target.name, $event.target.checked)"
+                         class="onoffswitch-checkbox" id="{{profile?.name}}{{i}}" [checked]=profile.view>
+                  <label class="onoffswitch-label" for="{{profile?.name}}{{i}}">
+                    <span class="onoffswitch-inner"></span>
+                    <span class="onoffswitch-switch"></span>
+                  </label>
+                </div>
+              </td>
+              <td>
+                <div class="onoffswitch">
+                  <input type="checkbox" class="onoffswitch-checkbox" [disabled]="!edit"
+                         (change)="onClick(profile._id, $event.target.name, $event.target.checked)" name="add"
+                         id="{{profile?.name}}{{i+1}}" [checked]=profile.add>
+                  <label class="onoffswitch-label" for="{{profile?.name}}{{i+1}}">
+                    <span class="onoffswitch-inner"></span>
+                    <span class="onoffswitch-switch"></span>
+                  </label>
+                </div>
+              </td>
+              <td>
+                <div class="onoffswitch">
+                  <input type="checkbox" class="onoffswitch-checkbox" name="edit" [disabled]="!edit"
+                         (change)="onClick(profile._id, $event.target.name, $event.target.checked)"
+                         id="{{profile?.name}}{{i+2}}" [checked]=profile.edit>
+                  <label class="onoffswitch-label" for="{{profile?.name}}{{i+2}}">
+                    <span class="onoffswitch-inner"></span>
+                    <span class="onoffswitch-switch"></span>
+                  </label>
+                </div>
+              </td>
+              <td>
+                <div class="onoffswitch">
+                  <input type="checkbox" class="onoffswitch-checkbox" name="delete" [disabled]="!edit"
+                         (change)="onClick(profile._id, $event.target.name, $event.target.checked)"
+                         id="{{profile?.name}}{{i+3}}" [checked]=profile.delete>
+                  <label class="onoffswitch-label" for="{{profile?.name}}{{i+3}}">
+                    <span class="onoffswitch-inner"></span>
+                    <span class="onoffswitch-switch"></span>
+                  </label>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div >
+
+</form>
+</div>

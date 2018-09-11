@@ -1,0 +1,151 @@
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+<div>
+  <h1><b>Voucher Management</b></h1>
+</div>
+
+<ng-template #addVoucher>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Create New Voucher</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #voucherAdd="ngForm" autocomplete="off" (keydown.enter)="$event.preventDefault()" (ngSubmit)="voucherAdd.form.valid && AddVoucher(voucherAdd.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">Code*</label>
+          <div class="col-sm-10">
+            <input type="text" name="code" Capitalize class="form-control" ngModel #code="ngModel" required>
+            <small [hidden]="!code.hasError('required') || code.valid || (code.pristine && !voucherAdd.submitted)" class="text-danger">
+              Title is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Name*</label>
+          <div class="col-sm-10">
+            <input type="text" name="name" Capitalize class="form-control" ngModel #name="ngModel" required>
+            <small [hidden]="!name.hasError('required') || name.valid || (name.pristine && !voucherAdd.submitted)" class="text-danger">
+              Title is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Discription</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="description" ngModel></div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Image</label>
+          <div class="col-sm-10" >
+            <input type="file" class="form-control"  (change)="fileSelect($event)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalAdd.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #editVoucher>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Create New Voucher</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #voucherEdit="ngForm" autocomplete="off" (keydown.enter)="$event.preventDefault()" (ngSubmit)="voucherEdit.form.valid && EditVoucher(voucherEdit.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">Code*</label>
+          <div class="col-sm-10">
+            <input type="text" name="code" Capitalize class="form-control" [ngModel]="voucherByID?.code" (ngModelChange)="voucherByID.code=$event" #code="ngModel" required>
+            <small [hidden]="!code.hasError('required') || code.valid || (code.pristine && !voucherEdit.submitted)" class="text-danger">
+              Title is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Name*</label>
+          <div class="col-sm-10">
+            <input type="text" name="name" Capitalize class="form-control" [ngModel]="voucherByID?.name" (ngModelChange)="voucherByID.name=$event" #name="ngModel" required>
+            <small [hidden]="!name.hasError('required') || name.valid || (name.pristine && !voucherEdit.submitted)" class="text-danger">
+              Title is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Discription</label>
+          <div class="col-sm-10"><input type="text" Capitalize class="form-control" name="description" [ngModel]="voucherByID?.description" (ngModelChange)="voucherByID.description=$event"></div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Image</label>
+          <div class="col-sm-10" >
+            <input type="file" class="form-control"  (change)="fileSelect($event)">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalEdit.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<div class ="row"  class="wrapper wrapper-content animated" *ngIf="view ;else loading;">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">Add Voucher</h5>
+      <div class="ibox-tools">
+        <button class="btn btn-outline btn-primary  dim " title="Add" (keydown.enter)="$event.preventDefault()"  [disabled]="!add" (click)="addVoucherModal(addVoucher)"><i class="fa fa-plus"></i>
+        </button>
+      </div>
+
+      <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+          <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <table datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger"   class="display" class="display table table-striped table-bordered table-hover dataTables-example">
+              <thead>
+              <tr>
+                <th>Image</th>
+                <th>Code</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>CreatedBy</th>
+                <th>updatedBy</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr  *ngFor="let voucher of voucherObj">
+                <td><img class="img-thumbnail" alt="{{voucher.name}}" width="60" height="60" type="multiple" src={{voucher.url}}></td>
+                <td>{{voucher?.code}}</td>
+                <td>{{voucher?.name}}</td>
+                <td>{{voucher?.description}}</td>
+                <td><b>{{voucher?.createBy?.firstName}} {{voucher?.createBy?.lastName}} </b><br> {{voucher?.createdAt | date: 'yMMMdjms'}}</td>
+                <td><b>{{voucher?.updateBy?.firstName}} {{voucher?.updateBy?.lastName}} </b><br> {{voucher?.updatedAt | date: 'yMMMdjms'}}</td>
+                <td><button  [disabled]="!edit" type="button" [disabled]="!edit"  (keydown.enter)="$event.preventDefault()"  class="btn btn-success" (click)="editVoucherModal(voucher._id,editVoucher)">Edit</button></td>
+                <td><button [disabled]="!delete" type="button" [disabled]="!delete" class="btn btn-danger" (click)="deleteVoucherById(voucher?._id)">Delete</button></td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

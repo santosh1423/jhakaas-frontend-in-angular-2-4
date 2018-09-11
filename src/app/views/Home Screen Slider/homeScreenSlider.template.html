@@ -1,0 +1,621 @@
+<ng-template #loading>
+  <alert type="danger">    <strong>Warning!</strong> You are not authorised to access this page.  </alert>
+</ng-template>
+<div>
+  <h1><b>Home Screen Slider</b></h1>
+</div>
+<!--View Image-->
+<ng-template #ViewImage>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">View Home Screen Slider</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalEdit.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #sliderEdit="ngForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="sliderEdit.form.valid && EditSlider(sliderEdit.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-lg-3 col-sm-3 col-md-3 col-xs-3  control-label">Slider Name</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="name" [disabled]="true" Capitalize class="form-control" [ngModel]="imageIdObj?.name" (ngModelChange)="imageIdObj.name=$event" ngModel #name="ngModel" required>
+            <small [hidden]="!name.hasError('required') || name.valid || (name.pristine && !sliderEdit.submitted)" class="text-danger">
+              Slider Name is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Is General</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <table>
+              <tr>
+                <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                <td><label class="switch">
+                  <input type="checkbox" [disabled]="true" [ngModel]="imageIdObj?.inGenral" (ngModelChange)="imageIdObj.inGenral=$event"  ngModel name="inGenral"   >
+                  <span class="slider round"></span>
+                </label></td>
+                <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="form-group" *ngIf="pincodeShow">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3  control-label">Pincode</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <!--<rl-tag-input [(ngModel)]="pincode" name="pincode" [disabled]="true"-->
+            <!--addOnComma="true" addOnEnter="true"-->
+            <!--addOnPaste="true" style="color: black;"></rl-tag-input>-->
+            <input type="text" name="pincode" readonly Capitalize class="form-control"
+                   [ngModel]="imageIdObj?.pincode" [disabled]="true"
+                   ngModel #name="ngModel" required>
+
+            <!--<input type="text" class="form-control" name="pincode"-->
+            <!--ngModel-->
+            <!--#postalCode="ngModel" required-->
+            <!--pattern="^(0|[0-9][0-9]*)$" maxlength="6"-->
+            <!--minlength="6">-->
+            <!--<small-->
+            <!--[hidden]="!postalCode.hasError('required') || postalCode.valid || (postalCode.pristine && !sliderAdd.submitted)"-->
+            <!--class="text-danger">-->
+            <!--Pincode is required-->
+            <!--</small>-->
+            <!--<small-->
+            <!--[hidden]="!postalCode.hasError('pattern') || postalCode.valid || (postalCode.pristine && !sliderAdd.submitted)"-->
+            <!--class="text-danger">-->
+            <!--Pincode should be only numbers-->
+            <!--</small>-->
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Image</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <img class="img-thumbnail" alt="{{imageIdObj?.url}}" width="350" height="350"
+                 src={{imageIdObj?.url}}>
+            <!--<input type="file" name="image" id="tt" (change)="fileSelect($event)" ngModel #image="ngModel"-->
+            <!--class="btn-bs-file btn btn-primary" accept="image/*">-->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Select Link Type </label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <label>Internal</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="linktype"  value="Internal" [disabled]="true" [(ngModel)]="st" (click)="linkTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+            <label>External</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="linktype"  value="External" [disabled]="true"  [(ngModel)]="st" (click)="linkTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group" *ngIf="showInternal">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Internal Type</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <label>Vendor</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="internaltype" value="Vendor" [disabled]="true" [(ngModel)]="ist" (click)="internalTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+            <label>Category</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="internaltype" value="Category" [disabled]="true" [(ngModel)]="ist" (click)="internalTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="showUrl">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">URL*</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="link" Capitalize class="form-control"
+                   [ngModel]="imageIdObj.external.link" [disabled]="true" (ngModelChange)="imageIdObj.external.link=$event"
+                   ngModel #link="ngModel"
+                   pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$" required>
+            <!--<small-->
+            <!--[hidden]="!url.hasError('pattern') || url.valid || (url.pristine && !imageAdd.submitted)"-->
+            <!--class="text-danger">-->
+            <!--Invalid image Link-->
+            <!--</small>-->
+            <!--<small [hidden]="!url.hasError('required') || url.valid || (url.pristine && !imageAdd.submitted)" class="text-danger">-->
+            <!--Link is required-->
+            <!--</small>-->
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="showMobile">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Mobile No*</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="mobileNumber"
+                   class="form-control" ngModel
+                   [(ngModel)]="mobileNo" [disabled]="true"
+                   (blur)="mobileNO($event.target.value)"
+                   (change)="CheckMobile($event.target.value)"
+                   #mobileNumber="ngModel" required
+                   pattern="^(0|[0-9][0-9]*)$" maxlength="10"
+                   minlength="10">
+            <small
+              [hidden]="!mobileNumber.hasError('required') || mobileNumber.valid || (mobileNumber.pristine && !sliderEdit.submitted)"
+              class="text-danger">
+              Mobile number is required
+            </small>
+            <small
+              [hidden]="!mobileNumber.hasError('pattern') || mobileNumber.valid || (mobileNumber.pristine && !sliderEdit.submitted)"
+              class="text-danger">
+              Mobile number should be only numbers
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="showCategory">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Select Category: </label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12"
+                       [multiple]="false"
+                       name="category" [disabled]="true"
+                       [items]="proCat" #category="ngModel"
+                       [active]="[cat]"
+                       [ngModel]>
+            </ng-select>
+            <br><br>
+            <small
+              [hidden]="!category.hasError('required') || category.valid || (category.pristine && !sliderEdit.submitted)"
+              class="text-danger">
+              Category required.
+            </small>
+            <br><br>
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <button type="button" class="btn btn-white" (click)="modalUpdate.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<!--Update Image-->
+<ng-template #EditImage>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Update Home Screen Slider</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalEdit.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #sliderEdit="ngForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="sliderEdit.form.valid && EditSlider(sliderEdit.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-lg-3 col-sm-3 col-md-3 col-xs-3  control-label">Slider Name</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="name" Capitalize class="form-control" [ngModel]="imageIdObj?.name" (ngModelChange)="imageIdObj.name=$event" ngModel #name="ngModel" required>
+            <small [hidden]="!name.hasError('required') || name.valid || (name.pristine && !sliderEdit.submitted)" class="text-danger">
+              Slider Name is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Is General</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <table>
+              <tr>
+                <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                <td><label class="switch">
+                  <input type="checkbox" (change)="onChange($event.target.checked)" [ngModel]="imageIdObj?.inGenral" (ngModelChange)="imageIdObj.inGenral=$event"  ngModel name="inGenral"   >
+                  <span class="slider round"></span>
+                </label></td>
+                <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="pincodeShow">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3  control-label">Pincode</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <rl-tag-input [(ngModel)]="pincode" name="pincode"
+                          addOnComma="true" addOnEnter="true"
+                          addOnPaste="true" style="color: black;"></rl-tag-input>
+            <!--<input type="text" class="form-control" name="pincode"-->
+            <!--ngModel-->
+            <!--#postalCode="ngModel" required-->
+            <!--pattern="^(0|[0-9][0-9]*)$" maxlength="6"-->
+            <!--minlength="6">-->
+            <!--<small-->
+            <!--[hidden]="!postalCode.hasError('required') || postalCode.valid || (postalCode.pristine && !sliderAdd.submitted)"-->
+            <!--class="text-danger">-->
+            <!--Pincode is required-->
+            <!--</small>-->
+            <!--<small-->
+            <!--[hidden]="!postalCode.hasError('pattern') || postalCode.valid || (postalCode.pristine && !sliderAdd.submitted)"-->
+            <!--class="text-danger">-->
+            <!--Pincode should be only numbers-->
+            <!--</small>-->
+          </div>
+        </div>
+
+
+
+
+        <div class="form-group">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Image</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <img class="img-thumbnail" alt="{{imageIdObj?.url}}" width="350" height="350"
+                 src={{imageIdObj?.url}}>
+            <!--<input type="file" name="image" id="tt" (change)="fileSelect($event)" ngModel #image="ngModel"-->
+                   <!--class="btn-bs-file btn btn-primary" accept="image/*">-->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Select Link Type </label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <label>Internal</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="stype"  value="Internal" [(ngModel)]="st" (click)="linkTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+            <label>External</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="stype"  value="External" [(ngModel)]="st" (click)="linkTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="form-group" *ngIf="showInternal">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Internal Type</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <label>Vendor</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="internaltype" value="Vendor" [(ngModel)]="ist" required  ngModel #internaltype="ngModel"
+                       (click)="internalTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+            <label>Category</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="internaltype" value="Category" [(ngModel)]="ist" required  ngModel #internaltype="ngModel"
+                       (click)="internalTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+            <small [hidden]="!internaltype.hasError('required') || internaltype.valid || (internaltype.pristine && !sliderEdit.submitted)" class="text-danger">
+              Internal Type required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="showUrl">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">URL*</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="link" Capitalize class="form-control"
+                   [ngModel]="imageIdObj?.external?.link" (ngModelChange)="imageIdObj.external.link=$event"
+                   ngModel #link="ngModel"
+                   pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$" required>
+            <!--<small-->
+            <!--[hidden]="!url.hasError('pattern') || url.valid || (url.pristine && !imageAdd.submitted)"-->
+            <!--class="text-danger">-->
+            <!--Invalid image Link-->
+            <!--</small>-->
+            <!--<small [hidden]="!url.hasError('required') || url.valid || (url.pristine && !imageAdd.submitted)" class="text-danger">-->
+            <!--Link is required-->
+            <!--</small>-->
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="showMobile">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Mobile No*</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="mobileNumber"
+                   class="form-control" ngModel
+                   [(ngModel)]="mobileNo"
+                   (blur)="mobileNO($event.target.value)"
+                   (change)="CheckMobile($event.target.value)"
+                   #mobileNumber="ngModel" required
+                   pattern="^(0|[0-9][0-9]*)$" maxlength="10"
+                   minlength="10">
+            <small
+              [hidden]="!mobileNumber.hasError('required') || mobileNumber.valid || (mobileNumber.pristine && !sliderEdit.submitted)"
+              class="text-danger">
+              Mobile number is required
+            </small>
+            <small
+              [hidden]="!mobileNumber.hasError('pattern') || mobileNumber.valid || (mobileNumber.pristine && !sliderEdit.submitted)"
+              class="text-danger">
+              Mobile number should be only numbers
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="showCategory">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Select Category: </label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12"
+                       [multiple]="false" (selected)="selectedCategory($event)"
+                       name="category" id="expselect"
+                       [items]="proCat"
+                       [active]="[cat]">
+            </ng-select>
+            <!--<br><br>-->
+            <!--<small-->
+              <!--[hidden]="!category.hasError('required') || category.valid || (category.pristine && !sliderEdit.submitted)"-->
+              <!--class="text-danger">-->
+              <!--Category required.-->
+            <!--</small>-->
+            <br><br>
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalUpdate.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<!--add Image-->
+<ng-template #addSlider>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Upload Home Screen Slider</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #sliderAdd="ngForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="sliderAdd.form.valid && AddSlider(sliderAdd.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-lg-3 col-sm-3 col-md-3 col-xs-3  control-label">Slider Name</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="name" Capitalize class="form-control" ngModel #name="ngModel" required>
+            <small [hidden]="!name.hasError('required') || name.valid || (name.pristine && !sliderAdd.submitted)" class="text-danger">
+              Slider Name is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Is General</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <table>
+              <tr>
+                <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                <td><label class="switch">
+                  <input type="checkbox"  ngModel name="inGenral" [ngModel]="true" (change)="onChange($event.target.checked)" >
+                  <span class="slider round"></span>
+                </label></td>
+                <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="pincodeShow">
+        <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3  control-label">Pincode</label>
+        <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+          <rl-tag-input [(ngModel)]="pincode" name="pincode"
+                        addOnComma="true" addOnEnter="true"
+                        addOnPaste="true" style="color: black;"></rl-tag-input>
+          <!--<input type="text" class="form-control" name="pincode"-->
+                 <!--ngModel-->
+                 <!--#postalCode="ngModel" required-->
+                 <!--pattern="^(0|[0-9][0-9]*)$" maxlength="6"-->
+                 <!--minlength="6">-->
+          <!--<small-->
+            <!--[hidden]="!postalCode.hasError('required') || postalCode.valid || (postalCode.pristine && !sliderAdd.submitted)"-->
+            <!--class="text-danger">-->
+            <!--Pincode is required-->
+          <!--</small>-->
+          <!--<small-->
+            <!--[hidden]="!postalCode.hasError('pattern') || postalCode.valid || (postalCode.pristine && !sliderAdd.submitted)"-->
+            <!--class="text-danger">-->
+            <!--Pincode should be only numbers-->
+          <!--</small>-->
+        </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Image</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="file" name="image" id="tt" (change)="fileSelect($event)" ngModel #image="ngModel"
+                   class="btn-bs-file btn btn-primary" accept="image/*">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Select Link Type </label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <label>Internal</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="linktype"  value="Internal" required  ngModel #linktype="ngModel"
+                       (click)="linkTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+            <label>External</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="linktype"  value="External" required ngModel #linktype="ngModel"
+                       (click)="linkTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+            <small [hidden]="!linktype.hasError('required') || linktype.valid || (linktype.pristine && !sliderAdd.submitted)" class="text-danger">
+              Link Type required
+            </small>
+          </div>
+        </div>
+
+
+        <div class="form-group" *ngIf="showInternal">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Internal Type </label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <label>Vendor</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="internaltype"  value="Vendor" required  ngModel #internaltype="ngModel"
+                       (click)="internalTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+            <label>Category</label>
+            <div class="btn-group btn-group-vertical" data-toggle="buttons">
+              <label class="btn active">
+                <input type="radio" name="internaltype"  value="Category"  required  ngModel #internaltype="ngModel"
+                       (click)="internalTypeClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                class="fa fa-dot-circle-o fa-2x"></i>
+              </label>
+            </div>
+            <small [hidden]="!internaltype.hasError('required') || internaltype.valid || (internaltype.pristine && !sliderAdd.submitted)" class="text-danger">
+              Internal Type required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="showUrl">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">URL*</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <input type="text" name="url" Capitalize class="form-control" ngModel #url="ngModel"
+                   pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$" required>
+            <!--<small-->
+              <!--[hidden]="!url.hasError('pattern') || url.valid || (url.pristine && !imageAdd.submitted)"-->
+              <!--class="text-danger">-->
+              <!--Invalid image Link-->
+            <!--</small>-->
+            <!--<small [hidden]="!url.hasError('required') || url.valid || (url.pristine && !imageAdd.submitted)" class="text-danger">-->
+              <!--Link is required-->
+            <!--</small>-->
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="showMobile">
+        <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Mobile No*</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+              <input type="text" name="mobileNumber"
+                     class="form-control" ngModel
+                     (blur)="mobileNO($event.target.value)"
+                     #mobileNumber="ngModel" required
+                     pattern="^(0|[0-9][0-9]*)$" maxlength="10"
+                     minlength="10">
+            <small
+              [hidden]="!mobileNumber.hasError('required') || mobileNumber.valid || (mobileNumber.pristine && !sliderAdd.submitted)"
+              class="text-danger">
+              Mobile number is required
+            </small>
+            <small
+              [hidden]="!mobileNumber.hasError('pattern') || mobileNumber.valid || (mobileNumber.pristine && !sliderAdd.submitted)"
+              class="text-danger">
+              Mobile number should be only numbers
+            </small>
+            </div>
+        </div>
+
+        <div class="form-group" *ngIf="showCategory">
+        <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">Select Category: </label>
+        <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+          <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12" [multiple]="false" name="category"
+                     [items]="proCat" #category="ngModel"
+                     placeholder="Select Category" ngModel>
+          </ng-select>
+          <br><br>
+          <small
+            [hidden]="!category.hasError('required') || category.valid || (category.pristine && !sliderAdd.submitted)"
+            class="text-danger">
+            Category required.
+          </small>
+          <br><br>
+        </div>
+        </div>
+
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalAdd.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+
+<div class ="row"  class="wrapper wrapper-content animated" *ngIf="view ;else loading;">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">Add Home Screen Slider</h5>
+      <div class="ibox-tools">
+        <button class="btn btn-outline btn-primary  dim " title="Add" (keydown.enter)="$event.preventDefault()"  [disabled]="!add" (click)="addSliderModal(addSlider)"><i class="fa fa-plus"></i>
+        </button>
+      </div>
+
+      <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+          <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <table datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger"   class="display" class="display table table-striped table-bordered table-hover dataTables-example">
+              <thead>
+              <tr>
+                <th>Image</th>
+                <th>Slider</th>
+                <th>PinCode</th>
+                <th>Is General</th>
+                <th>type</th>
+                <th>Created By</th>
+                <th>updatedBy</th>
+                <th>Edit</th>
+                <th>View</th>
+                <th>Delete</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr  *ngFor="let image of imageObj">
+                <td><img class="img-thumbnail" alt="{{image.icon}}" width="100" height="30"
+                         src={{image.url}}></td>
+                <td>{{image?.name}}</td>
+                <td>{{image?.pincode}}</td>
+                <td>{{image?.inGenral}}</td>
+                <td>{{image?.stype}}</td>
+                <td><b>{{image?.createBy?.firstName}} {{image?.createBy?.lastName}} </b><br> {{image?.createdAt | date: 'yMMMdjms'}}</td>
+                <td><b>{{image?.updateBy?.firstName}} {{image?.updateBy?.lastName}} </b><br> {{image?.updatedAt | date: 'yMMMdjms'}}</td>
+                <td><button [disabled]="!edit" type="button" [disabled]="!edit" (keydown.enter)="$event.preventDefault()" class="btn btn-primary" (click)="getImageById(image._id, EditImage)">Edit</button></td>
+                <td><button [disabled]="!view" type="button" [disabled]="!view" (keydown.enter)="$event.preventDefault()" class="btn btn-success" (click)="getImageById(image._id, ViewImage)">View</button></td>
+                <td><button [disabled]="!delete" type="button" [disabled]="!delete" class="btn btn-danger" (click)="deleteimageById(image?._id)">Delete</button></td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

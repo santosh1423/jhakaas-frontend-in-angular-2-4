@@ -1,0 +1,78 @@
+.lo{
+  width: 310px;
+}
+.off-top{
+  margin-top: 100px;
+}
+.activestatus {
+  background-color: #4285F4;
+}
+.pendingstatus {
+  background-color: #5a5bcc;
+}
+input.ng-invalid
+{
+  border-left: 5px solid red;
+}
+input.ng-valid[required]
+{
+  border-left: 5px solid green;
+}
+.ng-valid[required], .ng-valid.required{
+  border-left: 5px solid green;
+}
+#expselect
+{
+  border-left: none;
+}
+.ng-invalid:not(form){
+  border-left: 5px solid red;
+}
+.activestatus {
+  background-color: #4285F4;
+}
+.pendingstatus {
+  background-color: #5a5bcc;
+}
+input.ng-invalid
+{
+  border-left: 5px solid red;
+}
+/*input[type=text] {*/
+  /*text-transform: capitalize;*/
+/*}*/
+#provideos{
+  text-transform: none;
+}
+input.ng-valid[required]
+{
+  border-left: 5px solid green;
+}
+.ng-valid[required], .ng-valid.required{
+  border-left: 5px solid green;
+}
+.ng-invalid:not(form){
+  border-left: 5px solid red;
+}
+agm-map {
+  height: 300px;
+}
+.btn-file {
+  position: relative;
+  overflow: hidden;
+}
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  text-align: right;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: inherit;
+  display: block;
+}

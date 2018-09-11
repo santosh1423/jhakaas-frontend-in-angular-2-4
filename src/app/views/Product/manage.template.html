@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+
+<!--Add Variation Model-->
+<ng-template #addVarAttribute>
+  <form name="form" #addVarAttribute="ngForm" (ngSubmit)="addNewVar(addVarAttribute.value)"
+        class="form-horizontal" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Add Variation Attribute</h4><br><hr>
+
+      <div class="modal-body">
+        <div *ngFor="let att of varAttributeData1;  let index=index;">
+          <!--<div  class="form-group col-md-12">-->
+          <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>-->
+          <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+          <!--<input type="text" class="form-control" name={{att.attName}}-->
+          <!--#index="ngModel" ngModel [required]="att.mandatory"/>-->
+          <!--<small-->
+          <!--[hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"-->
+          <!--class="text-danger">-->
+          <!--{{att.attName}} is required.-->
+          <!--</small>-->
+          <!--<br>-->
+          <!--</div>-->
+          <!--</div>-->
+
+          <!--1. String-->
+          <div *ngIf="att.attType === 'String'" class="form-group col-md-12">
+            <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+            <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+              <input type="text" class="form-control" name={{att.attName}}
+                     #index="ngModel"  ngModel [required]="att.mandatory"/>
+              <small
+                [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                class="text-danger">
+                {{att.attName}} is required.
+              </small>
+              <!--pattern="[a-zA-Z][a-zA-Z ]+"-->
+              <!--<small-->
+                <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !addVarAttribute.submitted)"-->
+                <!--class="text-danger">-->
+                <!--{{att.attName}} should be Character-->
+              <!--</small>-->
+              <br>
+            </div>
+          </div>
+
+          <!--2. Number-->
+          <div *ngIf="att.attType === 'Number'" class="form-group col-md-12">
+            <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+            <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+              <input type="text" class="form-control" name={{att.attName}}
+                     #index="ngModel"  ngModel [required]="att.mandatory"/>
+              <small
+                [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                class="text-danger">
+                {{att.attName}} is required.
+              </small>
+              <!--pattern="^(0|[0-9][0-9]*)$"-->
+              <!--<small-->
+                <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !addVarAttribute.submitted)"-->
+                <!--class="text-danger">-->
+                <!--{{att.attName}} should be only Number-->
+              <!--</small>-->
+            </div>
+          </div>
+
+          <!--3. Alphanumeric-->
+          <div *ngIf="att.attType === 'Alphanumeric'" class="form-group col-md-12">
+            <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att?.attName}}:</label>
+            <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+              <input type="text" class="form-control" name={{att.attName}}
+                     #index="ngModel"  ngModel [required]="att.mandatory"/>
+              <small
+                [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                class="text-danger">
+                {{att.attName}} is required.
+              </small>
+              <!--pattern="^[a-zA-Z0-9_]*$"-->
+              <!--<small-->
+                <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !addVarAttribute.submitted)"-->
+                <!--class="text-danger">-->
+                <!--{{att.attName}} should be only Number $ Character-->
+              <!--</small>-->
+            </div>
+          </div>
+
+          <!--4. Dropdown-->
+          <div *ngIf="att.attType === 'Dropdown'" class="form-group col-md-12">
+            <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+            <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+              <select name="{{att.attName}}" class="chosen-select select2_demo_3 form-control"
+                      ngModel required #index="ngModel">
+                <option *ngFor="let dd of att.attDropdown" [value]="dd">
+                  {{dd}}
+                </option>
+              </select>
+              <small
+                [hidden]="!index.hasError('required') || index.valid || (index.pristine && !Varattribute.submitted)"
+                class="text-danger">
+                {{att.attName}} is required.
+              </small>
+            </div>
+          </div>
+
+          <!--&lt;!&ndash;5. Range&ndash;&gt;-->
+          <!--<div *ngIf="att.attType === 'Range'" class="form-group col-md-12">-->
+          <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>-->
+          <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+          <!--<input type="text" class="form-control" name={{att.attName}}-->
+          <!--#index="ngModel" pattern="^([a-zA-Z]*)$" ngModel [required]="att.mandatory"/>-->
+          <!--&lt;!&ndash;<small&ndash;&gt;-->
+          <!--&lt;!&ndash;[hidden]="!index.hasError('required') || index.valid || (index.pristine && !addproduct.submitted)"&ndash;&gt;-->
+          <!--&lt;!&ndash;class="text-danger">&ndash;&gt;-->
+          <!--&lt;!&ndash;{{att.attName}} is required.&ndash;&gt;-->
+          <!--&lt;!&ndash;</small>&ndash;&gt;-->
+          <!--</div>-->
+          <!--</div>-->
+
+          <!--6. Date-->
+          <div *ngIf="att.attType === 'Date'" class="form-group col-md-12">
+            <label class="col-sm-2 control-label">{{att?.attName}}:</label>
+            <div class="col-sm-10 col-lg-10  col-md-10 col-xs-10 input-group">
+              <div class="col-lg-11 col-sm-11 col-md-11 col-xs-11">
+                <input name="{{att.attName}}" class="form-control"
+                       [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
+                       ngModel #index="ngModel" ngModel [required]="att.mandatory"
+                       bsDatepicker [maxDate]="maxDate" #dp="bsDatepicker" #index="ngModel">
+                <small
+                  [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                  class="text-danger">
+                  {{att.attName}} is required.
+                </small>
+              </div>
+              <div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">
+                <button type="button" class="btn btn-default" (click)="dp.show()"><i
+                  class="fa fa-calendar"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!--8. Boolean-->
+          <div *ngIf="att.attType === 'Boolean'" class="form-group col-md-12">
+            <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+            <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+              <table>
+                <tr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                  <td><label class="switch">
+                    <input type="checkbox" ngModel
+                           name="{{att.attName}}"
+                           #index="ngModel"
+                           [required]="att.mandatory">
+                    <span class="slider round"></span>
+                  </label></td>
+                  <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+                </tr>
+              </table>
+              <small
+                [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                class="text-danger">
+                {{att.attName}} is required.
+              </small>
+            </div>
+          </div>
+
+          <!--9. Time-->
+          <div *ngIf="att.attType === 'Time'" class="form-group col-md-12">
+            <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att?.attName}}:</label>
+            <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+              <timepicker name="{{att.attName}}" [readonlyInput]="isEnabled" ngModel #index="ngModel"
+                          [required]="att.mandatory"></timepicker>
+              <small
+                [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                class="text-danger">
+                {{att.attName}} is required.
+              </small>
+            </div>
+          </div>
+
+          <!--10. Color-->
+          <div *ngIf="att.attType == 'Color'" class="form-group col-md-12">
+            <label class="col-sm-2 control-label">{{att?.attName}}:</label>
+            <div class="col-sm-10 col-lg-10  col-md-10 col-xs-10 input-group">
+              <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                <input class="col-lg-8 col-sm-8 col-md-8 col-xs-8" type="color" name="{{att?.attName}}"
+                       ngModel>
+              </div>
+              <div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--7. Image-->
+        <div *ngIf="onlyImg" class="form-group col-md-12">
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Image:</label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <input type="file" class="btn-bs-file btn btn-primary" multiple
+                   (change)="attrVarImg($event.target.files)"
+                    accept="image/*"/>
+          </div>
+        </div>
+        <div class="row" >
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Product Status: </label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <select name="status" ngModel
+                    class="chosen-select select2_demo_3 form-control" required #status=ngModel>
+              <option value="Active">Active</option>
+              <option value="Discontinued">Discontinued</option>
+              <option value="Suspended">Suspended</option>
+              <option value="Under Enquiry">Under Enquiry</option>
+            </select>
+          </div>
+        </div><br>
+        <div class="row pull-right">
+          <button type="submit" class="btn btn-w-m btn-warning">Add</button>
+          <button type="button" class="btn btn-white" (click)="varModalAdd.hide()">Close</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<!--Edit Variation Model-->
+<ng-template #varAttribute>
+  <form name="form" #varAttribute="ngForm" (ngSubmit)="updateVarAtt(varAttribute.value)"
+        class="form-horizontal" novalidate>
+    <div class="modal-header">
+      <h4 class="modal-title pull-left">Update Variation Attribute</h4><br><hr>
+
+    <div class="modal-body">
+          <div class="form-group col-md-12">
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Code:</label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+          <input type="text" class="form-control" name="code" disabled [ngModel]="varID"/>
+        </div>
+      </div>
+          <div *ngFor="let att of varAttributeData1;  let index=index;">
+
+            <!--1. String-->
+            <div *ngIf="att.attType === 'String'" class="form-group col-md-12">
+              <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+              <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                <input type="text" class="form-control" name={{att.attName}} [ngModel]="varModalData[att.attName]" (change)="EditModalHide()"
+                       #index="ngModel"  ngModel [required]="att.mandatory"/>
+                <small
+                  [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                  class="text-danger">
+                  {{att.attName}} is required.
+                </small>
+                <!--pattern="[a-zA-Z][a-zA-Z ]+"-->
+                <!--<small-->
+                  <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !addVarAttribute.submitted)"-->
+                  <!--class="text-danger">-->
+                  <!--{{att.attName}} should be Character-->
+                <!--</small>-->
+                <br>
+              </div>
+            </div>
+
+            <!--2. Number-->
+            <div *ngIf="att.attType === 'Number'" class="form-group col-md-12">
+              <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+              <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                <input type="text" class="form-control" name={{att.attName}} [ngModel]="varModalData[att.attName]" (change)="EditModalHide()"
+                       #index="ngModel"  ngModel [required]="att.mandatory"/>
+                <small
+                  [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                  class="text-danger">
+                  {{att.attName}} is required.
+                </small>
+                <!--pattern="^(0|[0-9][0-9]*)$"-->
+                <!--<small-->
+                  <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !addVarAttribute.submitted)"-->
+                  <!--class="text-danger">-->
+                  <!--{{att.attName}} should be only Number-->
+                <!--</small>-->
+              </div>
+            </div>
+
+            <!--3. Alphanumeric-->
+            <div *ngIf="att.attType === 'Alphanumeric'" class="form-group col-md-12">
+              <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att?.attName}}:</label>
+              <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                <input type="text" class="form-control" name={{att.attName}} [ngModel]="varModalData[att.attName]" (change)="EditModalHide()"
+                       #index="ngModel"  ngModel [required]="att.mandatory"/>
+                <small
+                  [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                  class="text-danger">
+                  {{att.attName}} is required.
+                </small>
+                <!--pattern="^[a-zA-Z0-9_]*$"-->
+                <!--<small-->
+                  <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !addVarAttribute.submitted)"-->
+                  <!--class="text-danger">-->
+                  <!--{{att.attName}} should be only Number $ Character-->
+                <!--</small>-->
+              </div>
+            </div>
+
+            <!--4. Dropdown-->
+            <div *ngIf="att.attType === 'Dropdown'" class="form-group col-md-12">
+              <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+              <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                <select name="{{att.attName}}" class="chosen-select select2_demo_3 form-control" (change)="EditModalHide()"
+                        ngModel required #index="ngModel" [ngModel]="varModalData[att.attName]">
+                  <option *ngFor="let dd of att.attDropdown" [value]="dd">
+                    {{dd}}
+                  </option>
+                </select>
+                <small
+                  [hidden]="!index.hasError('required') || index.valid || (index.pristine && !Varattribute.submitted)"
+                  class="text-danger">
+                  {{att.attName}} is required.
+                </small>
+              </div>
+            </div>
+
+            <!--&lt;!&ndash;5. Range&ndash;&gt;-->
+            <!--<div *ngIf="att.attType === 'Range'" class="form-group col-md-12">-->
+            <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>-->
+            <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+            <!--<input type="text" class="form-control" name={{att.attName}}-->
+            <!--#index="ngModel" pattern="^([a-zA-Z]*)$" ngModel [required]="att.mandatory"/>-->
+            <!--&lt;!&ndash;<small&ndash;&gt;-->
+            <!--&lt;!&ndash;[hidden]="!index.hasError('required') || index.valid || (index.pristine && !addproduct.submitted)"&ndash;&gt;-->
+            <!--&lt;!&ndash;class="text-danger">&ndash;&gt;-->
+            <!--&lt;!&ndash;{{att.attName}} is required.&ndash;&gt;-->
+            <!--&lt;!&ndash;</small>&ndash;&gt;-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <!--6. Date-->
+            <div *ngIf="att.attType === 'Date'" class="form-group col-md-12">
+              <label class="col-sm-2 control-label">{{att?.attName}}:</label>
+              <div class="col-sm-10 col-lg-10  col-md-10 col-xs-10 input-group">
+                <div class="col-lg-11 col-sm-11 col-md-11 col-xs-11">
+                  <input name="{{att.attName}}" class="form-control" [ngModel]="varModalData[att.attName]"
+                         [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }" (change)="EditModalHide()"
+                         ngModel #index="ngModel" ngModel [required]="att.mandatory"
+                         bsDatepicker [maxDate]="maxDate" #dp="bsDatepicker" #index="ngModel">
+                  <small
+                    [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                    class="text-danger">
+                    {{att.attName}} is required.
+                  </small>
+                </div>
+                <div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">
+                  <button type="button" class="btn btn-default" (click)="dp.show()"><i
+                    class="fa fa-calendar"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+
+
+            <!--8. Boolean-->
+            <div *ngIf="att.attType === 'Boolean'" class="form-group col-md-12">
+              <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+              <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                <table>
+                  <tr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                    <td><label class="switch">
+                      <input type="checkbox" ngModel
+                             name="{{att.attName}}" (change)="EditModalHide()"
+                             #index="ngModel" [ngModel]="varModalData[att.attName]"
+                             [required]="att.mandatory">
+                      <span class="slider round"></span>
+                    </label></td>
+                    <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+                  </tr>
+                </table>
+                <small
+                  [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                  class="text-danger">
+                  {{att.attName}} is required.
+                </small>
+              </div>
+            </div>
+
+            <!--9. Time-->
+            <div *ngIf="att.attType === 'Time'" class="form-group col-md-12">
+              <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att?.attName}}:</label>
+              <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                <timepicker name="{{att.attName}}" [readonlyInput]="isEnabled" ngModel #index="ngModel" (change)="EditModalHide()"
+                            [required]="att.mandatory" [ngModel]="varModalData[att.attName]"></timepicker>
+                <small
+                  [hidden]="!index.hasError('required') || index.valid || (index.pristine && !addVarAttribute.submitted)"
+                  class="text-danger">
+                  {{att.attName}} is required.
+                </small>
+              </div>
+            </div>
+
+            <!--10. Color-->
+            <div *ngIf="att.attType == 'Color'" class="form-group col-md-12">
+              <label class="col-sm-2 control-label">{{att?.attName}}:</label>
+              <div class="col-sm-10 col-lg-10  col-md-10 col-xs-10 input-group">
+                <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                  <input class="col-lg-8 col-sm-8 col-md-8col-xs-8" type="color" [(ngModel)]="varModalData[att.attName]" name="{{att?.attName}}"
+                         ngModel (change)="EditModalHide()">
+                  <label>{{varModalData[att.attName]}}</label>
+                </div>
+                <div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!--7. Image-->
+          <div *ngIf="onlyImg" class="form-group col-md-12">
+            <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Image:</label>
+            <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+              <div dnd-sortable-container [sortableData]="varImges">
+                <div  class="col-lg-6 col-sm-6 col-md-6 col-xs-6" *ngFor="let field of varImges;let i = index" dnd-sortable [sortableIndex]="i" (onDropSuccess)="updateVarImgSeq(varImges)">
+                  <div align="center" *ngIf="field.url !== undefined">
+                    <img src={{field.url}} style="width: 150px; height: 150px;"/>
+                    <br><hr style="border: 0.5px solid">
+                    <a [href]="field.url" download><button type="button" class="btn btn-outline btn-success  dim "><i class="fa fa-download" aria-hidden="true" style="font-size:20px"></i></button></a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="button" class="btn btn-outline btn-danger  dim "  [disabled]="i === 0" (click)="removeProVarImg(i)"><i class="fa fa-trash-o"  style="font-size:20px"></i></button><br>
+                  </div>
+                </div><br><br><br><br>
+              </div>
+            </div>
+          </div>
+          <div class="row" >
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Product Status: </label>
+        <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+          <select name="status" [ngModel]="varModalStatus" (change)="varStatusChange($event.target.value)"
+                  class="chosen-select select2_demo_3 form-control" required #status=ngModel>
+            <option value="Active">Active</option>
+            <option value="Discontinued">Discontinued</option>
+            <option value="Suspended">Suspended</option>
+            <option value="Under Enquiry">Under Enquiry</option>
+          </select>
+        </div>
+      </div><br>
+          <div class="row pull-right">
+          <button type="submit" class="btn btn-w-m btn-warning">Update</button>
+          <button type="button" class="btn btn-white" (click)="varModalEdit.hide()">Close</button>
+          </div>
+    </div>
+    </div>
+  </form>
+</ng-template>
+
+<!--Video Model-->
+<!--<ng-template #videoModel>-->
+  <!--<div class="modal-header">-->
+    <!--<h4 class="modal-title pull-left">Product Video</h4><br><hr>-->
+  <!--<br>-->
+  <!--<div align="center">-->
+    <!--<iframe width="560" height="315" src={{links}} frameborder="0"  allowfullscreen></iframe>-->
+    <!--<h3>{{links}}</h3>-->
+    <!--<br>-->
+    <!--<hr>-->
+    <!--<div class="row pull-right">-->
+      <!--<button type="button" class="btn btn-white" (click)="videoPlayerModal.hide()">Close</button>&nbsp;&nbsp;&nbsp;&nbsp;-->
+    <!--</div>-->
+  <!--</div>-->
+  <!--</div>-->
+<!--</ng-template>-->
+
+<body style="background-color: #f3f3f4">
+
+<fieldset [disabled]="viewP">
+<div>
+  <h1><b>{{page}} Product</b></h1>
+</div >
+
+<div *ngIf="view ;else loading;">
+<form name="form" #updateproduct="ngForm" autocomplete="off" (ngSubmit)="updateproduct.form.valid && update_product(updateproduct.value)" class="form-horizontal" novalidate >
+  <div class="wrapper wrapper-content animated">
+    <!--//tabset-->
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" style="background-color: white;">
+      <h5 style="font-size: 20px;">{{page}} Product Details</h5><hr>
+      <tabset>
+        <!--Details-->
+        <tab heading="Product Details">
+
+          <div class="wrapper wrapper-content animated">
+            <div class="ibox float-e-margins">
+              <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                <div class="row">
+                  <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Product Name: </label>
+                  <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                    <input type="text" class="form-control" name="name"
+                           [ngModel]="productObj?.name" (ngModelChange)="productObj.name=$event"
+                           #name="ngModel" ngModel required/>
+                    <small
+                      [hidden]="!name.hasError('required') || name.valid || (name.pristine && !updateproduct.submitted)"
+                      class="text-danger">
+                      Product Name required.
+                    </small>
+                  </div>
+                </div><br>
+                <div class="row">
+                  <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">BaseProductId: </label>
+                  <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                    <input type="text" class="form-control" name="code" disabled
+                           [ngModel]="productObj?.baseProductId" (ngModelChange)="productObj.baseProductId=$event"
+                           #code="ngModel" ngModel />
+                    <!--<small-->
+                      <!--[hidden]="!code.hasError('required') || code.valid || (code.pristine && !updateproduct.submitted)"-->
+                      <!--class="text-danger">-->
+                      <!--Product Code required.-->
+                    <!--</small>-->
+                  </div>
+                </div><br>
+                <div class="row">
+                  <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Select Company: </label>
+                  <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                    <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12" [multiple]="false" name="manufacturer"
+                               [items]="companies" [active]="proCompActive" id="expselect"
+                               (selected)="compSelect($event)" [disabled]="viewP">
+                    </ng-select>
+                    <!--<small-->
+                      <!--[hidden]="!manufacturer.hasError('required') || manufacturer.valid || (manufacturer.pristine && !updateproduct.submitted)"-->
+                      <!--class="text-danger">-->
+                      <!--Product Company required.-->
+                    <!--</small>-->
+                  </div>
+                </div><br>
+                <div class="row">
+                  <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Select Country: </label>
+                  <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                    <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12" [multiple]="false" name="country"
+                               [items]="countryObj" [disabled]="viewP"
+                               [active]="activeCountry"
+                               (selected)="getCountryId($event)"
+                               id="expselect">
+                    </ng-select>
+                    <!--<small-->
+                      <!--[hidden]="!country.hasError('required') || country.valid || (country.pristine && !updateproduct.submitted)"-->
+                      <!--class="text-danger">-->
+                      <!--Product Country required.-->
+                    <!--</small>-->
+                  </div>
+                </div><br>
+                <div class="row">
+                  <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Select Unit: </label>
+                  <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                    <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12"
+                               id="expselect" [multiple]="true" name="unit"
+                               [items]="units" [active]="unitselected"
+                               (data)="selectedUnit($event)" [disabled]="viewP"
+                    >
+                    </ng-select>
+                    <!--<select name="unit" [ngModel]="productObj?.unit" (ngModelChange)="productObj.unit=$event"-->
+                            <!--class="chosen-select select2_demo_3 form-control" required #unit=ngModel ngModel>-->
+                      <!--<option value="Kilo Gram">Kilo Gram</option>-->
+                      <!--<option value="Gram">Gram</option>-->
+                      <!--<option value="Packets">Packets</option>-->
+                      <!--<option value="Bottle">Bottle</option>-->
+                      <!--<option value="Box">Box</option>-->
+                      <!--<option value="Liter">Liter</option>-->
+                      <!--<option value="Milli Liter">Milli Liter</option>-->
+                      <!--<option value="Dozen">Dozen</option>-->
+                      <!--<option value="Piece">Piece</option>-->
+                      <!--<option value="Meter">Meter</option>-->
+                      <!--<option value="Foot">Foot</option>-->
+                      <!--<option value="Inch">Inch</option>-->
+                      <!--<option value="Package">Package</option>-->
+                    <!--</select>-->
+                    <!--<small-->
+                      <!--[hidden]="!unit.hasError('required') || unit.valid || (unit.pristine && !updateproduct.submitted)"-->
+                      <!--class="text-danger">-->
+                      <!--Product Unit required.-->
+                    <!--</small>-->
+                  </div>
+                </div><br>
+                <div class="row">
+                  <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Product MRP: </label>
+                  <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                    <div class="input-group m-b">
+                      <span class="input-group-addon">{{countrySymbol}}</span>
+                      <input type="text" class="form-control" name="price"
+                             [ngModel]="productObj?.price" (ngModelChange)="productObj.price=$event"
+                             #price="ngModel" ngModel pattern="^[0-9]+(\.[0-9]{1,2})?$" required/>
+                    </div>
+                    <small
+                      [hidden]="!price.hasError('pattern') || price.valid || (price.pristine && !updateproduct.submitted)"
+                      class="text-danger">
+                      Product MRP should be only numbers
+                    </small>
+                    <small
+                      [hidden]="!price.hasError('required') || price.valid || (price.pristine && !updateproduct.submitted)"
+                      class="text-danger">
+                      Product MRP required.
+                    </small>
+                  </div>
+                </div><br>
+                <div class="row">
+                  <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Product Status: </label>
+                  <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                    <select name="status" [ngModel]="productObj?.status"
+                            class="chosen-select select2_demo_3 form-control" #status=ngModel>
+                      <option value="Active">Active</option>
+                      <option value="Discontinued">Discontinued</option>
+                      <option value="Suspended">Suspended</option>
+                      <option value="Under Enquiry">Under Enquiry</option>
+                    </select>
+                  </div>
+                </div><br>
+                <div class="row">
+                  <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">HSN Code:</label>
+                  <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                    <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12" [multiple]="false" name="hsnCode"
+                               [items]="hsnObj" [active]="proHSNActive" id="expselect"
+                               (selected)="hsnSelect($event)" [disabled]="viewP">
+                    </ng-select>
+                    <!--<input type="text" class="form-control" disabled name="hsnCode" maxlength="25"-->
+                           <!--[ngModel]="productObj?.hsnCode" (ngModelChange)="productObj.hsnCode=$event"-->
+                           <!--/>-->
+                  </div>
+                </div><br>
+                <div class="row">
+                  <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Product License</label>
+                  <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                    <input type="text" class="form-control" name="license"
+                           [ngModel]="productObj?.license" (ngModelChange)="productObj.license=$event" ngModel/>
+                  </div>
+                </div><br>
+                <div class="row">
+                  <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Product Video Link </label>
+                  <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                    <div class="input-group m-b">
+                      <input type="text" class="form-control" name="videos" id="provideos"
+                             [ngModel]="productObj?.videos[0]?.links" (ngModelChange)="productObj.videos[0].links=$event"
+                             #videos="ngModel" ngModel
+                             pattern="^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$"/>
+                      <!--<span class="input-group-addon"><i class="fa fa-video-camera" (click)="videoPlayer(videoModel)" aria-hidden="true"></i></span>-->
+                      <span class="input-group-addon"  >
+                        <a  [href]="productObj?.videos[0]?.links" target="_blank" >
+                        <i  class="fa fa-play" aria-hidden="true"></i></a>
+                      </span>
+                    </div>
+                    <small
+                      [hidden]="!videos.hasError('pattern') || videos.valid || (videos.pristine && !updateproduct.submitted)"
+                      class="text-danger">
+                      Invalid Product Video Link
+                    </small>
+
+                  </div>
+                </div><br>
+              </div>
+            </div>
+          </div>
+        </tab>
+        <!--Description-->
+        <tab heading="Product Description">
+          <ckeditor
+            ngModel
+            [config]="{extraPlugins: 'divarea'}"
+            [ngModel]="productObj?.description"
+            name="description"
+            debounce="500">
+          </ckeditor>
+          <br><br>
+        </tab>
+        <!--Feature-->
+        <tab heading="Product Feature">
+          <ckeditor
+            ngModel
+            [config]="{extraPlugins: 'divarea'}"
+            [ngModel]="productObj?.features"
+            name="features"
+            debounce="500">
+          </ckeditor>
+          <br><br>
+        </tab>
+        <!--Caution-->
+        <tab heading="Product Caution">
+          <ckeditor
+            ngModel
+            [config]="{extraPlugins: 'divarea'}"
+            [ngModel]="productObj?.warning_information"
+            name="warning_information"
+            debounce="500">
+          </ckeditor>
+          <br><br>
+        </tab>
+      </tabset>
+    </div>
+
+    <!--//EAN CODE-->
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" >
+      <br><br>
+      <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6" style="background-color: white;" >
+        <h5 style="font-size: 20px;">Jhakaas ID </h5>
+        <hr>
+        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" align="center">
+          <td>
+            <tr>
+              <ngx-barcode [bc-value]="productObj?.code"  [bc-display-value]="true" id="printjid"></ngx-barcode>
+            </tr>
+            <tr align="center"><button class="btn btn-success" type="button" (click)="printqr('printjid')"><i class="fa fa-print"></i>&nbsp;&nbsp;<span class="bold">Print</span></button></tr>
+          </td>
+          <br><br>
+        </div>
+
+        <br><br>
+      </div>
+      <div class="col-lg-6 col-sm-6 col-md-6 col-xs-6" style="background-color: white;" >
+        <h5 style="font-size: 20px;">EAN Code</h5>
+        <hr>
+        <div *ngIf="productObj?.ean" class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" align="center">
+          <td>
+            <tr>
+              <ngx-barcode [bc-value]="productObj?.ean"  [bc-display-value]="true" id="printean"></ngx-barcode>
+            </tr>
+            <tr align="center"><button class="btn btn-success" type="button" (click)="printqr('printean')"><i class="fa fa-print"></i>&nbsp;&nbsp;<span class="bold">Print</span></button></tr>
+          </td>
+          <br><br>
+        </div>
+        <div *ngIf="!productObj?.ean" class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" align="center">
+          <img src="https://i.stack.imgur.com/Q3vyk.png" height="198" width="350"/><br><br>
+        </div>
+        <br><br>
+      </div>
+    </div>
+
+    <!--//License Image-->
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" >
+      <br><br>
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" style="background-color: white;">
+        <h5 style="font-size: 20px;">License Image </h5>
+        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal" >
+          <hr>
+          <input type="file"  name="license_images" [disabled]="!edit" multiple (change)="licenceUpload($event.target.files)" ngModel #license_images="ngModel"
+                 class="btn-bs-file btn btn-primary" accept="image/*">
+          <br>
+          <!--<div>-->
+            <hr>
+          <div class="col-lg-3 col-sm-3 col-md-3 col-xs-3" *ngFor="let field of licenseImg;let i = index" >
+            <div align="center" style="border: 4px solid" *ngIf="field.url !== undefined">
+             <img src={{field.url}} style="width: 150px; height: 150px;"/>
+            <br><hr style="border: 0.5px solid">
+            <a [href]="field.url" download><button type="button" class="btn btn-outline btn-success  dim "><i class="fa fa-download" aria-hidden="true" style="font-size:20px"></i></button></a>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" class="btn btn-outline btn-danger  dim "  (click)="removeLicense(i , field.id)"><i class="fa fa-trash-o"  style="font-size:20px"></i></button><br>
+          </div><br><br>
+          </div>
+          <!--</div>-->
+        </div>
+      </div>
+    </div>
+
+    <!--//Product Tags-->
+
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+      <br><br>
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" style="background-color: white;">
+        <h5 style="font-size: 20px;">Product Tags</h5>
+        <hr>
+        <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label"> Tags: </label>
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10" *ngIf="edit&& !viewP">
+          <rl-tag-input [(ngModel)]="tags" name="tags"
+                        addOnComma="true" addOnEnter="true"
+                        addOnPaste="true" style="color: black;">
+          </rl-tag-input>
+          <br><br>
+        </div>
+
+        <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10" *ngIf="!edit || viewP">
+          <input type="text" class="form-control" name="tags" [disabled]="true" [(ngModel)]="tags">
+          <br><br>
+        </div>
+
+      </div>
+    </div>
+
+
+
+    <!--//Product Category-->
+
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" >
+        <br><br>
+        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" style="background-color: white;">
+          <h5 style="font-size: 20px;">Product Category</h5>
+          <hr>
+          <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label"> Category: </label>
+          <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+            <ng-select class="col-lg-12 col-sm-12 col-md-12 col-xs-12" [multiple]="false" name="category"
+                       [items]="proCat" [active]="proCatActive" id="expselect"
+                       (selected)="catselected($event)"
+                       >
+            </ng-select><br><br>
+            <!--<small-->
+              <!--[hidden]="!category.hasError('required') || category.valid || (category.pristine && !updateproduct.submitted)"-->
+              <!--class="text-danger">-->
+              <!--Product Category required.-->
+            <!--</small>-->
+            <br><br>
+          </div>
+
+      </div>
+    </div>
+
+
+    <!--//Attribute-->
+    <div *ngIf="varAttributeData1.length > 0">
+      <form name="form" #attribute="ngForm"
+            (ngSubmit)="attribute.form.valid && updateAtt(attribute.value)"
+            (keydown.enter)="$event.preventDefault()"
+            class="form-horizontal">
+        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+          <br><br>
+          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" style="background-color: white;" >
+            <div class="ibox-title">
+              <h5 style="font-size: 25px;">Product Attributes</h5>
+              <div *ngIf="coreAttributeData.length > 0" class="ibox-tools">
+                <button class="btn btn-outline btn-primary  dim " [disabled]="!edit" title="Save" type="submit"><i class="fa fa-save"></i>
+                </button>
+              </div>
+            </div>
+
+            <div *ngIf="coreAttributeData.length > 0">
+              <hr>
+                <h3><b>Core Attributes </b></h3>
+                <hr>
+
+            <div *ngFor="let att of coreAttributeData; let index=index;">
+              <!--1. String-->
+              <div *ngIf="att.attType === 'String'" class="form-group col-md-12">
+                <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+                <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                  <input type="text" class="form-control" name={{att.attName}} [ngModel]=proAttribute[0]?.core[att.attName]
+                         #index="ngModel"  ngModel [required]="att.mandatory"/>
+                  <small
+                    [hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"
+                    class="text-danger">
+                    {{att.attName}} is required.
+                  </small>
+                  <!--pattern="[a-zA-Z][a-zA-Z ]+"-->
+                  <!--<small-->
+                    <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !attribute.submitted)"-->
+                    <!--class="text-danger">-->
+                    <!--{{att.attName}} should be Character-->
+                  <!--</small>-->
+                  <br>
+                </div>
+              </div>
+
+              <!--2. Number-->
+              <div *ngIf="att.attType === 'Number'" class="form-group col-md-12">
+                <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+                <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                  <input type="text" class="form-control" name={{att.attName}}  [ngModel]=proAttribute[0]?.core[att.attName]
+                         #index="ngModel"  ngModel [required]="att.mandatory"/>
+                  <small
+                    [hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"
+                    class="text-danger">
+                    {{att.attName}} is required.
+                  </small>
+                  <!--pattern="^(0|[0-9][0-9]*)$"-->
+                  <!--<small-->
+                    <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !attribute.submitted)"-->
+                    <!--class="text-danger">-->
+                    <!--{{att.attName}} should be only Number-->
+                  <!--</small>-->
+                </div>
+              </div>
+
+              <!--3. Alphanumeric-->
+              <div *ngIf="att.attType === 'Alphanumeric'" class="form-group col-md-12">
+                <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att?.attName}}:</label>
+                <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                  <input type="text" class="form-control" name={{att.attName}} [ngModel]=proAttribute[0]?.core[att.attName]
+                         #index="ngModel"  ngModel [required]="att.mandatory"/>
+                  <small
+                    [hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"
+                    class="text-danger">
+                    {{att.attName}} is required.
+                  </small>
+                  <!--pattern="^[a-zA-Z0-9_]*$"-->
+                  <!--<small-->
+                    <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !attribute.submitted)"-->
+                    <!--class="text-danger">-->
+                    <!--{{att.attName}} should be only Number $ Character-->
+                  <!--</small>-->
+                </div>
+              </div>
+
+              <!--4. Dropdown-->
+              <div *ngIf="att.attType === 'Dropdown'" class="form-group col-md-12">
+                <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+                <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                  <select name="{{att.attName}}" class="chosen-select select2_demo_3 form-control"
+                          ngModel required #index="ngModel" [ngModel]=proAttribute[0]?.core[att.attName]>
+                    <option *ngFor="let dd of att.attDropdown" [value]="dd">
+                      {{dd}}
+                    </option>
+                  </select>
+                  <small
+                    [hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"
+                    class="text-danger">
+                    {{att.attName}} is required.
+                  </small>
+                </div>
+              </div>
+
+              <!--&lt;!&ndash;5. Range&ndash;&gt;-->
+              <!--<div *ngIf="att.attType === 'Range'" class="form-group col-md-12">-->
+              <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>-->
+              <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+              <!--<input type="text" class="form-control" name={{att.attName}}-->
+              <!--#index="ngModel" pattern="^([a-zA-Z]*)$" ngModel [required]="att.mandatory"/>-->
+              <!--&lt;!&ndash;<small&ndash;&gt;-->
+              <!--&lt;!&ndash;[hidden]="!index.hasError('required') || index.valid || (index.pristine && !addproduct.submitted)"&ndash;&gt;-->
+              <!--&lt;!&ndash;class="text-danger">&ndash;&gt;-->
+              <!--&lt;!&ndash;{{att.attName}} is required.&ndash;&gt;-->
+              <!--&lt;!&ndash;</small>&ndash;&gt;-->
+              <!--</div>-->
+              <!--</div>-->
+
+              <!--6. Date-->
+              <div *ngIf="att.attType === 'Date'" class="form-group col-md-12">
+                <label class="col-sm-2 control-label">{{att?.attName}}:</label>
+                <div class="col-sm-10 col-lg-10  col-md-10 col-xs-10 input-group">
+                  <div class="col-lg-11 col-sm-11 col-md-11 col-xs-11">
+                    <input name="{{att?.attName}}" class="form-control" [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"
+                           ngModel #index="ngModel" ngModel [required]="att.mandatory" [ngModel]=proAttribute[0]?.core[att.attName]
+                           bsDatepicker [maxDate]="maxDate" #dp="bsDatepicker" #index="ngModel">
+                    <small
+                      [hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"
+                      class="text-danger">
+                      {{att.attName}} is required.
+                    </small>
+                  </div>
+                  <div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">
+                    <button type="button" class="btn btn-default" (click)="dp.show()"><i class="fa fa-calendar"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!--7. Image-->
+              <div *ngIf="att.attType === 'Image'" class="form-group col-md-12">
+                <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+                <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                  <input type="file" class="btn-bs-file btn btn-primary" (change)="attrImg($event.target.files, att.attName)" name={{att.attName}}
+                         #index="ngModel" pattern="^([a-zA-Z]*)$" ngModel [required]="att.mandatory" accept="image/*"/>
+                  <!--<small-->
+                  <!--[hidden]="!index.hasError('required') || index.valid || (index.pristine && !addproduct.submitted)"-->
+                  <!--class="text-danger">-->
+                  <!--{{att.attName}} is required.-->
+                  <!--</small>-->
+                </div>
+              </div>
+
+              <!--8. Boolean-->
+              <div *ngIf="att.attType === 'Boolean'" class="form-group col-md-12">
+                <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>
+                <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                  <table>
+                    <tr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                      <td><label class="switch">
+                        <input type="checkbox" ngModel
+                               name="{{att.attName}}"
+                               #index="ngModel" [ngModel]=proAttribute[0]?.core[att.attName]
+                               >
+                        <span class="slider round"></span>
+                      </label></td>
+                      <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+                    </tr>
+                  </table>
+                  <small
+                    [hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"
+                    class="text-danger">
+                    {{att.attName}} is required.
+                  </small>
+                </div>
+              </div>
+
+              <!--9. Time-->
+              <div *ngIf="att.attType === 'Time'" class="form-group col-md-12">
+                <label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att?.attName}}:</label>
+                <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                  <timepicker name="{{att.attName}}" [readonlyInput]="isEnabled" ngModel #index="ngModel"
+                              [required]="att.mandatory" [ngModel]=proAttribute[0]?.core[att.attName]></timepicker>
+                  <small
+                    [hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"
+                    class="text-danger">
+                    {{att.attName}} is required.
+                  </small>
+                </div>
+              </div>
+
+              <!--10. Color-->
+              <div *ngIf="att.attType == 'Color'" class="form-group col-md-12">
+                <label class="col-sm-2 control-label">{{att?.attName}}:</label>
+                <div class="col-sm-10 col-lg-10  col-md-10 col-xs-10 input-group">
+                  <div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">
+                    <input  class="col-lg-2 col-sm-2 col-md-2 col-xs-2" type="color" name="{{att?.attName}}"
+                            [(ngModel)]="proAttribute[0]?.core[att.attName]" [required]="att.mandatory">
+                    <h4 class="col-lg-2 col-sm-2 col-md-2 col-xs-2">{{proAttribute[0]?.core[att.attName]}}</h4>
+                  </div>
+                  <div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">
+
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+            </div>
+
+            <div  *ngIf="proAttribute[0]?.variation !== undefined">
+                          <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                            <hr>
+                            <div class="col-lg-11 col-sm-11 col-md-11 col-xs-11">
+                                <h3><b>Variation Attributes </b></h3>
+                            </div>
+                            <div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">
+                                <button class="btn btn-outline btn-primary  dim " title="Save" [disabled]="!add" type="button" (click)="addVarModal(addVarAttribute)"><i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                          </div>
+                          <hr>
+                          <!--<div *ngFor="let att of varAttributeData1;  let index=index;">-->
+                            <!--&lt;!&ndash;1. String&ndash;&gt;-->
+                            <!--<div *ngIf="att.attType === 'String'" class="form-group col-md-12">-->
+                              <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>-->
+                              <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+                                <!--<input type="text" class="form-control" name={{att.attName}} [ngModel]=proAttribute[0]?.variation[att.attName]-->
+                                       <!--#index="ngModel" pattern="[a-zA-Z][a-zA-Z ]+" ngModel [required]="att.mandatory" disabled/>-->
+                                <!--<small-->
+                                  <!--[hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"-->
+                                  <!--class="text-danger">-->
+                                  <!--{{att.attName}} is required.-->
+                                <!--</small>-->
+                                <!--<small-->
+                                  <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !attribute.submitted)"-->
+                                  <!--class="text-danger">-->
+                                  <!--{{att.attName}} should be Character-->
+                                <!--</small>-->
+                                <!--<br>-->
+                              <!--</div>-->
+                            <!--</div>-->
+
+                            <!--&lt;!&ndash;2. Number&ndash;&gt;-->
+                            <!--<div *ngIf="att.attType === 'Number'" class="form-group col-md-12">-->
+                              <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>-->
+                              <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+                                <!--<input type="text" class="form-control" name={{att.attName}}  [ngModel]=proAttribute[0]?.variation[att.attName]-->
+                                       <!--#index="ngModel" pattern="^(0|[0-9][0-9]*)$" ngModel [required]="att.mandatory" disabled/>-->
+                                <!--<small-->
+                                  <!--[hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"-->
+                                  <!--class="text-danger">-->
+                                  <!--{{att.attName}} is required.-->
+                                <!--</small>-->
+                                <!--<small-->
+                                  <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !attribute.submitted)"-->
+                                  <!--class="text-danger">-->
+                                  <!--{{att.attName}} should be only Number-->
+                                <!--</small>-->
+                              <!--</div>-->
+                            <!--</div>-->
+
+                            <!--&lt;!&ndash;3. Alphanumeric&ndash;&gt;-->
+                            <!--<div *ngIf="att.attType === 'Alphanumeric'" class="form-group col-md-12">-->
+                              <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att?.attName}}:</label>-->
+                              <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+                                <!--<input type="text" class="form-control" name={{att.attName}} [ngModel]=proAttribute[0]?.variation[att.attName]-->
+                                       <!--#index="ngModel" pattern="^[a-zA-Z0-9_]*$" ngModel [required]="att.mandatory" disabled/>-->
+                                <!--<small-->
+                                  <!--[hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"-->
+                                  <!--class="text-danger">-->
+                                  <!--{{att.attName}} is required.-->
+                                <!--</small>-->
+                                <!--<small-->
+                                  <!--[hidden]="!index.hasError('pattern') || index.valid || (index.pristine && !attribute.submitted)"-->
+                                  <!--class="text-danger">-->
+                                  <!--{{att.attName}} should be only Number $ Character-->
+                                <!--</small>-->
+                              <!--</div>-->
+                            <!--</div>-->
+
+                            <!--&lt;!&ndash;4. Dropdown&ndash;&gt;-->
+                            <!--<div *ngIf="att.attType === 'Dropdown'" class="form-group col-md-12">-->
+                              <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>-->
+                              <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+                                <!--<select name="{{att.attName}}" class="chosen-select select2_demo_3 form-control"-->
+                                        <!--ngModel required #index="ngModel" [ngModel]=proAttribute[0]?.variation[att.attName]>-->
+                                  <!--<option *ngFor="let dd of att.attDropdown" [value]="dd" disabled>-->
+                                    <!--{{dd}}-->
+                                  <!--</option>-->
+                                <!--</select>-->
+                                <!--<small-->
+                                  <!--[hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"-->
+                                  <!--class="text-danger">-->
+                                  <!--{{att.attName}} is required.-->
+                                <!--</small>-->
+                              <!--</div>-->
+                            <!--</div>-->
+
+                            <!--&lt;!&ndash;&lt;!&ndash;5. Range&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div *ngIf="att.attType === 'Range'" class="form-group col-md-12">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<input type="text" class="form-control" name={{att.attName}}&ndash;&gt;-->
+                            <!--&lt;!&ndash;#index="ngModel" pattern="^([a-zA-Z]*)$" ngModel [required]="att.mandatory"/>&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;<small&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;[hidden]="!index.hasError('required') || index.valid || (index.pristine && !addproduct.submitted)"&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;class="text-danger">&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;{{att.attName}} is required.&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;&lt;!&ndash;</small>&ndash;&gt;&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+                            <!--&lt;!&ndash;6. Date&ndash;&gt;-->
+                            <!--<div *ngIf="att.attType === 'Date'" class="form-group col-md-12">-->
+                              <!--<label class="col-sm-2 control-label">{{att?.attName}}:</label>-->
+                              <!--<div class="col-sm-10 col-lg-10  col-md-10 col-xs-10 input-group">-->
+                                <!--<div class="col-lg-11 col-sm-11 col-md-11 col-xs-11">-->
+                                  <!--<input name="{{att?.attName}}" class="form-control" [bsConfig]="{ dateInputFormat: 'DD/MM/YYYY' }"-->
+                                         <!--ngModel #index="ngModel" ngModel [required]="att.mandatory" [ngModel]=proAttribute[0]?.variation[att.attName]-->
+                                         <!--bsDatepicker [maxDate]="maxDate" #dp="bsDatepicker" #index="ngModel" disabled>-->
+                                  <!--<small-->
+                                    <!--[hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"-->
+                                    <!--class="text-danger">-->
+                                    <!--{{att.attName}} is required.-->
+                                  <!--</small>-->
+                                <!--</div>-->
+                                <!--<div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">-->
+                                  <!--<button type="button" class="btn btn-default" (click)="dp.show()"><i class="fa fa-calendar"></i>-->
+                                  <!--</button>-->
+                                <!--</div>-->
+                              <!--</div>-->
+                            <!--</div>-->
+
+                            <!--&lt;!&ndash;7. Image&ndash;&gt;-->
+                            <!--<div *ngIf="att.attType === 'Image'" class="form-group col-md-12">-->
+                              <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>-->
+                              <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+                                <!--<input type="file" class="btn-bs-file btn btn-primary" (change)="attrImg($event.target.files, att.attName)" name={{att.attName}}-->
+                                       <!--#index="ngModel" pattern="^([a-zA-Z]*)$" ngModel [required]="att.mandatory" accept="image/*"/>-->
+                              <!--</div>-->
+                            <!--</div>-->
+
+                            <!--&lt;!&ndash;8. Boolean&ndash;&gt;-->
+                            <!--<div *ngIf="att.attType === 'Boolean'" class="form-group col-md-12">-->
+                              <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att.attName}}:</label>-->
+                              <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+                                <!--<table>-->
+                                  <!--<tr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+                                    <!--<td><b>No</b> &nbsp;&nbsp;&nbsp;</td>-->
+                                    <!--<td><label class="switch">-->
+                                      <!--<input type="checkbox" ngModel-->
+                                             <!--name="{{att.attName}}" disabled-->
+                                             <!--#index="ngModel" [ngModel]=proAttribute[0]?.variation[att.attName]-->
+                                      <!--&gt;-->
+                                      <!--<span class="slider round"></span>-->
+                                    <!--</label></td>-->
+                                    <!--<td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>-->
+                                  <!--</tr>-->
+                                <!--</table>-->
+                                <!--<small-->
+                                  <!--[hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"-->
+                                  <!--class="text-danger">-->
+                                  <!--{{att.attName}} is required.-->
+                                <!--</small>-->
+                              <!--</div>-->
+                            <!--</div>-->
+
+                            <!--&lt;!&ndash;9. Time&ndash;&gt;-->
+                            <!--<div *ngIf="att.attType === 'Time'" class="form-group col-md-12">-->
+                              <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">{{att?.attName}}:</label>-->
+                              <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+                                <!--<timepicker name="{{att.attName}}" [readonlyInput]="isEnabled" ngModel #index="ngModel"-->
+                                            <!--[required]="att.mandatory" [ngModel]=proAttribute[0]?.variation[att.attName] disabled></timepicker>-->
+                                <!--<small-->
+                                  <!--[hidden]="!index.hasError('required') || index.valid || (index.pristine && !attribute.submitted)"-->
+                                  <!--class="text-danger">-->
+                                  <!--{{att.attName}} is required.-->
+                                <!--</small>-->
+                              <!--</div>-->
+                            <!--</div>-->
+
+                            <!--&lt;!&ndash;10. Color&ndash;&gt;-->
+                            <!--<div *ngIf="att.attType == 'Color'" class="form-group col-md-12">-->
+                              <!--<label class="col-sm-2 control-label">{{att?.attName}}:</label>-->
+                              <!--<div class="col-sm-10 col-lg-10  col-md-10 col-xs-10 input-group">-->
+                                <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+                                  <!--<input  class="col-lg-2 col-sm-2 col-md-2 col-xs-2" type="color" name="{{att?.attName}}"-->
+                                          <!--[(ngModel)]="proAttribute[0]?.variation[att.attName]" [required]="att.mandatory" disabled>-->
+                                  <!--<h4 class="col-lg-2 col-sm-2 col-md-2 col-xs-2">{{proAttribute[0]?.variation[att.attName]}}</h4>-->
+                                <!--</div>-->
+                                <!--<div class="col-lg-1 col-sm-1 col-md-1 col-xs-1">-->
+
+                                <!--</div>-->
+                              <!--</div>-->
+                            <!--</div>-->
+                          <!--</div>-->
+                        </div>
+
+            <div *ngIf="varAttributeData1.length > 0 || onlyImg" class="col-lg-12">
+              <!--<hr>-->
+              <!--<div class="col-lg-11">-->
+            <!--<h3><b>Variation Attributes </b></h3>-->
+              <!--</div>-->
+              <div class="ibox-content">
+                <div class="dataTables_wrapper form-inline dt-bootstrap">
+                  <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+                    <table datatable   class="display" class="display table table-striped table-bordered table-hover dataTables-example">
+                      <thead>
+                      <tr>
+                        <th> Code </th>
+                        <th *ngFor="let varatt of varAttributeData1;let i = index" >{{varatt.attName | uppercase}}</th>
+                        <th>STATUS</th>
+                        <th *ngIf="onlyImg">IMAGE</th>
+                        <th>EDIT</th>
+
+                        <!--<th>Remove</th>-->
+                      </tr>
+                      </thead>
+                      <tbody dnd-sortable-container [sortableData]="varGridShow">
+                      <tr *ngFor="let att of varGridShow; let i = index" dnd-sortable [sortableIndex]="i" (onDropSuccess)="updateVarSeq(varGridShow)">
+                        <td>{{att?.id}}</td>
+                        <td  *ngFor="let varatt of varAttributeData1;" >
+                      <tr>
+                        <td >{{att.variation[varatt.attName]}}</td>
+                      </tr>
+                      </td>
+                      <td>{{att?.status}}</td>
+                      <td *ngIf="onlyImg"  >
+                        <img src={{varGridShow[i].variation.url}} class="img-thumbnail" width="60" height="60">
+                      </td>
+                      <td>
+                        <button [disabled]="!edit" type="button" class="btn btn-outline btn-info"  (click)="varModal(varAttribute,i, att.id)">
+                          Edit
+                        </button>
+                      </td>
+                      <!--<td>-->
+                      <!--<button [disabled]="!delete" type="button" class="btn btn-outline btn-danger" (click)="removeVar(i)">-->
+                      <!--<i class="fa fa-trash"></i>Delete-->
+                      <!--</button>-->
+                      <!--</td>-->
+                      </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </form>
+
+
+    </div>
+
+
+    <!--//Product Group-->
+
+    <!--<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" >-->
+      <!--<br><br>-->
+      <!--<div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" style="background-color: white;">-->
+        <!--<h5 style="font-size: 20px;">Product Group</h5>-->
+        <!--<hr>-->
+        <!--<label class="col-lg-2 col-sm-2 col-md-2 col-xs-2 control-label">Select Product Group: </label>-->
+        <!--<div class="col-lg-10 col-sm-10 col-md-10 col-xs-10">-->
+          <!--<select name="pgroup"-->
+                  <!--class="chosen-select select2_demo_3 form-control"#pgroup=ngModel ngModel>-->
+            <!--<option value="abc">abc</option>-->
+          <!--</select>-->
+          <!--&lt;!&ndash;<small&ndash;&gt;-->
+            <!--&lt;!&ndash;[hidden]="!pgroup.hasError('required') || pgroup.valid || (pgroup.pristine && !addproduct.submitted)"&ndash;&gt;-->
+            <!--&lt;!&ndash;class="text-danger">&ndash;&gt;-->
+            <!--&lt;!&ndash;Product Group required.&ndash;&gt;-->
+          <!--&lt;!&ndash;</small>&ndash;&gt;-->
+          <!--<br><br>-->
+        <!--</div>-->
+
+      <!--</div>-->
+    <!--</div>-->
+
+
+    <!--//Image Show-->
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" *ngIf="disimgShow">
+      <br><br>
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" style="background-color: white;">
+        <h5 style="font-size: 20px;">Image Shown</h5>
+        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal">
+          <hr>
+          <div class="row" align="center">
+            <div class="radio col-lg-3 col-lg-3 col-sm-3 col-md-3 col-xs-3">
+              <label><b>Core Image</b></label>
+              <div class="btn-group btn-group-vertical" data-toggle="buttons">
+                <label class="btn active">
+                  <input type="radio" name="imageshown" checked  value="Core" [(ngModel)]="imageShownChecked"  (click)="imageShowClick($event.target.value)"><i class="fa fa-circle-o fa-2x"></i><i
+                  class="fa fa-dot-circle-o fa-2x"></i>
+                </label>
+              </div>
+            </div>
+            <div class="radio col-lg-3 col-lg-3 col-sm-3 col-md-3 col-xs-3">
+              <div class="btn-group btn-group-vertical" data-toggle="buttons">
+                <label class="btn active">
+                  <input type="radio" name="imageshown"   value="Variation"  [(ngModel)]="imageShownChecked" (click)="imageShowClick($event.target.value)" ><i class="fa fa-circle-o fa-2x"></i><i
+                  class="fa fa-dot-circle-o fa-2x"></i>
+                </label>
+              </div>
+              <label><b>Variation Image</b></label>
+            </div>
+          </div>
+
+          <br><br><br>
+        </div>
+      </div>
+
+
+    </div>
+
+
+    <!--//Product Image-->
+    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+      <br><br>
+      <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" style="background-color: white;"> <br>
+        <h5 class="col-lg-10 col-sm-10 col-md-10 col-xs-10" style="font-size: 20px;">Product Image </h5>
+        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 form-horizontal">
+          <hr>
+          <input type="file" name="images" multiple  [disabled]="!edit"(change)="proImgUpload($event.target.files)" ngModel #images="ngModel"
+                 class="btn-bs-file btn btn-primary" accept="image/*">
+          <br><br>
+            <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12" *ngFor="let field of imgseq;let i = index" >
+              <div *ngIf="field.url !== undefined">
+              <div align="center" *ngIf="i === 0">
+                <img src={{field.url}} style="width: 250px; height: 200px;border: 2px solid;"/>
+                <br>
+                <h4><b>Primary Image</b></h4>
+              </div>
+              </div>
+            </div><hr><br><br>
+        <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+          <div dnd-sortable-container [sortableData]="imgseq">
+            <div  class="col-lg-2 col-sm-2 col-md-2 col-xs-2" *ngFor="let field of imgseq;let i = index" dnd-sortable [sortableIndex]="i" (onDropSuccess)="updateSeq(imgseq)">
+              <div align="center" style="border: 4px solid" *ngIf="field.url !== undefined">
+                <br>
+                <img src={{field.url}} style="width: 100px; height: 100px;"/>
+                <br><hr style="border: 0.5px solid">
+                <a [href]="field.url" download><button type="button" class="btn btn-outline btn-success  dim "><i class="fa fa-download" aria-hidden="true" style="font-size:20px"></i></button></a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button type="button" class="btn btn-outline btn-danger  dim "  (click)="removeProImg(i,field.id)"><i class="fa fa-trash-o"  style="font-size:20px"></i></button><br>
+              </div><br><br>
+            </div>
+          </div>
+        </div>
+          <br><br>
+          <input type="submit" class="btn btn-w-m btn-success pull-right" [disabled]="!edit" (click)="submitFormCheck()" value="Update Product"/>
+          <br><br><br>
+        </div>
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+</form>
+</div>
+</fieldset>
+</body>
+</html>
+
+
+
+

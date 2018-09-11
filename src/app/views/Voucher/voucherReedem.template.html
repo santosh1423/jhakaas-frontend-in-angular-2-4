@@ -1,0 +1,52 @@
+<ng-template #loading>
+  <alert type="danger">
+    <strong>Warning!</strong> You are not authorised to access this page.
+  </alert>
+</ng-template>
+<div>
+  <h1><b>User Wise Voucher Details</b></h1>
+</div>
+
+
+<div class ="row"  class="wrapper wrapper-content animated" *ngIf="view ;else loading;">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">User Wise Voucher Details</h5>
+      <div class="ibox-tools">
+        <!--<button class="btn btn-outline btn-primary  dim " title="Add"  [disabled]="!add" (click)="addVoucherModal(addVoucher)"><i class="fa fa-plus"></i>-->
+        <!--</button>-->
+      </div>
+
+      <div class="ibox-content">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+          <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <table datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger"   class="display" class="display table table-striped table-bordered table-hover dataTables-example">
+              <thead>
+              <tr>
+                <th>Customer Name</th>
+                <th>Voucher Code</th>
+                <th>Voucher Name</th>
+                <th>Voucher Description</th>
+                <th>Date</th>
+                <th>Is Reedem</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr  *ngFor="let voucher of voucherObj">
+                <td><img class="img-thumbnail" alt="{{voucher.name}}" width="60" height="60" type="multiple" src={{voucher.url}}></td>
+                <td>{{voucher?.code}}</td>
+                <td>{{voucher?.name}}</td>
+                <td>{{voucher?.description}}</td>
+                <td><b>{{voucher?.createBy?.firstName}} {{voucher?.createBy?.lastName}} </b><br> {{voucher?.createdAt | date: 'yMMMdjms'}}</td>
+                <td><b>{{voucher?.updateBy?.firstName}} {{voucher?.updateBy?.lastName}} </b><br> {{voucher?.updatedAt | date: 'yMMMdjms'}}</td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

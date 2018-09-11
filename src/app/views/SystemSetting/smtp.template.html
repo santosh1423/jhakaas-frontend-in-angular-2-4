@@ -1,0 +1,367 @@
+
+<ng-template #loading>
+  <alert type="danger">    <strong>Warning!</strong> You are not authorised to access this page.  </alert>
+</ng-template>
+
+<ng-template #addSMTP>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Create New SMTP</h4>
+    <!--<button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">-->
+    <!--</button>-->
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #smtpAdd="ngForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="smtpAdd.form.valid && AddSmtp(smtpAdd.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">Display Name</label>
+          <div class="col-sm-10">
+            <input type="text" name="name" Capitalize class="form-control" ngModel #name="ngModel" required>
+            <small [hidden]="!name.hasError('required') || name.valid || (name.pristine && !smtpAdd.submitted)" class="text-danger">
+              Display Name is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Email Id</label>
+          <div class="col-sm-10">
+            <input type="email" name="email" class="form-control" autocomplete="none" #email="ngModel" ngModel required
+                   pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" >
+            <small
+              [hidden]="!email.hasError('required') || email.valid || (email.pristine && !smtpAdd.submitted)"
+              class="text-danger">
+              Email is required
+            </small>
+            <small
+              [hidden]="!email.hasError('pattern') || email.valid || (email.pristine && !smtpAdd.submitted)"
+              class="text-danger">
+              Please enter valid email address.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Reply Email Id</label>
+          <div class="col-sm-10">
+            <input type="replyemail" name="replyemail" class="form-control" autocomplete="none" #replyemail="ngModel" ngModel required
+                   pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" >
+            <small
+              [hidden]="!replyemail.hasError('required') || replyemail.valid || (replyemail.pristine && !smtpAdd.submitted)"
+              class="text-danger">
+              Reply Email is required
+            </small>
+            <small
+              [hidden]="!replyemail.hasError('pattern') || replyemail.valid || (replyemail.pristine && !smtpAdd.submitted)"
+              class="text-danger">
+              Please enter valid email address.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Password</label>
+          <div class="col-sm-10">
+            <show-hide-password icon="fa fa-eye">
+              <input type="password" class="form-control" autocomplete="new-password" name="password" validateEqual="confirmPassword"
+                     reverse="true" (blur)="passcheck($event.target.value)" minlength="8"
+                     #password="ngModel" ngModel required>
+            </show-hide-password>
+            <small
+              [hidden]="!password.hasError('required') || (password.pristine && !smtpAdd.submitted)"
+              class="text-danger">
+              Password is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">SMTP Server</label>
+          <div class="col-sm-10">
+            <input type="text" name="server" Capitalize class="form-control" ngModel #server="ngModel" required>
+            <small [hidden]="!server.hasError('required') || server.valid || (server.pristine && !smtpAdd.submitted)" class="text-danger">
+              SMTP Server is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Port</label>
+          <div class="col-sm-10">
+            <input type="text" name="port" Capitalize class="form-control" ngModel #port="ngModel" required>
+            <small [hidden]="!port.hasError('required') || port.valid || (port.pristine && !smtpAdd.submitted)" class="text-danger">
+              SMTP Server is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">SMTP Use For</label>
+          <div class="col-sm-10">
+            <select name="UseFor" class="chosen-select select2_demo_3 form-control col-sm-10" ngModel required #UseFor="ngModel">
+              <option value="Merchant">Merchant</option>
+              <option value="Customer">Customer</option>
+              <option value="Office">Office</option>
+            </select>
+            <small [hidden]="!UseFor.hasError('required') || UseFor.valid || (UseFor.pristine && !smtpAdd.submitted)" class="text-danger">
+              SMTP Use for is required
+            </small>
+          </div>
+        </div>
+
+        <!--<div class="form-group"><label class="col-sm-2 control-label">SSL</label>-->
+          <!--<div class="col-sm-10">-->
+            <!--<input type="checkbox" name="ssl" Capitalize class="form-control" ngModel #ssl="ngModel" >-->
+            <!--&lt;!&ndash;<small [hidden]="!ssl.hasError('required') || ssl.valid || (ssl.pristine && !smtpAdd.submitted)" class="text-danger">&ndash;&gt;-->
+              <!--&lt;!&ndash;SSL is required&ndash;&gt;-->
+            <!--&lt;!&ndash;</small>&ndash;&gt;-->
+          <!--</div>-->
+        <!--</div>-->
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">SSL</label>
+          <div class="col-sm-10">
+            <table>
+              <tr>
+                <td><b>False</b> &nbsp;&nbsp;&nbsp;</td>
+                <td><label class="switch">
+                  <input type="checkbox" ngModel name="ssl"   >
+                  <span class="slider round"></span>
+                </label></td>
+                <td>&nbsp;&nbsp;&nbsp;<b>True</b></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalAdd.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #editSMTP>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Update SMTP</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalAdd.hide()">
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="ibox-content">
+      <form name="form" #smtpEdit="ngForm" autocomplete="off"  (keydown.enter)="$event.preventDefault()" (ngSubmit)="smtpEdit.form.valid && EditSMTP(smtpEdit.value)" class="form-horizontal" novalidate>
+        <div class="form-group"><label class="col-sm-2 control-label">Display Name</label>
+          <div class="col-sm-10">
+            <input type="text" name="name" Capitalize class="form-control" [ngModel]="SmtpById?.name" (ngModelChange)="SmtpById.name=$event" #name="ngModel" required>
+            <small [hidden]="!name.hasError('required') || name.valid || (name.pristine && !smtpEdit.submitted)" class="text-danger">
+              Display Name is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Email Id</label>
+          <div class="col-sm-10">
+            <input type="email" name="email" class="form-control" autocomplete="none" #email="ngModel" [ngModel]="SmtpById?.email" (ngModelChange)="SmtpById.email=$event" required
+                   pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" >
+            <small
+              [hidden]="!email.hasError('required') || email.valid || (email.pristine && !smtpEdit.submitted)"
+              class="text-danger">
+              Email is required
+            </small>
+            <small
+              [hidden]="!email.hasError('pattern') || email.valid || (email.pristine && !smtpEdit.submitted)"
+              class="text-danger">
+              Please enter valid email address.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Reply Email Id</label>
+          <div class="col-sm-10">
+            <input type="replyemail" name="replyemail" class="form-control" autocomplete="none" #replyemail="ngModel" [ngModel]="SmtpById?.replyemail" (ngModelChange)="SmtpById.replyemail=$event" required
+                   pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" >
+            <small
+              [hidden]="!replyemail.hasError('required') || replyemail.valid || (replyemail.pristine && !smtpEdit.submitted)"
+              class="text-danger">
+              Reply Email is required
+            </small>
+            <small
+              [hidden]="!replyemail.hasError('pattern') || replyemail.valid || (replyemail.pristine && !smtpEdit.submitted)"
+              class="text-danger">
+              Please enter valid email address.
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Password</label>
+          <div class="col-sm-10">
+            <show-hide-password icon="fa fa-eye">
+              <input type="password" class="form-control" autocomplete="new-password" name="password" validateEqual="confirmPassword"
+                     reverse="true" (blur)="passcheck($event.target.value)" minlength="8"
+                     #password="ngModel" [ngModel]="SmtpById?.password" (ngModelChange)="SmtpById.password=$event" required>
+            </show-hide-password>
+            <small
+              [hidden]="!password.hasError('required') || (password.pristine && !smtpEdit.submitted)"
+              class="text-danger">
+              Password is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">SMTP Server</label>
+          <div class="col-sm-10">
+            <input type="text" name="server" Capitalize class="form-control" [ngModel]="SmtpById?.server" (ngModelChange)="SmtpById.server=$event" #server="ngModel" required>
+            <small [hidden]="!server.hasError('required') || server.valid || (server.pristine && !smtpEdit.submitted)" class="text-danger">
+              SMTP Server is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">Port</label>
+          <div class="col-sm-10">
+            <input type="text" name="port" Capitalize class="form-control" [ngModel]="SmtpById?.port" (ngModelChange)="SmtpById.port=$event" #port="ngModel" required>
+            <small [hidden]="!port.hasError('required') || port.valid || (port.pristine && !smtpEdit.submitted)" class="text-danger">
+              SMTP Server is required
+            </small>
+          </div>
+        </div>
+
+        <div class="form-group"><label class="col-sm-2 control-label">SMTP Use For</label>
+          <div class="col-sm-10">
+            <select name="UseFor" class="chosen-select select2_demo_3 form-control col-sm-10" [ngModel]="SmtpById?.UseFor" (ngModelChange)="SmtpById.UseFor=$event" required #UseFor="ngModel">
+              <option value="Merchant">Merchant</option>
+              <option value="Customer">Customer</option>
+              <option value="Office">Office</option>
+            </select>
+            <small [hidden]="!UseFor.hasError('required') || UseFor.valid || (UseFor.pristine && !smtpEdit.submitted)" class="text-danger">
+              SMTP Use for is required
+            </small>
+          </div>
+        </div>
+
+        <!--<div class="form-group"><label class="col-sm-2 control-label">SSL</label>-->
+          <!--<div class="col-sm-10">-->
+            <!--<input type="checkbox" name="ssl" Capitalize class="form-control" [ngModel]="SmtpById?.ssl" (ngModelChange)="SmtpById.ssl=$event" #ssl="ngModel" >-->
+            <!--&lt;!&ndash;<small [hidden]="!ssl.hasError('required') || ssl.valid || (ssl.pristine && !smtpEdit.submitted)" class="text-danger">&ndash;&gt;-->
+              <!--&lt;!&ndash;SSL is required&ndash;&gt;-->
+            <!--&lt;!&ndash;</small>&ndash;&gt;-->
+          <!--</div>-->
+        <!--</div>-->
+
+        <div class="form-group">
+          <label class="col-lg-3 col-sm-3 col-md-3 col-xs-3 control-label">SSL</label>
+          <div class="col-lg-9 col-sm-9 col-md-9 col-xs-9">
+            <div *ngIf="SmtpById?.ssl === 'true'" >
+              <table>
+                <tr>
+                  <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                  <td><label class="switch">
+                    <input type="checkbox" checked (change)="onChangeSSL($event.target.checked)"  >
+                    <span class="slider round"></span>
+                  </label></td>
+                  <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+                </tr>
+              </table>
+            </div>
+            <div *ngIf="SmtpById?.ssl === 'false'">
+              <table>
+                <tr>
+                  <td><b>No</b> &nbsp;&nbsp;&nbsp;</td>
+                  <td><label class="switch">
+                    <input type="checkbox" (change)="onChangeSSL($event.target.checked)">
+                    <span class="slider round"></span>
+                  </label></td>
+                  <td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>
+                </tr>
+              </table>
+            </div>
+            <!--<table>-->
+              <!--<tr>-->
+                <!--<td><b>No</b> &nbsp;&nbsp;&nbsp;</td>-->
+                <!--<td><label class="switch">-->
+                  <!--<input type="checkbox"  [ngModel]="SmtpById?.ssl" (ngModelChange)="SmtpById.ssl=$event" name="ssl"   >-->
+                  <!--<span class="slider round"></span>-->
+                <!--</label></td>-->
+                <!--<td>&nbsp;&nbsp;&nbsp;<b>YES</b></td>-->
+              <!--</tr>-->
+            <!--</table>-->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-8 col-sm-offset-2">
+            <input type="submit" class="btn btn-w-m btn-success" value="Save"/>
+            <button type="button" class="btn btn-white" (click)="modalEdit.hide()">Close</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+<div>
+  <h1><b>SMTP Details Management</b></h1>
+</div>
+<div class ="row"  class="wrapper wrapper-content animated" *ngIf="view ;else loading;">
+  <div class="ibox float-e-margins">
+    <div class="ibox-title">
+      <h5 style="font-size: 25px;">SMTP Details</h5>
+      <div class="ibox-tools">
+        <button class="btn btn-outline btn-primary  dim " title="Add"  (keydown.enter)="$event.preventDefault()"  [disabled]="!add" (click)="addSMTPModal(addSMTP)"><i class="fa fa-plus"></i>
+        </button>
+      </div>
+
+      <div class="ibox-content" style="width:100%; overflow-x:scroll;">
+        <div class="dataTables_wrapper form-inline dt-bootstrap">
+          <div id="DataTables_Table_2_wrapper" class="dataTables_wrapper form-inline dt-bootstrap">
+            <table datatable [dtOptions]="dtOptions"  [dtTrigger]="dtTrigger"   class="display" class="display table table-striped table-bordered table-hover dataTables-example">
+              <thead>
+              <tr>
+                <th>Display Name</th>
+                <th>Email Use For</th>
+                <th>Email ID</th>
+                <th>Reply Email ID</th>
+                <th>Password</th>
+                <th>SMTP Server</th>
+                <th>Port</th>
+                <th>Enable SSL</th>
+                <th>Created By</th>
+                <th>Updated By</th>
+                <th>Is Default</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr  *ngFor="let smtp of smtpObj">
+                <td>{{smtp?.name}}</td>
+                <td>{{smtp?.UseFor}}</td>
+                <td>{{smtp?.email}}</td>
+                <td>{{smtp?.replyemail}}</td>
+                <td>{{smtp?.password}}</td>
+                <td>{{smtp?.server}}</td>
+                <td>{{smtp?.port}}</td>
+                <td>{{smtp?.ssl}}</td>
+                <td><b>{{smtp?.createBy?.firstName}} {{smtp?.createBy?.lastName}} </b><br> {{smtp?.createdAt | date: 'yMMMdjms'}}</td>
+                <td><b>{{smtp?.updateBy?.firstName}} {{smtp?.updateBy?.lastName}} </b><br> {{smtp?.updatedAt | date: 'yMMMdjms'}}</td>
+                <td><button [disabled]="!edit" class="btn btn-success btn-sm" (click)="isDefaultchange(smtp?.isDefault, smtp._id)" [ngClass]="{'deactivestatus': smtp?.isDefault !== 'True', 'activestatus': smtp?.isDefault == 'True' }">{{smtp?.isDefault}}</button></td>
+                <td><button [disabled]="!edit" class="btn btn-success btn-sm" (click)="statuschange(smtp?.status, smtp._id)" [ngClass]="{'deactivestatus': smtp?.status !== 'Active', 'activestatus': smtp?.status == 'Active' }">{{smtp?.status}}</button></td>
+                <td><button  [disabled]="!edit" type="button" [disabled]="!edit" (keydown.enter)="$event.preventDefault()" class="btn btn-success" (click)="editSMTPModal(smtp._id,editSMTP)">Edit</button></td>
+                <td><button [disabled]="!delete" type="button" [disabled]="!delete" class="btn btn-danger" (click)="deleteSMTPById(smtp?._id)">Delete</button></td>
+              </tr>
+              </tbody>
+            </table>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
